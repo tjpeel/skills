@@ -6,6 +6,7 @@ set -euo pipefail
 SCRIPT_DIRECTORY="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)"
 REPOSITORY_DIRECTORY="$(CDPATH= cd -- "$SCRIPT_DIRECTORY/.." && pwd -P)"
 INSTALLER="$REPOSITORY_DIRECTORY/scripts/install-codex-skills"
+UNINSTALLER="$REPOSITORY_DIRECTORY/scripts/uninstall-codex-skills"
 PREFIX="test"
 TEST_DIRECTORY="$(mktemp -d "${TMPDIR:-/tmp}/codex-skills-test.XXXXXX")"
 TARGET_DIRECTORY="$TEST_DIRECTORY/skills"
@@ -47,6 +48,18 @@ for skill_directory in "${skills[@]}"; do
   done
 done
 
+foreign_target="$TARGET_DIRECTORY/$PREFIX-ee-foreign-skill"
+mkdir -p "$foreign_target"
+"$UNINSTALLER" --prefix "$PREFIX" --check "$TARGET_DIRECTORY" >/dev/null
+"$UNINSTALLER" --prefix "$PREFIX" "$TARGET_DIRECTORY" >/dev/null
+
+for skill_directory in "${skills[@]}"; do
+  relative_path="${skill_directory#"$REPOSITORY_DIRECTORY"/}"
+  installed_name="$PREFIX-${relative_path//\//-}"
+  [[ ! -e "$TARGET_DIRECTORY/$installed_name" && ! -L "$TARGET_DIRECTORY/$installed_name" ]]
+done
+[[ -d "$foreign_target" ]]
+
 "$INSTALLER" --prefix "$PREFIX" "$TARGET_DIRECTORY" >/dev/null
 
 first_skill="${skills[0]}"
@@ -61,4 +74,4 @@ if "$INSTALLER" --prefix "$PREFIX" "$conflict_target" >/dev/null 2>&1; then
 fi
 [[ "$(sed -n 's/^name: *//p' "$conflict_target/$conflict_name/SKILL.md" | head -n 1)" == "preserved" ]]
 
-echo "Grouped skill installer checks passed."
+echo "Grouped skill install and uninstall checks passed."

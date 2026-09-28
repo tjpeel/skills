@@ -56,6 +56,21 @@ definitions yourself before running it again. In particular, it leaves old
 `personal--*` installs in place. Restart Codex after installation so it reloads
 the skill catalogue.
 
+## Refresh installed skills
+
+Run the separate uninstaller followed by the installer whenever an existing
+package changes:
+
+```zsh
+./scripts/uninstall-codex-skills --prefix tjpeel ~/.codex/skills
+./scripts/install-codex-skills --prefix tjpeel ~/.codex/skills
+```
+
+The uninstaller removes only this repository's current package names for the
+specified prefix; it does not glob-match the shared skill directory, so it
+cannot remove another catalogue whose prefix begins the same way. Run it before
+renaming or removing a source package, then install the revised catalogue.
+
 ## Test the installer
 
 ```zsh
@@ -63,10 +78,11 @@ tests/test-install-codex-skills
 ```
 
 This temporary-directory check covers grouped-skill discovery, generated
-prefix-qualified names, linked resources, repeat installation, and conflicts.
+prefix-qualified names, linked resources, uninstall-then-install refreshes,
+repeat installation, and conflicts.
 
 Each package includes `agents/openai.yaml`. During installation, its
 `display_name` and default prompt are rendered with the installed
 prefix-qualified skill name; the generated `SKILL.md` name uses that same
-value. Existing installed folders are never changed; remove and reinstall one
-yourself to adopt new metadata.
+value. The installer never changes existing installed folders; use the explicit
+uninstaller before reinstalling to adopt new metadata.

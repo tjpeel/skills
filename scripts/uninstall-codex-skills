@@ -1,0 +1,106 @@
+#!/usr/bin/env bash
+# Remove this repository's installed skill packages for one explicit prefix.
+
+set -euo pipefail
+
+usage() {
+  cat <<'EOF'
+Usage: uninstall-codex-skills --prefix PREFIX [--check | --uninstall] [TARGET_DIRECTORY]
+
+Modes:
+  --check      Report this repository's installed and missing skill packages.
+  --uninstall  Remove this repository's installed skill packages for PREFIX.
+
+Each skill is stored at a nested path ending in SKILL.md. PREFIX is required
+and must use lowercase letters, digits, and hyphens. Only the exact installed
+names generated from this repository's current skill paths are removed.
+TARGET_DIRECTORY defaults to ~/.codex/skills for the current user. A literal
+~ or ~/ path is resolved against the current user's home directory.
+
+EOF
+}
+
+MODE="--uninstall"
+PREFIX=""
+TARGET_DIRECTORY="$HOME/.codex/skills"
+target_given=false
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --prefix)
+      [[ $# -ge 2 ]] || { echo "--prefix requires a value." >&2; exit 2; }
+      PREFIX="$2"
+      shift 2
+      ;;
+    --check|--uninstall)
+      MODE="$1"
+      shift
+      ;;
+    --help|-h)
+      usage
+      exit 0
+      ;;
+    --)
+      shift
+      break
+      ;;
+    --*)
+      echo "Unknown option: $1" >&2
+      usage >&2
+      exit 2
+      ;;
+    *)
+      [[ "$target_given" == false ]] || { echo "Only one target directory may be supplied." >&2; exit 2; }
+      TARGET_DIRECTORY="$1"
+      target_given=true
+      shift
+      ;;
+  esac
+done
+
+[[ -n "$PREFIX" ]] || { echo "--prefix is required." >&2; usage >&2; exit 2; }
+[[ "$PREFIX" =~ ^[a-z0-9][a-z0-9-]*$ ]] || { echo "PREFIX must start with a lowercase letter or number and use only lowercase letters, numbers, or hyphens." >&2; exit 2; }
+
+case "$TARGET_DIRECTORY" in
+  '~') TARGET_DIRECTORY="$HOME" ;;
+  '~/'*) TARGET_DIRECTORY="$HOME/${TARGET_DIRECTORY:2}" ;;
+esac
+[[ "$TARGET_DIRECTORY" == /* ]] || { echo "TARGET_DIRECTORY must be absolute or begin with ~/: $TARGET_DIRECTORY" >&2; exit 2; }
+
+SCRIPT_DIRECTORY="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)"
+REPOSITORY_DIRECTORY="$(CDPATH= cd -- "$SCRIPT_DIRECTORY/.." && pwd -P)"
+
+skills=()
+while IFS= read -r -d '' candidate; do
+  skills+=("${candidate%/SKILL.md}")
+done < <(find "$REPOSITORY_DIRECTORY" -mindepth 3 -type f -name SKILL.md -print0 | LC_ALL=C sort -z)
+
+[[ ${#skills[@]} -gt 0 ]] || { echo "No skills found under: $REPOSITORY_DIRECTORY" >&2; exit 1; }
+
+installed_name_for() {
+  local skill_directory="$1" relative_path
+  relative_path="${skill_directory#"$REPOSITORY_DIRECTORY"/}"
+  printf '%s-%s' "$PREFIX" "${relative_path//\//-}"
+}
+
+status=0
+for skill_directory in "${skills[@]}"; do
+  installed_name="$(installed_name_for "$skill_directory")"
+  destination="$TARGET_DIRECTORY/$installed_name"
+
+  if [[ -e "$destination" || -L "$destination" ]]; then
+    if [[ "$MODE" == "--check" ]]; then
+      echo "installed  $installed_name"
+    else
+      rm -rf -- "$destination"
+      echo "uninstalled  $installed_name"
+    fi
+  else
+    echo "missing    $installed_name"
+    status=1
+  fi
+done
+
+if [[ "$MODE" == "--check" ]]; then
+  exit "$status"
+fi
