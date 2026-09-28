@@ -49,7 +49,7 @@ constraints, and durable module or contract boundaries.
 
 The specification is an implementation snapshot. `CONTEXT.md` owns evolving
 domain vocabulary, while ADRs own durable architectural rationale. Link to
-those repository documents when useful, but do not copy them or add
+applicable repository context and ADR documents, but do not copy them or add
 implementation file paths to the specification.
 
 Call out conflicting sources or an unmade decision. Ask only the targeted
@@ -60,10 +60,10 @@ repository research. If the design needs broader decision work, hand it back to
 ## Local specification contract
 
 Return a reviewed draft in the conversation by default. For multi-session work,
-ask whether the user wants to save the approved draft. With that authorisation,
-work only in the Git repository from which the skill was invoked and resolve
-its root before writing. If the repository has no specification convention,
-use this layout:
+save the approved draft before ticket decomposition. Obtain authorisation to
+save it, work only in the Git repository from which the skill was invoked, and
+resolve its root before writing. If the repository has no specification
+convention, use this layout:
 
 ```text
 <repository-root>/.specifications/<lowercase-kebab-case-title>.md
@@ -71,9 +71,9 @@ use this layout:
 
 Use the repository's existing convention in preference to this default. Never
 create an external tracker issue or alter `.gitignore`. If the target exists,
-show the collision and ask for a new title or explicit replacement authority;
-do not merge or overwrite it silently. A saved approved specification can be
-supplied to `$engineering-to-tickets` in a later session.
+show the collision and ask for a new title or path; do not merge, replace, or
+overwrite it. A saved approved specification can be supplied to
+`$engineering-to-tickets` in a later session.
 
 ## Design for observable behaviour
 
@@ -91,7 +91,11 @@ exists, use this structure:
 ```md
 # <Outcome-oriented title>
 
+**Status:** draft
+
 ## Problem
+
+## Source artifacts
 
 ## Current behaviour and evidence
 
@@ -125,6 +129,10 @@ terms of the project's domain language. Each acceptance criterion must be an
 observable delta that is unmet at the baseline. Reject criteria such as "tests
 pass", implementation task lists, or claims already true before the change.
 
+List repository-relative links to the decision-discovery handoff, applicable
+`CONTEXT.md` or `CONTEXT-MAP.md`, and ADRs in source artifacts. Say `None` only
+when no such artifact applies.
+
 Use change and rollout constraints for applicable migration and reversibility,
 compatibility, rollout or rollback, operational observability, security or
 privacy, and data ownership or retention. Say `None identified after review`
@@ -146,7 +154,9 @@ Do not mark it handoff-ready while a question affecting scope, required
 behaviour, a contract, or acceptance remains unresolved.
 
 After explicit approval, return the approved draft or save it under the local
-specification contract when authorised. Hand an approved, multi-session
-implementation to `$engineering-to-tickets` only when the user explicitly
-requests ticket decomposition. Do not publish it to an issue tracker or create
-tickets as part of this skill.
+specification contract when authorised, changing its status to `approved` only
+after that approval. Before ticket decomposition, save the approved version
+under the local specification contract. Hand its local path to
+`$engineering-to-tickets` only when the user explicitly requests ticket
+decomposition. Do not publish it to an issue tracker or create tickets as part
+of this skill.

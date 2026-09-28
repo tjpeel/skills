@@ -14,11 +14,11 @@ repository, available tools, and supplied material before asking about them.
 For a small decision with a clear local boundary, work directly. When the
 evidence spans enough code, history, or independent concerns for delegation to
 help, use the least sufficient custom profile from `~/.codex/agents/`:
-`read_low`, `read_medium`, `read_high`, `read_exceptional`, or `write_medium`.
-A profile is an effort and access boundary, not a task role: give every
-handoff its precise task, inputs, constraints, and required output. Do not use
-Codex built-in `default`, `worker`, or `explorer` agents. If a profile is
-unavailable, perform that bounded responsibility in the coordinating agent.
+`read_low`, `read_medium`, `read_high`, or `write_medium`. A profile is an
+effort and access boundary, not a task role: give every handoff its precise
+task, inputs, constraints, and required output. Do not use Codex built-in
+`default`, `worker`, or `explorer` agents. If a profile is unavailable, perform
+that bounded responsibility in the coordinating agent.
 
 - Use `read_low` to map the affected code, existing terminology, accepted
   records, and observable constraints before design questions are posed.
@@ -97,6 +97,8 @@ named external fact or decision. Return a concise decision record containing:
 - the problem and agreed scope;
 - settled decisions and their rationale;
 - canonical terminology and relevant existing decision records;
+- repository-relative links to applicable `CONTEXT.md`, `CONTEXT-MAP.md`, and
+  ADRs, when they exist;
 - deferred questions, assumptions, and evidence gaps; and
 - test seams or behavioural boundaries worth preserving for the later spec.
 

@@ -1,6 +1,6 @@
 interface:
   display_name: "Engineering to tickets"
   short_description: "Create local dependency-ordered Markdown tickets"
-  default_prompt: "Use $engineering-to-tickets to turn this approved specification into local Markdown tickets."
+  default_prompt: "Use $engineering-to-tickets to turn this approved saved specification into local Markdown tickets."
 policy:
   allow_implicit_invocation: false
