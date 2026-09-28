@@ -13,6 +13,33 @@ name. The installer must build the complete source-name-to-installed-name map
 and rewrite these references in installed `SKILL.md` files and metadata. It
 must leave external and built-in skill references unchanged.
 
+## Delegation profile sizing
+
+Before adding a skill, assess a representative non-trivial use case to decide
+whether delegation would materially improve the result. This is a design
+check, not a blanket requirement to delegate: a small, direct workflow should
+remain in the coordinating agent.
+
+Where a skill needs delegation, document its profile choices and their bounded
+responsibilities in `SKILL.md`. Use the least sufficient reusable profile from
+`~/.codex/agents/`; profiles set effort and access, while the handoff supplies
+the task, inputs, constraints, and output shape:
+
+- `read_low` for inventories, repository mapping, and quick evidence checks;
+- `read_medium` for bounded analysis, drafting, and evidence or acceptance
+  audits;
+- `read_high` for material risk analysis, complex planning, or independent
+  review;
+- `read_exceptional` only for a small, evidence-complete synthesis where its
+  higher cost is justified; and
+- `write_medium` for one scoped local artifact change, with a single writer.
+
+Do not use a profile merely to restate the coordinator's work. Keep user
+questions, decisions, and external writes with the coordinator unless the
+skill explicitly authorises a bounded local writer. If a required profile is
+unavailable, perform that bounded responsibility directly instead of using a
+Codex built-in agent as a substitute.
+
 ## Public-release gate
 
 This repository may become public. Treat the absence of sensitive information

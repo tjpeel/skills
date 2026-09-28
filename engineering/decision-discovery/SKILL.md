@@ -9,6 +9,32 @@ Turn an ambiguous prospective change into a shared set of explicit decisions.
 The user owns product and preference decisions. Establish facts from the
 repository, available tools, and supplied material before asking about them.
 
+## Delegation profiles
+
+For a small decision with a clear local boundary, work directly. When the
+evidence spans enough code, history, or independent concerns for delegation to
+help, use the least sufficient custom profile from `~/.codex/agents/`:
+`read_low`, `read_medium`, `read_high`, `read_exceptional`, or `write_medium`.
+A profile is an effort and access boundary, not a task role: give every
+handoff its precise task, inputs, constraints, and required output. Do not use
+Codex built-in `default`, `worker`, or `explorer` agents. If a profile is
+unavailable, perform that bounded responsibility in the coordinating agent.
+
+- Use `read_low` to map the affected code, existing terminology, accepted
+  records, and observable constraints before design questions are posed.
+- Use `read_medium` to examine a bounded set of alternatives or evidence and
+  return the trade-offs, assumptions, and unanswered facts; it must not turn a
+  user preference into a recommendation or decision.
+- Use `read_high` only when a credible option carries material migration,
+  data-loss, security, concurrency, or cross-service risk.
+- Use `write_medium` as the sole local writer only after the user authorises
+  saving a decision record or prospective ADR. It must preserve the agreed
+  wording and not settle pending decisions.
+
+The coordinator owns the design conversation, user questions, recommendations,
+and external actions. Read-only handoffs do not contact the user or create
+records.
+
 ## Establish the design boundary
 
 Read applicable repository guidance and existing terminology, decision records,

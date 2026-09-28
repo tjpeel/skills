@@ -10,6 +10,32 @@ and later decompose into tickets. Synthesize the available conversation,
 decision record, and repository evidence. Do not restart design discovery or
 interview the user for information already established.
 
+## Delegation profiles
+
+For a small specification whose inputs and code boundary are already clear,
+work directly. When independent mapping or an audit would materially improve a
+non-trivial specification, use the least sufficient custom profile from
+`~/.codex/agents/`: `read_low`, `read_medium`, `read_high`,
+`read_exceptional`, or `write_medium`. A profile is an effort and access
+boundary, not a task role: give every handoff its precise task, inputs,
+constraints, and required output. Do not use Codex built-in `default`,
+`worker`, or `explorer` agents. If a profile is unavailable, perform that
+bounded responsibility in the coordinating agent.
+
+- Use `read_low` to map existing behaviour, interfaces, data boundaries,
+  relevant tests, and the highest observable test seams.
+- Use `read_medium` to reconcile a bounded set of decision records and
+  repository evidence, or to audit the draft's acceptance criteria and test
+  strategy for unsupported claims and missing observable behaviour.
+- Use `read_high` only for credible material migration, data-loss, security,
+  concurrency, compatibility, or cross-service risk.
+- Use `write_medium` as the sole local writer only when the user authorises
+  saving the completed specification. It must not expand the agreed scope or
+  turn unresolved questions into decisions.
+
+The coordinator owns scope decisions, targeted user questions, and external
+actions. Read-only handoffs return evidence and audit findings only.
+
 ## Establish the source of truth
 
 Read the supplied decision record, specification draft, issue, or conversation
