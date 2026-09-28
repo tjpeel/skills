@@ -73,4 +73,4 @@ ambiguity required a conservative choice.
 - [Repository README](../../README.md) explains how this skill is installed and
   maintained with the rest of the catalogue.
 - This independently written skill was informed by the public
-  [Cursor plugin's `unslop` skill](https://github.com/cursor/plugins/tree/main/pstack/skills/unslop).
+  [Cursor plugins repository](https://github.com/cursor/plugins).

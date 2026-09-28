@@ -92,3 +92,8 @@ Each package includes `agents/openai.yaml`. During installation, its
 prefix-qualified skill name; the generated `SKILL.md` name uses that same
 value. The installer never changes existing installed folders; use the explicit
 uninstaller before reinstalling to adopt new metadata.
+
+## References
+
+- The public [Cursor plugins repository](https://github.com/cursor/plugins) is
+  a source of inspiration for selected skills in this catalogue.
