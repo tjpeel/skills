@@ -5,6 +5,12 @@ source of truth; the installer creates a named manifest for each missing skill
 and links its supporting resources back to the source package. Every directory
 between the repository root and a skill is included in its source name.
 
+## Execution profiles
+
+These skills use the reusable Codex and Claude execution profiles in
+[tjpeel/agents](https://github.com/tjpeel/agents). Install those profiles
+separately when a skill delegates work to one of them.
+
 ## Public-release gate
 
 This repository may be made public. No sensitive or internal information may be
