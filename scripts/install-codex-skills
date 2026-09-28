@@ -1,0 +1,191 @@
+#!/usr/bin/env bash
+# Install this repository's skill folders as named symlinks in a Codex skill root.
+
+set -euo pipefail
+
+usage() {
+  cat <<'EOF'
+Usage: install-codex-skills --prefix PREFIX [--check | --install | --sync] [TARGET_DIRECTORY]
+
+Modes:
+  --check    Report this repository's installed, missing, stale, and conflicting links.
+  --install  Add missing links. Refuses to replace an existing path.
+  --sync     Remove only symlinks named PREFIX--* in TARGET_DIRECTORY, then recreate links.
+
+Each immediate child directory of the repository that contains SKILL.md is a skill.
+PREFIX is required and must be unique per skills repository, for example
+"personal" or "work". The installed link names are PREFIX--<skill-directory>.
+TARGET_DIRECTORY defaults to ~/.codex/skills for the current user. A literal
+~ or ~/ path is resolved against the current user's home directory.
+EOF
+}
+
+MODE="--sync"
+PREFIX=""
+TARGET_DIRECTORY="$HOME/.codex/skills"
+target_given=false
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --prefix)
+      if [[ $# -lt 2 ]]; then
+        echo "--prefix requires a value." >&2
+        exit 2
+      fi
+      PREFIX="$2"
+      shift 2
+      ;;
+    --check|--install|--sync)
+      MODE="$1"
+      shift
+      ;;
+    --help|-h)
+      usage
+      exit 0
+      ;;
+    --)
+      shift
+      break
+      ;;
+    *)
+      if [[ "$target_given" == true ]]; then
+        echo "Only one target directory may be supplied." >&2
+        usage >&2
+        exit 2
+      fi
+      TARGET_DIRECTORY="$1"
+      target_given=true
+      shift
+      ;;
+  esac
+done
+
+if [[ -z "$PREFIX" ]]; then
+  echo "--prefix is required." >&2
+  usage >&2
+  exit 2
+fi
+
+if [[ ! "$PREFIX" =~ ^[A-Za-z0-9][A-Za-z0-9._-]*$ ]]; then
+  echo "PREFIX must start with a letter or number and use only letters, numbers, dots, underscores, or hyphens." >&2
+  exit 2
+fi
+
+case "$TARGET_DIRECTORY" in
+  '~') TARGET_DIRECTORY="$HOME" ;;
+  '~/'*) TARGET_DIRECTORY="$HOME/${TARGET_DIRECTORY:2}" ;;
+esac
+
+if [[ "$TARGET_DIRECTORY" != /* ]]; then
+  echo "TARGET_DIRECTORY must be absolute or begin with ~/: $TARGET_DIRECTORY" >&2
+  exit 2
+fi
+
+SCRIPT_DIRECTORY="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)"
+REPOSITORY_DIRECTORY="$(CDPATH= cd -- "$SCRIPT_DIRECTORY/.." && pwd -P)"
+
+if [[ ! -d "$TARGET_DIRECTORY" ]]; then
+  if [[ "$MODE" == "--check" ]]; then
+    echo "Target directory does not exist: $TARGET_DIRECTORY" >&2
+    exit 1
+  fi
+  mkdir -p -- "$TARGET_DIRECTORY"
+fi
+
+skills=()
+shopt -s nullglob
+for candidate in "$REPOSITORY_DIRECTORY"/*/; do
+  [[ -f "${candidate}SKILL.md" ]] || continue
+  skills+=("${candidate%/}")
+done
+
+if [[ ${#skills[@]} -eq 0 ]]; then
+  echo "No skills found. Add a direct child folder containing SKILL.md to:" >&2
+  echo "  $REPOSITORY_DIRECTORY" >&2
+  exit 1
+fi
+
+link_name_for() {
+  local skill_directory="$1"
+  printf '%s--%s' "$PREFIX" "$(basename -- "$skill_directory")"
+}
+
+status=0
+check() {
+  local skill_directory link_name destination
+  local expected_names=()
+
+  echo "Repository: $REPOSITORY_DIRECTORY"
+  echo "Target:     $TARGET_DIRECTORY"
+  echo "Prefix:     $PREFIX"
+
+  for skill_directory in "${skills[@]}"; do
+    link_name="$(link_name_for "$skill_directory")"
+    expected_names+=("$link_name")
+    destination="$TARGET_DIRECTORY/$link_name"
+
+    if [[ -L "$destination" && "$(readlink "$destination")" == "$skill_directory" ]]; then
+      echo "installed  $link_name"
+    elif [[ -e "$destination" || -L "$destination" ]]; then
+      echo "conflict   $link_name -> $(readlink "$destination" 2>/dev/null || echo 'not a symlink')"
+      status=1
+    else
+      echo "missing    $link_name"
+      status=1
+    fi
+  done
+
+  for destination in "$TARGET_DIRECTORY/$PREFIX"--*; do
+    [[ -L "$destination" ]] || continue
+    link_name="$(basename -- "$destination")"
+    local found=false
+    local expected
+    for expected in "${expected_names[@]}"; do
+      [[ "$link_name" == "$expected" ]] && found=true && break
+    done
+    if [[ "$found" == false ]]; then
+      echo "stale      $link_name -> $(readlink "$destination")"
+      status=1
+    fi
+  done
+}
+
+case "$MODE" in
+  --check)
+    check
+    exit "$status"
+    ;;
+  --install)
+    for skill_directory in "${skills[@]}"; do
+      link_name="$(link_name_for "$skill_directory")"
+      destination="$TARGET_DIRECTORY/$link_name"
+      if [[ -e "$destination" || -L "$destination" ]]; then
+        echo "Refusing to replace existing path: $destination" >&2
+        status=1
+      else
+        ln -s -- "$skill_directory" "$destination"
+        echo "installed  $link_name"
+      fi
+    done
+    exit "$status"
+    ;;
+  --sync)
+    for destination in "$TARGET_DIRECTORY/$PREFIX"--*; do
+      [[ -L "$destination" ]] || continue
+      rm -- "$destination"
+      echo "removed    $(basename -- "$destination")"
+    done
+    for skill_directory in "${skills[@]}"; do
+      link_name="$(link_name_for "$skill_directory")"
+      destination="$TARGET_DIRECTORY/$link_name"
+      if [[ -e "$destination" || -L "$destination" ]]; then
+        echo "Refusing to replace non-symlink path: $destination" >&2
+        status=1
+        continue
+      fi
+      ln -s -- "$skill_directory" "$destination"
+      echo "installed  $link_name"
+    done
+    exit "$status"
+    ;;
+esac

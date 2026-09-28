@@ -1,0 +1,4 @@
+interface:
+  display_name: "Draft PR Description"
+  short_description: "Draft evidence-based PR metadata"
+  default_prompt: "Use $draft-pr-description to draft a PR title and description from this repository and <TICKET-KEY>."

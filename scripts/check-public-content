@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# Detect high-confidence secret formats in a repository intended for publication.
+# This is a backstop for, not a replacement for, reviewing every changed file.
+
+set -euo pipefail
+
+SCRIPT_DIRECTORY="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)"
+REPOSITORY_DIRECTORY="$(CDPATH= cd -- "$SCRIPT_DIRECTORY/.." && pwd -P)"
+
+if rg --hidden --line-number --ignore-case --text \
+  --glob '!.git/**' \
+  --glob '!scripts/check-public-content' \
+  -e '-----BEGIN [A-Z ]*PRIVATE KEY-----' \
+  -e '\b(gh[pousr]_[A-Za-z0-9_]{20,}|github_pat_[A-Za-z0-9_]{20,}|sk-[A-Za-z0-9]{20,}|xox[baprs]-[A-Za-z0-9-]{20,}|AKIA[0-9A-Z]{16})\b' \
+  "$REPOSITORY_DIRECTORY"; then
+  echo 'Potential sensitive content found. Remove it before committing.' >&2
+  exit 1
+fi
+
+echo 'No common credential formats found. Complete the required manual public-release review.'

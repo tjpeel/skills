@@ -1,0 +1,4 @@
+interface:
+  display_name: "PR Replication"
+  short_description: "Replicate a source PR across repositories"
+  default_prompt: "Use $pr-replication to replicate this source pull request into the current project: <GitHub PR URL>."
