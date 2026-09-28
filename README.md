@@ -19,10 +19,10 @@ scripts/check-public-content
 The check detects common secret formats; it does not replace a deliberate
 human review of every changed skill, supporting file, and example.
 
-## Install or refresh
+## Install missing skills
 
 ```zsh
-./scripts/install-codex-skills --prefix personal --sync ~/.codex/skills
+./scripts/install-codex-skills --prefix personal ~/.codex/skills
 ```
 
 `--prefix` is required and must be unique per skills repository. A skill at
@@ -35,7 +35,7 @@ human review of every changed skill, supporting file, and example.
 The target defaults to `~/.codex/skills`, so this shorter command is equivalent:
 
 ```zsh
-./scripts/install-codex-skills --prefix personal --sync
+./scripts/install-codex-skills --prefix personal
 ```
 
 ## Check current state
@@ -44,23 +44,8 @@ The target defaults to `~/.codex/skills`, so this shorter command is equivalent:
 ./scripts/install-codex-skills --prefix personal --check ~/.codex/skills
 ```
 
-`--check` exits non-zero for missing, stale, or conflicting links. `--install`
-adds only missing links and refuses to overwrite anything. `--sync` removes
-only symlinks whose name starts with this repository's prefix, then recreates
-the links. It never removes a real file or directory.
-
-## Migrate legacy installed skills safely
-
-If this repository's skills were previously copied directly into the target,
-archive their exact declared names before creating the prefixed links:
-
-```zsh
-./scripts/install-codex-skills --prefix personal --sync \
-  --archive-name dependabot-pr-queue --archive-name draft-pr-description \
-  --archive-name github-pr-management --archive-name pr-replication \
-  --archive-name review-pr
-```
-
-Each named, non-symlink skill folder is moved beneath
-`~/.codex/skills/.archived-skill-definitions/`; unrelated skills are left in
-place. Restart Codex after installation so it reloads the skill catalogue.
+`--check` exits non-zero for missing or conflicting links. The default
+`--install` mode adds only missing links. It never replaces, removes, moves, or
+otherwise changes an existing path; resolve conflicts and remove obsolete
+definitions yourself before running it again. Restart Codex after installation
+so it reloads the skill catalogue.

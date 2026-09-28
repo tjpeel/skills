@@ -5,12 +5,11 @@ set -euo pipefail
 
 usage() {
   cat <<'EOF'
-Usage: install-codex-skills --prefix PREFIX [--check | --install | --sync] [--archive-name NAME ...] [TARGET_DIRECTORY]
+Usage: install-codex-skills --prefix PREFIX [--check | --install] [TARGET_DIRECTORY]
 
 Modes:
-  --check    Report this repository's installed, missing, stale, and conflicting links.
-  --install  Add missing links. Refuses to replace an existing path.
-  --sync     Remove only symlinks named PREFIX--* in TARGET_DIRECTORY, then recreate links.
+  --check    Report this repository's installed, missing, and conflicting links.
+  --install  Add missing links and leave every existing path untouched.
 
 Each immediate child directory of the repository that contains SKILL.md is a skill.
 PREFIX is required and must be unique per skills repository, for example
@@ -18,29 +17,25 @@ PREFIX is required and must be unique per skills repository, for example
 TARGET_DIRECTORY defaults to ~/.codex/skills for the current user. A literal
 ~ or ~/ path is resolved against the current user's home directory.
 
---archive-name NAME moves an explicitly named, non-symlink legacy skill folder
-from TARGET_DIRECTORY into .archived-skill-definitions before installation. It
-never archives a skill unless its SKILL.md name exactly matches NAME.
 EOF
 }
 
-MODE="--sync"
+MODE="--install"
 PREFIX=""
 TARGET_DIRECTORY="$HOME/.codex/skills"
 target_given=false
-archive_names=()
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --prefix|--archive-name)
+    --prefix)
       if [[ $# -lt 2 ]]; then
         echo "--prefix requires a value." >&2
         exit 2
       fi
-      if [[ "$1" == "--prefix" ]]; then PREFIX="$2"; else archive_names+=("$2"); fi
+      PREFIX="$2"
       shift 2
       ;;
-    --check|--install|--sync)
+    --check|--install)
       MODE="$1"
       shift
       ;;
@@ -51,6 +46,11 @@ while [[ $# -gt 0 ]]; do
     --)
       shift
       break
+      ;;
+    --*)
+      echo "Unknown option: $1" >&2
+      usage >&2
+      exit 2
       ;;
     *)
       if [[ "$target_given" == true ]]; then
@@ -115,39 +115,9 @@ link_name_for() {
   printf '%s--%s' "$PREFIX" "$(basename -- "$skill_directory")"
 }
 
-declared_name_for() {
-  sed -n 's/^name: *//p' "$1/SKILL.md" | head -n 1
-}
-
-archive_requested_legacy_skills() {
-  local requested candidate declared archive_directory timestamp
-  [[ ${#archive_names[@]} -gt 0 ]] || return 0
-
-  timestamp="$(date -u +%Y%m%dT%H%M%SZ)"
-  archive_directory="$TARGET_DIRECTORY/.archived-skill-definitions/$timestamp"
-
-  for requested in "${archive_names[@]}"; do
-    local found=false
-    for candidate in "$TARGET_DIRECTORY"/*; do
-      [[ -d "$candidate" && ! -L "$candidate" && -f "$candidate/SKILL.md" ]] || continue
-      declared="$(declared_name_for "$candidate")"
-      [[ "$declared" == "$requested" ]] || continue
-      mkdir -p -- "$archive_directory"
-      mv -- "$candidate" "$archive_directory/$(basename -- "$candidate")"
-      echo "archived   $requested -> $archive_directory/$(basename -- "$candidate")"
-      found=true
-      break
-    done
-    if [[ "$found" == false ]]; then
-      echo "not found  $requested"
-    fi
-  done
-}
-
 status=0
 check() {
   local skill_directory link_name destination
-  local expected_names=()
 
   echo "Repository: $REPOSITORY_DIRECTORY"
   echo "Target:     $TARGET_DIRECTORY"
@@ -155,7 +125,6 @@ check() {
 
   for skill_directory in "${skills[@]}"; do
     link_name="$(link_name_for "$skill_directory")"
-    expected_names+=("$link_name")
     destination="$TARGET_DIRECTORY/$link_name"
 
     if [[ -L "$destination" && "$(readlink "$destination")" == "$skill_directory" ]]; then
@@ -169,19 +138,6 @@ check() {
     fi
   done
 
-  for destination in "$TARGET_DIRECTORY/$PREFIX"--*; do
-    [[ -L "$destination" ]] || continue
-    link_name="$(basename -- "$destination")"
-    local found=false
-    local expected
-    for expected in "${expected_names[@]}"; do
-      [[ "$link_name" == "$expected" ]] && found=true && break
-    done
-    if [[ "$found" == false ]]; then
-      echo "stale      $link_name -> $(readlink "$destination")"
-      status=1
-    fi
-  done
 }
 
 case "$MODE" in
@@ -190,37 +146,18 @@ case "$MODE" in
     exit "$status"
     ;;
   --install)
-    archive_requested_legacy_skills
     for skill_directory in "${skills[@]}"; do
       link_name="$(link_name_for "$skill_directory")"
       destination="$TARGET_DIRECTORY/$link_name"
-      if [[ -e "$destination" || -L "$destination" ]]; then
+      if [[ -L "$destination" && "$(readlink "$destination")" == "$skill_directory" ]]; then
+        echo "installed  $link_name"
+      elif [[ -e "$destination" || -L "$destination" ]]; then
         echo "Refusing to replace existing path: $destination" >&2
         status=1
       else
         ln -s -- "$skill_directory" "$destination"
         echo "installed  $link_name"
       fi
-    done
-    exit "$status"
-    ;;
-  --sync)
-    archive_requested_legacy_skills
-    for destination in "$TARGET_DIRECTORY/$PREFIX"--*; do
-      [[ -L "$destination" ]] || continue
-      rm -- "$destination"
-      echo "removed    $(basename -- "$destination")"
-    done
-    for skill_directory in "${skills[@]}"; do
-      link_name="$(link_name_for "$skill_directory")"
-      destination="$TARGET_DIRECTORY/$link_name"
-      if [[ -e "$destination" || -L "$destination" ]]; then
-        echo "Refusing to replace non-symlink path: $destination" >&2
-        status=1
-        continue
-      fi
-      ln -s -- "$skill_directory" "$destination"
-      echo "installed  $link_name"
     done
     exit "$status"
     ;;
