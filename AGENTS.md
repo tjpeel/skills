@@ -48,6 +48,17 @@ creates local artifacts in the invoking repository, document the exact
 location, safe naming rules, ownership, and overwrite behaviour in its
 `SKILL.md`.
 
+## Sources and attribution
+
+Credit public sources that materially informed skills in this catalogue in the
+root README. Keep that credit at catalogue level when a skill must remain
+self-contained, rather than retaining another catalogue's skill references or
+setup assumptions in its `SKILL.md`.
+
+The engineering decision-discovery, specification, and to-tickets skills were
+informed by the public [mattpocock/skills](https://github.com/mattpocock/skills)
+repository.
+
 ## Public-release gate
 
 This repository may become public. Treat the absence of sensitive information

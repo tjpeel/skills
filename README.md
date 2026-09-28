@@ -104,3 +104,6 @@ the approved dependency-ordered ticket set into the invoking repository.
 
 - The public [Cursor plugins repository](https://github.com/cursor/plugins) is
   a source of inspiration for selected skills in this catalogue.
+- The engineering decision-discovery, specification, and to-tickets skills
+  were informed by the public
+  [mattpocock/skills](https://github.com/mattpocock/skills) repository.
