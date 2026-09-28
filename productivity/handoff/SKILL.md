@@ -7,7 +7,7 @@ description: Compact the current conversation into a redacted handoff document f
 
 Write a compact Markdown handoff document so a fresh agent can continue the
 work without reconstructing the conversation. First, resolve the active
-repository's root and try to save the document in its `.handoff/` directory.
+repository's root and try to save the document in its `.handoffs/` directory.
 Create that directory if it does not exist. If the repository cannot be
 resolved, the directory cannot be created, or the document cannot be written
 there, save it in the operating system's temporary directory instead.
