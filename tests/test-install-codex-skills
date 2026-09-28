@@ -23,6 +23,29 @@ done < <(find "$REPOSITORY_DIRECTORY" -mindepth 3 -type f -name SKILL.md -print0
 
 [[ ${#skills[@]} -gt 0 ]]
 
+source_names=()
+for skill_directory in "${skills[@]}"; do
+  source_names+=("$(sed -n 's/^name: *//p' "$skill_directory/SKILL.md" | head -n 1)")
+done
+
+assert_internal_references_rewritten() {
+  local source_file="$1" destination_file="$2" source_reference known_source_name local_reference
+
+  if grep -qE '\$[a-z0-9][a-z0-9-]*' "$source_file"; then
+    while IFS= read -r source_reference; do
+      source_reference="${source_reference#\$}"
+      [[ -n "$source_reference" ]]
+      local_reference=false
+      for known_source_name in "${source_names[@]}"; do
+        [[ "$known_source_name" == "$source_reference" ]] && local_reference=true
+      done
+      [[ "$local_reference" == true ]] || continue
+      grep -Fq "\$$PREFIX-$source_reference" "$destination_file"
+      ! grep -Fq "\$$source_reference" "$destination_file"
+    done < <(grep -oE '\$[a-z0-9][a-z0-9-]*' "$source_file" | LC_ALL=C sort -u)
+  fi
+}
+
 "$INSTALLER" --prefix "$PREFIX" "$TARGET_DIRECTORY" >/dev/null
 "$INSTALLER" --prefix "$PREFIX" --check "$TARGET_DIRECTORY" >/dev/null
 
@@ -40,6 +63,11 @@ for skill_directory in "${skills[@]}"; do
   [[ "$(sed -n 's/^[[:space:]]*display_name:[[:space:]]*"\([^"]*\)".*/\1/p' "$destination/agents/openai.yaml")" == "$installed_name" ]]
   grep -Fq "\$$source_name" "$skill_directory/agents/openai.yaml"
   grep -Fq "\$$installed_name" "$destination/agents/openai.yaml"
+
+  assert_internal_references_rewritten "$skill_directory/SKILL.md" "$destination/SKILL.md"
+  for metadata in "$skill_directory/agents"/*; do
+    assert_internal_references_rewritten "$metadata" "$destination/agents/$(basename -- "$metadata")"
+  done
 
   for resource in "$skill_directory"/*; do
     [[ "$(basename -- "$resource")" == "SKILL.md" || "$(basename -- "$resource")" == "agents" ]] && continue

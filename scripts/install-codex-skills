@@ -124,20 +124,56 @@ source_name_for() {
   sed -n 's/^name: *//p' "$1/SKILL.md" | head -n 1
 }
 
+source_names=()
+link_names=()
+for skill_directory in "${skills[@]}"; do
+  source_name="$(source_name_for "$skill_directory")"
+  link_name="$(link_name_for "$skill_directory")"
+
+  if [[ -z "$source_name" ]]; then
+    echo "Missing skill name: $skill_directory/SKILL.md" >&2
+    exit 1
+  fi
+
+  if [[ -n "${source_names[0]+set}" ]]; then
+    for known_source_name in "${source_names[@]}"; do
+      if [[ "$known_source_name" == "$source_name" ]]; then
+        echo "Duplicate skill name: $source_name" >&2
+        exit 1
+      fi
+    done
+  fi
+
+  source_names+=("$source_name")
+  link_names+=("$link_name")
+done
+
+rewrite_internal_skill_references() {
+  local source_file="$1" index source_name link_name
+  local sed_arguments=()
+
+  for index in "${!source_names[@]}"; do
+    source_name="${source_names[$index]}"
+    link_name="${link_names[$index]}"
+    sed_arguments+=(-e 's/[$]'"$source_name"'\([^[:alnum:]-]\)/$'"$link_name"'\1/g')
+    sed_arguments+=(-e 's/[$]'"$source_name"'$/$'"$link_name"'/g')
+  done
+
+  sed "${sed_arguments[@]}" "$source_file"
+}
+
 install_agents_metadata() {
-  local skill_directory="$1" link_name="$2" destination="$3" source_name metadata
+  local skill_directory="$1" link_name="$2" destination="$3" metadata
 
   [[ -d "$skill_directory/agents" ]] || return 0
-  source_name="$(source_name_for "$skill_directory")"
   mkdir -- "$destination/agents"
   for metadata in "$skill_directory/agents"/*; do
     if [[ "$(basename -- "$metadata")" == "openai.yaml" ]]; then
-      sed \
-        -e "s/\\\$$source_name/\\\$$link_name/g" \
+      rewrite_internal_skill_references "$metadata" | sed \
         -e "s/^\\([[:space:]]*display_name:[[:space:]]*\\).*/\\1\"$link_name\"/" \
-        "$metadata" > "$destination/agents/openai.yaml"
+        > "$destination/agents/openai.yaml"
     else
-      ln -s -- "$metadata" "$destination/agents/$(basename -- "$metadata")"
+      rewrite_internal_skill_references "$metadata" > "$destination/agents/$(basename -- "$metadata")"
     fi
   done
 }
@@ -146,7 +182,7 @@ install_skill() {
   local skill_directory="$1" link_name="$2" destination="$3" entry
 
   mkdir -- "$destination"
-  sed "s/^name: .*/name: $link_name/" "$skill_directory/SKILL.md" > "$destination/SKILL.md"
+  rewrite_internal_skill_references "$skill_directory/SKILL.md" | sed "s/^name: .*/name: $link_name/" > "$destination/SKILL.md"
   for entry in "$skill_directory"/*; do
     [[ "$(basename -- "$entry")" == "SKILL.md" ]] && continue
     if [[ "$(basename -- "$entry")" == "agents" ]]; then

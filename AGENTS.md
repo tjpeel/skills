@@ -1,5 +1,18 @@
 # Personal skills repository conventions
 
+## Skill packaging
+
+The source package is prefix-free. Set its frontmatter `name`, metadata
+`display_name`, and `default_prompt` for the source skill only. The installer
+derives the installed name and UI display name from the chosen prefix and the
+package's nested path.
+
+For an internal cross-skill reference, use the source name in `$` form, such
+as `$architecture-adrs`; never hard-code an installed prefix or use a display
+name. The installer must build the complete source-name-to-installed-name map
+and rewrite these references in installed `SKILL.md` files and metadata. It
+must leave external and built-in skill references unchanged.
+
 ## Public-release gate
 
 This repository may become public. Treat the absence of sensitive information
