@@ -28,8 +28,9 @@ unavailable, perform that bounded responsibility in the coordinating agent.
 - Use `read_high` only when a credible option carries material migration,
   data-loss, security, concurrency, or cross-service risk.
 - Use `write_medium` as the sole local writer only after the user authorises
-  saving a decision record or prospective ADR. It must preserve the agreed
-  wording and not settle pending decisions.
+  saving settled terminology, a decision record, or a prospective ADR. It must
+  preserve the agreed wording, write only to the agreed repository locations,
+  and not settle pending decisions.
 
 The coordinator owns the design conversation, user questions, recommendations,
 and external actions. Read-only handoffs do not contact the user or create
@@ -37,17 +38,20 @@ records.
 
 ## Establish the design boundary
 
-Read applicable repository guidance and existing terminology, decision records,
-and plans. Explore the affected code enough to distinguish facts, constraints,
-and existing decisions from assumptions.
+Read applicable repository guidance, existing `CONTEXT.md` or
+`CONTEXT-MAP.md`, decision records, and plans. Explore the affected code enough
+to distinguish facts, constraints, and existing decisions from assumptions.
 
 State the decision to make, its affected users or systems, known constraints,
 and what is explicitly outside the discussion. Keep a design tree of decisions
 and their prerequisites. A settled decision may expose later decisions.
 
-Use the project's existing glossary and ADR conventions. If it has none, do not
-introduce new project documentation paths without the user's agreement. Keep
-the working record in the conversation until a location is agreed.
+Use the project's existing glossary and ADR conventions. When the discovery
+needs to create or update domain context, read
+[the repository-context guidance](references/repository-context.md). When it
+needs a prospective ADR, read [the prospective-ADR guidance](references/prospective-adrs.md).
+If no convention exists, propose the default location before creating it. Keep
+the working record in the conversation until repository writes are authorised.
 
 ## Run decision rounds
 
@@ -69,14 +73,21 @@ preference into a fact or imply agreement where the user has not made one.
 
 Maintain a concise working glossary of domain terms settled during discovery.
 Prefer one canonical term and note confusing alternatives when they would cause
-real ambiguity. Keep implementation detail out of glossary entries.
+real ambiguity. Keep implementation detail, specifications, and unmade
+decisions out of glossary entries. After the user authorises repository writes,
+record a settled term incrementally in the applicable `CONTEXT.md`; do not
+write disputed or provisional language. Use the provided
+[CONTEXT.md template](assets/CONTEXT.md) only when the repository has no
+existing context format.
 
-Create or amend a prospective ADR only when the decision is hard to reverse,
-would surprise a future engineer without context, and involved a meaningful
-trade-off. Use the project's ADR format and status convention. Confirm a
-decision before recording it as accepted; otherwise mark it proposed. Do not
-use this skill to recover historical ADRs; use `$architecture-adrs` for that
-work.
+An ADR is a durable repository record of an architecture-significant decision,
+the context that made it necessary, why the chosen option won, and consequences
+that code alone would not safely explain. Create or amend one only when the
+decision is hard to reverse, would surprise a future engineer without context,
+and involved a meaningful trade-off. Use the project's ADR format and status
+convention. Confirm a decision before recording it as accepted; otherwise mark
+it proposed. Do not use this skill to recover historical ADRs; use
+`$architecture-adrs` for that work.
 
 ## Finish with a handoff
 
