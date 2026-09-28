@@ -6,12 +6,15 @@ description: Compact the current conversation into a redacted handoff document f
 # Handoff
 
 Write a compact Markdown handoff document so a fresh agent can continue the
-work without reconstructing the conversation. Save it in the operating
-system's temporary directory, never in the current workspace.
+work without reconstructing the conversation. First, resolve the active
+repository's root and try to save the document in its `.handoff/` directory.
+Create that directory if it does not exist. If the repository cannot be
+resolved, the directory cannot be created, or the document cannot be written
+there, save it in the operating system's temporary directory instead.
 
 Use a new filename such as `codex-handoff-YYYYMMDD-HHMMSS.md`. The skill owns
-only that file: do not overwrite an existing handoff document or change the
-workspace while preparing it.
+only that file: do not overwrite an existing handoff document or modify other
+workspace files. Report the path that was actually written.
 
 Capture the current objective, completed work, decisions and constraints,
 remaining work, known risks or blockers, and the most useful next actions.
