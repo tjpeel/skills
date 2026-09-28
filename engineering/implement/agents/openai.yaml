@@ -1,0 +1,6 @@
+interface:
+  display_name: "Engineering implementation"
+  short_description: "Implement one ready ticket with focused verification"
+  default_prompt: "Use $engineering-implement to implement this ready local ticket or approved specification slice."
+policy:
+  allow_implicit_invocation: false
