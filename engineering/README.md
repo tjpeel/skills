@@ -6,3 +6,4 @@
 | [`specification`](specification/SKILL.md) | Turns settled decisions into a reviewable implementation specification for later ticket decomposition. |
 | [`to-tickets`](to-tickets/SKILL.md) | Turns an approved specification into dependency-ordered local Markdown tickets. |
 | [`implement`](implement/SKILL.md) | Implements one ready ticket or approved specification slice with focused verification. |
+| [`code-review`](code-review/SKILL.md) | Reviews a local engineering diff against approved intent and repository risk. |

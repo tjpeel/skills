@@ -1,6 +1,6 @@
 ---
 name: engineering-implement
-description: Implement one ready local engineering ticket or a clearly scoped approved specification, preserving its decisions, observable acceptance criteria, and test seams. Use after ticket decomposition; do not use to make design decisions, write tickets, or independently review a completed change.
+description: Implement one ready local engineering ticket or a clearly scoped approved specification, preserving its decisions, observable acceptance criteria, and test seams. Use after ticket decomposition; do not use to make design decisions or write tickets.
 ---
 
 # Engineering implementation
@@ -14,6 +14,12 @@ ticket decomposition.
 ## Establish the implementation boundary
 
 Read the input in full and resolve its repository root before changing files.
+Record the current `HEAD` commit as the fixed point for the later independent
+review. If the working tree contains unrelated changes, identify them and ask
+the user to isolate the ticket or supply a different fixed point before
+editing. Do not claim a review covers only this ticket when its diff includes
+other work.
+
 For a ticket, confirm that it is in `.tickets/`, has status `ready-for-agent`,
 and that every listed blocker is complete. Read its source specification,
 applicable repository guidance, `CONTEXT.md` or `CONTEXT-MAP.md`, and accepted
@@ -84,7 +90,7 @@ the project command that gives fast feedback. Resolve failures before moving to
 the next slice. Do not weaken, delete, or skip an existing test merely to make
 the suite pass unless the approved change explicitly supersedes its behaviour.
 
-## Verify and hand off
+## Verify, review, and hand off
 
 Before declaring the work complete, inspect the final diff against the input.
 Check every acceptance criterion and applicable change constraint against an
@@ -93,15 +99,22 @@ documented equivalent once after the narrow checks are green. If the full
 suite cannot run, report the exact command, reason, and the narrower checks
 that did run; do not claim complete verification.
 
+After the focused and full checks are green, invoke
+`$engineering-code-review` against the recorded fixed point. Supply the
+ticket or specification, applicable standards sources, changed-file list, and
+verification evidence. Fix actionable review findings that remain within the
+approved scope, rerun affected verification, and repeat the review against the
+same fixed point. Return a finding that needs a new decision to the relevant
+upstream workflow rather than expanding the ticket.
+
 Return a concise handoff with:
 
 - the ticket or specification slice implemented;
 - changed behaviour and any deliberately untouched scope;
 - tests and other verification run, including outcomes;
 - acceptance criteria that remain unverified and why; and
-- follow-up work or risks outside the ticket boundary.
+- follow-up work or risks outside the ticket boundary; and
+- code-review findings, fixes, and any review limitations.
 
-Do not perform an independent review of the finished change in this skill. A
-dedicated code-review skill remains a separate workflow step so it can be used
-for implementation work and other change types. Do not commit, push, create a
-pull request, or update an external tracker unless the user explicitly asks.
+Do not commit, push, create a pull request, or update an external tracker
+unless the user explicitly asks.

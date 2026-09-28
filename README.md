@@ -99,12 +99,13 @@ For work that spans more than one implementation session, the engineering
 skills form a local workflow: `decision-discovery` settles consequential
 choices, `specification` records observable behaviour, `to-tickets` writes the
 approved dependency-ordered ticket set into the invoking repository, and
-`implement` completes one ready ticket or approved specification slice.
+`implement` completes one ready ticket or approved specification slice before
+`code-review` independently checks it against intent and repository risk.
 
 ## References
 
 - The public [Cursor plugins repository](https://github.com/cursor/plugins) is
   a source of inspiration for selected skills in this catalogue.
-- The engineering decision-discovery, specification, to-tickets, and
-  implementation skills were informed by the public
+- The engineering decision-discovery, specification, to-tickets,
+  implementation, and code-review skills were informed by the public
   [mattpocock/skills](https://github.com/mattpocock/skills) repository.

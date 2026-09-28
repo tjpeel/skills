@@ -1,0 +1,6 @@
+interface:
+  display_name: "Engineering code review"
+  short_description: "Review a local engineering diff against intent and risk"
+  default_prompt: "Use $engineering-code-review to review this local engineering change against its approved ticket or specification."
+policy:
+  allow_implicit_invocation: false
