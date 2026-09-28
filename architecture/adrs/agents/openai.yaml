@@ -1,0 +1,4 @@
+interface:
+  display_name: "Retrospective ADRs"
+  short_description: "Recover architectural decisions from evidence"
+  default_prompt: "Use $architecture-adrs to derive retrospective ADRs from this repository history."
