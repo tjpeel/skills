@@ -120,6 +120,25 @@ installed_name_for() {
   sed -n 's/^name: *//p' "$1/SKILL.md" | head -n 1
 }
 
+source_name_for() {
+  sed -n 's/^name: *//p' "$1/SKILL.md" | head -n 1
+}
+
+install_agents_metadata() {
+  local skill_directory="$1" link_name="$2" destination="$3" source_name metadata
+
+  [[ -d "$skill_directory/agents" ]] || return 0
+  source_name="$(source_name_for "$skill_directory")"
+  mkdir -- "$destination/agents"
+  for metadata in "$skill_directory/agents"/*; do
+    if [[ "$(basename -- "$metadata")" == "openai.yaml" ]]; then
+      sed "s/\\\$$source_name/\\\$$link_name/g" "$metadata" > "$destination/agents/openai.yaml"
+    else
+      ln -s -- "$metadata" "$destination/agents/$(basename -- "$metadata")"
+    fi
+  done
+}
+
 install_skill() {
   local skill_directory="$1" link_name="$2" destination="$3" entry
 
@@ -127,7 +146,11 @@ install_skill() {
   sed "s/^name: .*/name: $link_name/" "$skill_directory/SKILL.md" > "$destination/SKILL.md"
   for entry in "$skill_directory"/*; do
     [[ "$(basename -- "$entry")" == "SKILL.md" ]] && continue
-    ln -s -- "$entry" "$destination/$(basename -- "$entry")"
+    if [[ "$(basename -- "$entry")" == "agents" ]]; then
+      install_agents_metadata "$skill_directory" "$link_name" "$destination"
+    else
+      ln -s -- "$entry" "$destination/$(basename -- "$entry")"
+    fi
   done
 }
 

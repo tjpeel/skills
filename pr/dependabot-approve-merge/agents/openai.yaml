@@ -1,4 +1,4 @@
 interface:
   display_name: "Dependabot PR Queue"
   short_description: "Safely triage and sequence Dependabot PRs"
-  default_prompt: "Use $dependabot-pr-queue to triage open Dependabot PRs for https://github.com/OWNER/REPO."
+  default_prompt: "Use $pr-dependabot-approve-merge to process Dependabot PRs for https://github.com/OWNER/REPO."

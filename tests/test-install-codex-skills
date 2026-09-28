@@ -34,9 +34,13 @@ for skill_directory in "${skills[@]}"; do
   [[ "$(sed -n 's/^name: *//p' "$skill_directory/SKILL.md" | head -n 1)" == "$source_name" ]]
   [[ -d "$destination" && ! -L "$destination" ]]
   [[ "$(sed -n 's/^name: *//p' "$destination/SKILL.md" | head -n 1)" == "$installed_name" ]]
+  [[ -f "$skill_directory/agents/openai.yaml" ]]
+  [[ -f "$destination/agents/openai.yaml" && ! -L "$destination/agents/openai.yaml" ]]
+  grep -Fq "\$$source_name" "$skill_directory/agents/openai.yaml"
+  grep -Fq "\$$installed_name" "$destination/agents/openai.yaml"
 
   for resource in "$skill_directory"/*; do
-    [[ "$(basename -- "$resource")" == "SKILL.md" ]] && continue
+    [[ "$(basename -- "$resource")" == "SKILL.md" || "$(basename -- "$resource")" == "agents" ]] && continue
     [[ -L "$destination/$(basename -- "$resource")" ]]
     [[ "$(readlink "$destination/$(basename -- "$resource")")" == "$resource" ]]
   done

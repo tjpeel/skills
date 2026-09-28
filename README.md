@@ -63,3 +63,8 @@ tests/test-install-codex-skills
 
 This temporary-directory check covers grouped-skill discovery, generated
 prefix-qualified names, linked resources, repeat installation, and conflicts.
+
+Each package includes `agents/openai.yaml`. During installation, its default
+prompt is rendered with the installed prefix-qualified skill name. Existing
+installed folders are never changed; remove and reinstall one yourself to adopt
+new metadata.

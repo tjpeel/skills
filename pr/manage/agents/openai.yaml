@@ -1,4 +1,4 @@
 interface:
   display_name: "GitHub PR management"
   short_description: "Safely push and manage GitHub pull requests"
-  default_prompt: "Use $github-pr-management to prepare and update this pull request."
+  default_prompt: "Use $pr-manage to prepare and update this pull request."
