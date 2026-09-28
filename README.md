@@ -93,10 +93,14 @@ prefix-qualified skill name; the generated `SKILL.md` name uses that same
 value. The installer never changes existing installed folders; use the explicit
 uninstaller before reinstalling to adopt new metadata.
 
+## Engineering workflow
+
+For work that spans more than one implementation session, the engineering
+skills form a local workflow: `decision-discovery` settles consequential
+choices, `specification` records observable behaviour, and `to-tickets` writes
+the approved dependency-ordered ticket set into the invoking repository.
+
 ## References
 
 - The public [Cursor plugins repository](https://github.com/cursor/plugins) is
   a source of inspiration for selected skills in this catalogue.
-- The engineering decision-discovery and specification skills were independently
-  developed from the public [mattpocock/skills](https://github.com/mattpocock/skills)
-  design workflow.

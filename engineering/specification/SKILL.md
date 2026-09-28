@@ -98,15 +98,9 @@ trim it to that constraint.
 
 The draft is ready for ticket decomposition when its scope, behavioural
 criteria, material decisions, test seams, and exclusions are clear. Include
-remaining questions and evidence gaps instead of silently deciding them.
+remaining questions and evidence gaps instead of silently deciding them. Hand
+an approved, multi-session implementation to `$engineering-to-tickets`.
 
 Return the reviewable draft or save it only where the user has authorised and
 the repository's conventions permit. Do not publish it to an issue tracker or
 break it into tickets unless the user explicitly requests the next activity.
-
-## References
-
-This independently written follow-on skill was developed from the design
-workflow in the public
-[grill-with-docs skill](https://github.com/mattpocock/skills/tree/main/skills/engineering/grill-with-docs)
-from [mattpocock/skills](https://github.com/mattpocock/skills).
