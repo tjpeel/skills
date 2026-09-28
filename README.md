@@ -1,7 +1,8 @@
 # Personal Codex skills
 
-Each direct child folder containing `SKILL.md` is a Codex skill. This repository
-is the source of truth; the installer exposes skills through named symlinks.
+Skills are grouped as `<group>/<skill>/SKILL.md`. This repository is the source
+of truth; the installer creates a named manifest for each missing skill and
+links its supporting resources back to the source package.
 
 ## Public-release gate
 
@@ -22,30 +23,43 @@ human review of every changed skill, supporting file, and example.
 ## Install missing skills
 
 ```zsh
-./scripts/install-codex-skills --prefix personal ~/.codex/skills
+./scripts/install-codex-skills --prefix tjpeel ~/.codex/skills
 ```
 
-`--prefix` is required and must be unique per skills repository. A skill at
-`example/SKILL.md` installed with `--prefix personal` becomes:
+`--prefix` is required and must use lowercase letters, digits, and hyphens. It
+is included in every installed skill name. A skill at `pr/review/SKILL.md`
+installed with `--prefix tjpeel` becomes:
 
 ```text
-~/.codex/skills/personal--example
+~/.codex/skills/tjpeel-pr-review/
 ```
 
-The target defaults to `~/.codex/skills`, so this shorter command is equivalent:
+Its generated manifest declares `name: tjpeel-pr-review`, so invoke it as
+`$tjpeel-pr-review`. The target defaults to `~/.codex/skills`, so this shorter
+command is equivalent:
 
 ```zsh
-./scripts/install-codex-skills --prefix personal
+./scripts/install-codex-skills --prefix tjpeel
 ```
 
 ## Check current state
 
 ```zsh
-./scripts/install-codex-skills --prefix personal --check ~/.codex/skills
+./scripts/install-codex-skills --prefix tjpeel --check ~/.codex/skills
 ```
 
-`--check` exits non-zero for missing or conflicting links. The default
-`--install` mode adds only missing links. It never replaces, removes, moves, or
+`--check` exits non-zero for missing or conflicting skills. The default
+`--install` mode adds only missing skills. It never replaces, removes, moves, or
 otherwise changes an existing path; resolve conflicts and remove obsolete
-definitions yourself before running it again. Restart Codex after installation
-so it reloads the skill catalogue.
+definitions yourself before running it again. In particular, it leaves old
+`personal--*` installs in place. Restart Codex after installation so it reloads
+the skill catalogue.
+
+## Test the installer
+
+```zsh
+tests/test-install-codex-skills
+```
+
+This temporary-directory check covers grouped-skill discovery, generated
+prefix-qualified names, linked resources, repeat installation, and conflicts.

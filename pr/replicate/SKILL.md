@@ -1,5 +1,5 @@
 ---
-name: pr-replication
+name: pr-replicate
 description: "Reproduce a GitHub pull request's intended changes in the current destination repository. Use when a source PR is the guide, not a patch to apply verbatim."
 ---
 

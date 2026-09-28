@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Install this repository's skill folders as named symlinks in a Codex skill root.
+# Install grouped skill packages in a Codex skill root.
 
 set -euo pipefail
 
@@ -8,12 +8,13 @@ usage() {
 Usage: install-codex-skills --prefix PREFIX [--check | --install] [TARGET_DIRECTORY]
 
 Modes:
-  --check    Report this repository's installed, missing, and conflicting links.
-  --install  Add missing links and leave every existing path untouched.
+  --check    Report this repository's installed, missing, and conflicting skills.
+  --install  Add missing skills and leave every existing path untouched.
 
-Each immediate child directory of the repository that contains SKILL.md is a skill.
-PREFIX is required and must be unique per skills repository, for example
-"personal" or "work". The installed link names are PREFIX--<skill-directory>.
+Each skill is stored at <group>/<skill>/SKILL.md. PREFIX is required and must
+use lowercase letters, digits, and hyphens. The installed skill name is
+PREFIX-<group>-<skill>; for example, --prefix tjpeel installs pr/review as
+tjpeel-pr-review.
 TARGET_DIRECTORY defaults to ~/.codex/skills for the current user. A literal
 ~ or ~/ path is resolved against the current user's home directory.
 
@@ -71,8 +72,8 @@ if [[ -z "$PREFIX" ]]; then
   exit 2
 fi
 
-if [[ ! "$PREFIX" =~ ^[A-Za-z0-9][A-Za-z0-9._-]*$ ]]; then
-  echo "PREFIX must start with a letter or number and use only letters, numbers, dots, underscores, or hyphens." >&2
+if [[ ! "$PREFIX" =~ ^[a-z0-9][a-z0-9-]*$ ]]; then
+  echo "PREFIX must start with a lowercase letter or number and use only lowercase letters, numbers, or hyphens." >&2
   exit 2
 fi
 
@@ -98,21 +99,36 @@ if [[ ! -d "$TARGET_DIRECTORY" ]]; then
 fi
 
 skills=()
-shopt -s nullglob
-for candidate in "$REPOSITORY_DIRECTORY"/*/; do
-  [[ -f "${candidate}SKILL.md" ]] || continue
-  skills+=("${candidate%/}")
-done
+while IFS= read -r -d '' candidate; do
+  skills+=("${candidate%/SKILL.md}")
+done < <(find "$REPOSITORY_DIRECTORY" -mindepth 3 -type f -name SKILL.md -print0 | LC_ALL=C sort -z)
 
 if [[ ${#skills[@]} -eq 0 ]]; then
-  echo "No skills found. Add a direct child folder containing SKILL.md to:" >&2
+  echo "No skills found. Add a <group>/<skill>/SKILL.md package to:" >&2
   echo "  $REPOSITORY_DIRECTORY" >&2
   exit 1
 fi
 
 link_name_for() {
   local skill_directory="$1"
-  printf '%s--%s' "$PREFIX" "$(basename -- "$skill_directory")"
+  local relative_path
+  relative_path="${skill_directory#"$REPOSITORY_DIRECTORY"/}"
+  printf '%s-%s' "$PREFIX" "${relative_path//\//-}"
+}
+
+installed_name_for() {
+  sed -n 's/^name: *//p' "$1/SKILL.md" | head -n 1
+}
+
+install_skill() {
+  local skill_directory="$1" link_name="$2" destination="$3" entry
+
+  mkdir -- "$destination"
+  sed "s/^name: .*/name: $link_name/" "$skill_directory/SKILL.md" > "$destination/SKILL.md"
+  for entry in "$skill_directory"/*; do
+    [[ "$(basename -- "$entry")" == "SKILL.md" ]] && continue
+    ln -s -- "$entry" "$destination/$(basename -- "$entry")"
+  done
 }
 
 status=0
@@ -127,7 +143,7 @@ check() {
     link_name="$(link_name_for "$skill_directory")"
     destination="$TARGET_DIRECTORY/$link_name"
 
-    if [[ -L "$destination" && "$(readlink "$destination")" == "$skill_directory" ]]; then
+    if [[ -d "$destination" && ! -L "$destination" && -f "$destination/SKILL.md" && "$(installed_name_for "$destination")" == "$link_name" ]]; then
       echo "installed  $link_name"
     elif [[ -e "$destination" || -L "$destination" ]]; then
       echo "conflict   $link_name -> $(readlink "$destination" 2>/dev/null || echo 'not a symlink')"
@@ -149,13 +165,13 @@ case "$MODE" in
     for skill_directory in "${skills[@]}"; do
       link_name="$(link_name_for "$skill_directory")"
       destination="$TARGET_DIRECTORY/$link_name"
-      if [[ -L "$destination" && "$(readlink "$destination")" == "$skill_directory" ]]; then
+      if [[ -d "$destination" && ! -L "$destination" && -f "$destination/SKILL.md" && "$(installed_name_for "$destination")" == "$link_name" ]]; then
         echo "installed  $link_name"
       elif [[ -e "$destination" || -L "$destination" ]]; then
         echo "Refusing to replace existing path: $destination" >&2
         status=1
       else
-        ln -s -- "$skill_directory" "$destination"
+        install_skill "$skill_directory" "$link_name" "$destination"
         echo "installed  $link_name"
       fi
     done

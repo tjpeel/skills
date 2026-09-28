@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+# Lightweight end-to-end checks for grouped, prefix-qualified skill installation.
+
+set -euo pipefail
+
+SCRIPT_DIRECTORY="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)"
+REPOSITORY_DIRECTORY="$(CDPATH= cd -- "$SCRIPT_DIRECTORY/.." && pwd -P)"
+INSTALLER="$REPOSITORY_DIRECTORY/scripts/install-codex-skills"
+PREFIX="test"
+TEST_DIRECTORY="$(mktemp -d "${TMPDIR:-/tmp}/codex-skills-test.XXXXXX")"
+TARGET_DIRECTORY="$TEST_DIRECTORY/skills"
+
+cleanup() {
+  rm -rf -- "$TEST_DIRECTORY"
+}
+trap cleanup EXIT
+
+skills=()
+while IFS= read -r -d '' manifest; do
+  skills+=("${manifest%/SKILL.md}")
+done < <(find "$REPOSITORY_DIRECTORY" -mindepth 3 -type f -name SKILL.md -print0 | LC_ALL=C sort -z)
+
+[[ ${#skills[@]} -gt 0 ]]
+
+"$INSTALLER" --prefix "$PREFIX" "$TARGET_DIRECTORY" >/dev/null
+"$INSTALLER" --prefix "$PREFIX" --check "$TARGET_DIRECTORY" >/dev/null
+
+for skill_directory in "${skills[@]}"; do
+  relative_path="${skill_directory#"$REPOSITORY_DIRECTORY"/}"
+  source_name="${relative_path//\//-}"
+  installed_name="$PREFIX-$source_name"
+  destination="$TARGET_DIRECTORY/$installed_name"
+
+  [[ "$(sed -n 's/^name: *//p' "$skill_directory/SKILL.md" | head -n 1)" == "$source_name" ]]
+  [[ -d "$destination" && ! -L "$destination" ]]
+  [[ "$(sed -n 's/^name: *//p' "$destination/SKILL.md" | head -n 1)" == "$installed_name" ]]
+
+  for resource in "$skill_directory"/*; do
+    [[ "$(basename -- "$resource")" == "SKILL.md" ]] && continue
+    [[ -L "$destination/$(basename -- "$resource")" ]]
+    [[ "$(readlink "$destination/$(basename -- "$resource")")" == "$resource" ]]
+  done
+done
+
+"$INSTALLER" --prefix "$PREFIX" "$TARGET_DIRECTORY" >/dev/null
+
+first_skill="${skills[0]}"
+first_relative="${first_skill#"$REPOSITORY_DIRECTORY"/}"
+conflict_name="$PREFIX-${first_relative//\//-}"
+conflict_target="$TEST_DIRECTORY/conflict"
+mkdir -p "$conflict_target/$conflict_name"
+printf '%s\n' '---' 'name: preserved' 'description: Existing skill.' '---' 'Do not replace this skill.' > "$conflict_target/$conflict_name/SKILL.md"
+if "$INSTALLER" --prefix "$PREFIX" "$conflict_target" >/dev/null 2>&1; then
+  echo "Expected an existing skill directory to remain a conflict." >&2
+  exit 1
+fi
+[[ "$(sed -n 's/^name: *//p' "$conflict_target/$conflict_name/SKILL.md" | head -n 1)" == "preserved" ]]
+
+echo "Grouped skill installer checks passed."

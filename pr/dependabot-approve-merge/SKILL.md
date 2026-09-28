@@ -1,5 +1,5 @@
 ---
-name: dependabot-pr-queue
+name: pr-dependabot-approve-merge
 description: Rank and process open Dependabot pull requests from a GitHub repository URL, automatically approving, merging, and monitoring green updates one at a time.
 ---
 

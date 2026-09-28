@@ -1,5 +1,5 @@
 ---
-name: review-pr
+name: pr-review
 description: Review a colleague's pull request with focused mapping and validation, then report only actionable correctness, regression, security, or test findings.
 ---
 

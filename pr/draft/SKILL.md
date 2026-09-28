@@ -1,5 +1,5 @@
 ---
-name: draft-pr-description
+name: pr-draft
 description: Draft an evidence-based pull-request title and Markdown description from a repository's implementation, tests, and optionally a Jira ticket. Use when asked to prepare PR metadata, summarise what was identified and changed, or turn a ticket and local diff into a review-ready PR brief. This skill only drafts content; use github-pr-management for pushing, creating, or editing a GitHub PR.
 ---
 

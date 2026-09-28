@@ -1,5 +1,5 @@
 ---
-name: github-pr-management
+name: pr-manage
 description: Safely inspect, push, and manage GitHub pull requests using local Git and the GitHub CLI. Use when asked to push a branch, create a draft pull request, or edit a pull request's title or description.
 ---
 
