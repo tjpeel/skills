@@ -1,0 +1,4 @@
+interface:
+  display_name: "Unslop writing"
+  short_description: "Make supplied prose more direct and specific"
+  default_prompt: "Use $writing-unslop to revise this text while preserving its voice and facts: <TEXT>."
