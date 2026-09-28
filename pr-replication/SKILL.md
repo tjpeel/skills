@@ -5,12 +5,14 @@ description: "Reproduce a GitHub pull request's intended changes in the current 
 
 # PR Replication
 
-## Agent policy
+## Delegation profiles
 
-The named roles below are custom agents registered in `~/.codex/agents/`; select
-them by their exact `name`. Never use Codex built-in `default`, `worker`, or
-`explorer` agents. If a suitable custom agent is unavailable, complete that
-responsibility in the coordinating agent rather than substituting a built-in.
+Use the least sufficient custom profile from `~/.codex/agents/`: `read_low`,
+`read_medium`, `read_high`, `read_exceptional`, or `write_medium`. A profile is
+an effort and access boundary, not a task role: include the precise task,
+inputs, constraints, and output shape in every handoff. Never use Codex
+built-in `default`, `worker`, or `explorer` agents. If a required profile is
+unavailable, perform that bounded responsibility in the coordinating agent.
 
 Replicate the *intent and observable behavior* of a source GitHub pull request
 in the repository where this skill is invoked. The source and destination may
@@ -49,17 +51,17 @@ Use this sequential team when delegation is available and the change is more
 than a trivial one. Keep one implementation owner so destination edits do not
 overlap. Pass the captured revision IDs and the mapping report to every role.
 
-- **Source-to-destination analyst — `code_mapper`:** read-only. Build the
+- **Source-to-destination analyst — `read_low`:** Build the
   behavior inventory and mapping report, identify destination integration
   points, and flag uncertainty. This role does not edit either repository.
-- **Destination implementer — `implementer`:** the sole writer. Implement the
+- **Destination implementer — `write_medium`:** the sole writer. Implement the
   mapped behavior idiomatically in the destination, add or adapt tests, and
   report each mapping item it completed. It must not modify source material or
   overwrite unrelated destination work.
-- **Equivalence reviewer — `pr_reviewer`:** independent and read-only. Compare
+- **Equivalence reviewer — `read_high`:** Compare
   the captured source PR, mapping report, and destination diff for omissions,
   behavior drift, regressions, and unsafe assumptions.
-- **Coverage and validation auditor — `validation_auditor`:** read-only. Check
+- **Coverage and validation auditor — `read_medium`:** Check
   that the source's test intent and every mapping row have credible destination
   validation, and assess test output and known unrun checks.
 

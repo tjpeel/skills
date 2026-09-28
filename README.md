@@ -48,3 +48,19 @@ The target defaults to `~/.codex/skills`, so this shorter command is equivalent:
 adds only missing links and refuses to overwrite anything. `--sync` removes
 only symlinks whose name starts with this repository's prefix, then recreates
 the links. It never removes a real file or directory.
+
+## Migrate legacy installed skills safely
+
+If this repository's skills were previously copied directly into the target,
+archive their exact declared names before creating the prefixed links:
+
+```zsh
+./scripts/install-codex-skills --prefix personal --sync \
+  --archive-name dependabot-pr-queue --archive-name draft-pr-description \
+  --archive-name github-pr-management --archive-name pr-replication \
+  --archive-name review-pr
+```
+
+Each named, non-symlink skill folder is moved beneath
+`~/.codex/skills/.archived-skill-definitions/`; unrelated skills are left in
+place. Restart Codex after installation so it reloads the skill catalogue.

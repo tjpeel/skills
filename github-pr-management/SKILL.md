@@ -5,12 +5,15 @@ description: Safely inspect, push, and manage GitHub pull requests using local G
 
 # GitHub PR management
 
-## Agent policy
+## Delegation profiles
 
-If delegation is useful, select only a custom agent registered in
-`~/.codex/agents/` by its exact `name`. Never use Codex built-in `default`,
-`worker`, or `explorer` agents. If no suitable custom agent is available,
-perform the work in the coordinating agent rather than substituting a built-in.
+If delegation materially helps, select the least sufficient custom profile from
+`~/.codex/agents/`: `read_low`, `read_medium`, `read_high`,
+`read_exceptional`, or `write_medium`. A profile is an effort and access
+boundary, not a task role: include the precise task, inputs, constraints, and
+output shape in every handoff. Never use Codex built-in `default`, `worker`, or
+`explorer` agents. If a required profile is unavailable, perform that bounded
+responsibility in the coordinating agent.
 
 Use this personal skill for GitHub work across repositories. Read the
 repository's `AGENTS.md` and `CLAUDE.md` files before acting; they may define

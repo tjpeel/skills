@@ -5,12 +5,15 @@ description: Draft an evidence-based pull-request title and Markdown description
 
 # Draft PR Description
 
-## Agent policy
+## Delegation profiles
 
-If delegation is useful, select only a custom agent registered in
-`~/.codex/agents/` by its exact `name`. Never use Codex built-in `default`,
-`worker`, or `explorer` agents. If no suitable custom agent is available,
-perform the work in the coordinating agent rather than substituting a built-in.
+If delegation materially helps, select the least sufficient custom profile from
+`~/.codex/agents/`: `read_low`, `read_medium`, `read_high`,
+`read_exceptional`, or `write_medium`. A profile is an effort and access
+boundary, not a task role: include the precise task, inputs, constraints, and
+output shape in every handoff. Never use Codex built-in `default`, `worker`, or
+`explorer` agents. If a required profile is unavailable, perform that bounded
+responsibility in the coordinating agent.
 
 Create an accurate PR brief from repository evidence. Never create, edit, or push a PR.
 

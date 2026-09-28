@@ -5,12 +5,14 @@ description: Review a colleague's pull request with focused mapping and validati
 
 # Review pull request
 
-## Agent policy
+## Delegation profiles
 
-The named roles below are custom agents registered in `~/.codex/agents/`; select
-them by their exact `name`. Never use Codex built-in `default`, `worker`, or
-`explorer` agents. If a suitable custom agent is unavailable, complete that
-responsibility in the coordinating agent rather than substituting a built-in.
+Use the least sufficient custom profile from `~/.codex/agents/`: `read_low`,
+`read_medium`, `read_high`, `read_exceptional`, or `write_medium`. A profile is
+an effort and access boundary, not a task role: include the precise task,
+inputs, constraints, and output shape in every handoff. Never use Codex
+built-in `default`, `worker`, or `explorer` agents. If a required profile is
+unavailable, perform that bounded responsibility in the coordinating agent.
 
 Use this workflow when asked to review a pull request, branch diff, or colleague's proposed change. It is a review-only workflow.
 
@@ -21,9 +23,9 @@ Establish the pull request or branch, base branch, stated intent or ticket, and 
 ## Workflow
 
 1. Inspect the diff in the context of the changed code and tests.
-2. For a non-trivial review, run `code_mapper` and `validation_auditor` in parallel: one maps behavior and ownership; the other checks stated intent and test coverage.
-3. Ask `pr_reviewer` to evaluate the diff and their evidence. It should report only correctness, regression, security, compatibility, concurrency, or missing-test risks.
-4. Use `risk_adjudicator` only when a finding concerns a plausible high-impact security, data-loss, migration, concurrency, or cross-service failure.
+2. For a non-trivial review, run `read_low` and `read_medium` in parallel: one maps behavior and ownership; the other checks stated intent and test coverage.
+3. Ask `read_high` to evaluate the diff and their evidence. It should report only correctness, regression, security, compatibility, concurrency, or missing-test risks.
+4. Use a separate `read_high` handoff only when a finding concerns a plausible high-impact security, data-loss, migration, concurrency, or cross-service failure.
 
 ## Findings format
 
@@ -31,4 +33,4 @@ For each finding, include priority, file and line, a concrete failure scenario, 
 
 ## Cost control
 
-Do not delegate a one-file obvious review. Do not invoke `risk_adjudicator` for low-impact or speculative concerns.
+Do not delegate a one-file obvious review. Do not use a second `read_high` handoff for low-impact or speculative concerns.

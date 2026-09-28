@@ -19,12 +19,14 @@ Use the GitHub CLI with elevated shell execution for GitHub operations, includin
 
 ## Delegation and ownership
 
-Keep all external writes with the coordinating agent. When delegation is available, use the custom, read-only `code_mapper` for the inventory: PR identity, dependency diff, check conclusion, and an impact ranking with uncertainty. Use the custom, read-only `pr_reviewer` only when the leading candidate's dependency impact needs code/test interpretation; it must return an evidence-backed risk assessment. Give both agents a strict read-only scope; they must not approve, merge, comment, or alter GitHub state. The coordinator ranks the queue, processes at most one green PR at a time, and monitors main before reassessing the queue. If delegation is unavailable, the coordinator performs those read-only steps itself.
+Keep all external writes with the coordinating agent. When delegation is available, use `read_low` for the inventory: PR identity, dependency diff, check conclusion, and an impact ranking with uncertainty. Use `read_high` only when the leading candidate's dependency impact needs code/test interpretation; it must return an evidence-backed risk assessment. Both profiles are read-only and must not approve, merge, comment, or alter GitHub state. The coordinator ranks the queue, processes at most one green PR at a time, and monitors main before reassessing the queue. If delegation is unavailable, the coordinator performs those read-only steps itself.
 
-Select custom agents by their exact `name` from `~/.codex/agents/`; never use
-Codex built-in `default`, `worker`, or `explorer` agents. If a suitable custom
-agent is unavailable, complete its read-only responsibility in the coordinating
-agent rather than substituting a built-in.
+Select the least sufficient custom profile from `~/.codex/agents/`: `read_low`,
+`read_medium`, `read_high`, `read_exceptional`, or `write_medium`. A profile is
+an effort and access boundary, not a task role: include the precise task,
+inputs, constraints, and output shape in every handoff. Never use Codex built-in
+`default`, `worker`, or `explorer` agents. If a required profile is unavailable,
+perform that bounded responsibility in the coordinating agent.
 
 ## Completion standard
 
