@@ -11,10 +11,10 @@ Modes:
   --check    Report this repository's installed, missing, and conflicting skills.
   --install  Add missing skills and leave every existing path untouched.
 
-Each skill is stored at <group>/<skill>/SKILL.md. PREFIX is required and must
-use lowercase letters, digits, and hyphens. The installed skill name is
-PREFIX-<group>-<skill>; for example, --prefix tjpeel installs pr/review as
-tjpeel-pr-review.
+Each skill is stored at a nested path ending in SKILL.md. PREFIX is required
+and must use lowercase letters, digits, and hyphens. Every directory in the
+path becomes part of the installed skill name; for example, --prefix tjpeel
+installs pr/review as tjpeel-pr-review.
 TARGET_DIRECTORY defaults to ~/.codex/skills for the current user. A literal
 ~ or ~/ path is resolved against the current user's home directory.
 
@@ -104,7 +104,7 @@ while IFS= read -r -d '' candidate; do
 done < <(find "$REPOSITORY_DIRECTORY" -mindepth 3 -type f -name SKILL.md -print0 | LC_ALL=C sort -z)
 
 if [[ ${#skills[@]} -eq 0 ]]; then
-  echo "No skills found. Add a <group>/<skill>/SKILL.md package to:" >&2
+  echo "No skills found. Add a nested path ending in SKILL.md under:" >&2
   echo "  $REPOSITORY_DIRECTORY" >&2
   exit 1
 fi
@@ -132,7 +132,10 @@ install_agents_metadata() {
   mkdir -- "$destination/agents"
   for metadata in "$skill_directory/agents"/*; do
     if [[ "$(basename -- "$metadata")" == "openai.yaml" ]]; then
-      sed "s/\\\$$source_name/\\\$$link_name/g" "$metadata" > "$destination/agents/openai.yaml"
+      sed \
+        -e "s/\\\$$source_name/\\\$$link_name/g" \
+        -e "s/^\\([[:space:]]*display_name:[[:space:]]*\\).*/\\1\"$link_name\"/" \
+        "$metadata" > "$destination/agents/openai.yaml"
     else
       ln -s -- "$metadata" "$destination/agents/$(basename -- "$metadata")"
     fi

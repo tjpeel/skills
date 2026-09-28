@@ -1,8 +1,9 @@
 # Personal Codex skills
 
-Skills are grouped as `<group>/<skill>/SKILL.md`. This repository is the source
-of truth; the installer creates a named manifest for each missing skill and
-links its supporting resources back to the source package.
+Skills live at a nested path ending in `SKILL.md`. This repository is the
+source of truth; the installer creates a named manifest for each missing skill
+and links its supporting resources back to the source package. Every directory
+between the repository root and a skill is included in its source name.
 
 ## Public-release gate
 
@@ -64,7 +65,8 @@ tests/test-install-codex-skills
 This temporary-directory check covers grouped-skill discovery, generated
 prefix-qualified names, linked resources, repeat installation, and conflicts.
 
-Each package includes `agents/openai.yaml`. During installation, its default
-prompt is rendered with the installed prefix-qualified skill name. Existing
-installed folders are never changed; remove and reinstall one yourself to adopt
-new metadata.
+Each package includes `agents/openai.yaml`. During installation, its
+`display_name` and default prompt are rendered with the installed
+prefix-qualified skill name; the generated `SKILL.md` name uses that same
+value. Existing installed folders are never changed; remove and reinstall one
+yourself to adopt new metadata.
