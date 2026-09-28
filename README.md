@@ -97,3 +97,6 @@ uninstaller before reinstalling to adopt new metadata.
 
 - The public [Cursor plugins repository](https://github.com/cursor/plugins) is
   a source of inspiration for selected skills in this catalogue.
+- The engineering decision-discovery and specification skills were independently
+  developed from the public [mattpocock/skills](https://github.com/mattpocock/skills)
+  design workflow.

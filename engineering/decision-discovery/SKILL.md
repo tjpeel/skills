@@ -92,3 +92,10 @@ named external fact or decision. Return a concise decision record containing:
 This handoff is an input to a later specification skill. Do not write a full
 specification, publish to an issue tracker, or create implementation tickets
 unless the user explicitly asks for that follow-on work.
+
+## References
+
+This independently written skill was developed from the design interview and
+domain-modelling workflow in the public
+[grill-with-docs skill](https://github.com/mattpocock/skills/tree/main/skills/engineering/grill-with-docs)
+from [mattpocock/skills](https://github.com/mattpocock/skills).

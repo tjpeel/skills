@@ -40,6 +40,15 @@ skill explicitly authorises a bounded local writer. If a required profile is
 unavailable, perform that bounded responsibility directly instead of using a
 Codex built-in agent as a substitute.
 
+## Public source references
+
+When a skill is independently adapted from a public source, credit that source
+in the skill's `References` section and in the catalogue README. Do not imply
+that the source endorses this catalogue or that its content was copied without
+adaptation. The engineering decision-discovery and specification skills were
+developed from the design workflow in the public
+[mattpocock/skills](https://github.com/mattpocock/skills) repository.
+
 ## Public-release gate
 
 This repository may become public. Treat the absence of sensitive information
