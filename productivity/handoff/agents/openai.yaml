@@ -1,0 +1,6 @@
+interface:
+  display_name: "Handoff"
+  short_description: "Write a focused handoff for the next session"
+  default_prompt: "Use $productivity-handoff to capture this work for a fresh agent; its next focus is <NEXT-FOCUS>."
+policy:
+  allow_implicit_invocation: false

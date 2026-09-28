@@ -106,6 +106,8 @@ approved dependency-ordered ticket set into the invoking repository, and
 
 - The public [Cursor plugins repository](https://github.com/cursor/plugins) is
   a source of inspiration for selected skills in this catalogue.
+- The productivity handoff skill was adapted from the public
+  [mattpocock/skills handoff skill](https://github.com/mattpocock/skills/blob/main/skills/productivity/handoff/SKILL.md).
 - The engineering decision-discovery, specification, to-tickets,
   implementation, and code-review skills were informed by the public
   [mattpocock/skills](https://github.com/mattpocock/skills) repository.
