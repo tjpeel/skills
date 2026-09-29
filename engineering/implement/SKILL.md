@@ -92,13 +92,12 @@ the suite pass unless the approved change explicitly supersedes its behaviour.
 
 ## Commit logical, tested increments
 
-When the user authorises commits, make each one the smallest logical increment
-that moves the approved solution forward. A commit should contain one coherent
-vertical slice, such as the regression test and the minimum production change
-that satisfies it; do not combine independent behaviours, speculative cleanup,
-or a later ticket's work. Keep related code, tests, and required documentation
-together when splitting them would leave the repository in a misleading or
-incomplete state.
+Make each commit the smallest logical increment that moves the approved
+solution forward. A commit should contain one coherent vertical slice, such as
+the regression test and the minimum production change that satisfies it; do
+not combine independent behaviours, speculative cleanup, or a later ticket's
+work. Keep related code, tests, and required documentation together when
+splitting them would leave the repository in a misleading or incomplete state.
 
 Before every commit, apply the repository's coding standards and complete its
 documented test cycle for that increment. This includes unit tests, integration
@@ -134,5 +133,6 @@ Return a concise handoff with:
 - follow-up work or risks outside the ticket boundary; and
 - code-review findings, fixes, and any review limitations.
 
-Do not commit, push, create a pull request, or update an external tracker
-unless the user explicitly asks.
+Commit the logical, fully tested increments created during implementation. Do
+not push, create a pull request, or update an external tracker unless the user
+explicitly asks.
