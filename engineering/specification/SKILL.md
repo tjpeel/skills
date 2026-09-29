@@ -83,6 +83,9 @@ layout:
 <repository-root>/.specifications/<lowercase-kebab-case-title>.md
 ```
 
+When the specification relates to a ticket with a known identifier, try to
+prefix the filename with that identifier, for example
+`<repository-root>/.specifications/ABC-123-<lowercase-kebab-case-title>.md`.
 Use the repository's existing convention in preference to this default. Never
 create an external tracker issue or alter `.gitignore`. If the target exists,
 show the collision and ask for a new title or path; do not merge, replace, or
