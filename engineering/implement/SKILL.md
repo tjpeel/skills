@@ -23,11 +23,9 @@ skill with `$`, invoke it where supported; otherwise read that source skill's
 ## Establish the implementation boundary
 
 Read the input in full and resolve its repository root before changing files.
-Record the current `HEAD` commit as the fixed point for the later independent
-review. If the working tree contains unrelated changes, identify them and ask
-the user to isolate the ticket or supply a different fixed point before
-editing. Do not claim a review covers only this ticket when its diff includes
-other work.
+If the working tree contains unrelated changes, identify them and ask the user
+to isolate the ticket or supply a different fixed point before editing. Do not
+claim a review covers only this ticket when its diff includes other work.
 
 For a ticket, confirm that it is in `.tickets/`, has status `ready-for-agent`,
 and that every listed blocker is complete. Read its source specification,
@@ -43,6 +41,35 @@ choice. Return that choice to `$engineering-decision-discovery` or
 assumption. If the ticket or specification is insufficient to identify a
 bounded change, ask the user for the missing source rather than exploring into
 neighbouring tickets.
+
+## Prepare the ticket branch
+
+Create the implementation branch before changing files. In a clean working
+tree, fetch the remote that tracks `main`, switch to local `main`, and update
+it with a fast-forward-only pull from that remote. Do not start from a stale
+local `main`, and do not merge or rebase around a failed fast-forward. If
+`main`, its remote tracking branch, or the fast-forward update is unavailable,
+stop and report the condition to the user.
+
+For a ticket, take the exact value of its `**Parent reference:**` detail and
+append a concise kebab-case description of the ticket outcome. Create the new
+branch from the updated `main` commit using this form:
+
+```text
+<parent-reference>-<short-ticket-description>
+```
+
+For example, a ticket with parent reference `MO-123` and outcome “Add read
+path” uses `MO-123-add-read-path`. Derive the description from the ticket's
+outcome title rather than its sequence number or source-specification name.
+Keep it short, lowercase, and limited to letters, numbers, and hyphens. If the
+resulting branch already exists, do not repurpose it or silently choose a
+different name; ask the user whether to continue that branch or choose a new
+description.
+
+Record the updated `main` commit as the fixed point for the later independent
+review. The coordinator owns branch creation and selection; a delegated writer
+works only after that boundary exists.
 
 One invocation owns one ticket or one independently deliverable specification
 slice. Do not implement blocked or sibling tickets, add speculative
