@@ -32,9 +32,10 @@ skill with `$`, invoke it where supported; otherwise read that source skill's
 
 Require a fixed point: a commit, branch, tag, merge-base, or the `HEAD` commit
 recorded before implementation began. Confirm that it resolves before judging
-the change. Review both committed work since that point and any staged or
-unstaged working-tree changes. Record the exact diff commands and changed-file
-list once, then give them unchanged to every delegated reviewer.
+the change. Capture `git diff <fixed-point>...HEAD` and
+`git log <fixed-point>..HEAD --oneline` once, then also capture any staged or
+unstaged working-tree changes. Record the changed-file list and give the same
+commands and evidence to every delegated reviewer.
 
 If the fixed point is unknown, ask for it. Do not infer that the current branch
 base represents one ticket when it also contains unrelated work. Stop when the
@@ -42,12 +43,36 @@ combined diff is empty. If unrelated changes share the working tree, identify
 them and ask the user to narrow the review boundary rather than attributing
 them to the ticket.
 
-Read the source ticket or specification in full. A ticket created by
-`$engineering-to-tickets` should link to its approved specification; read both.
-Read applicable repository guidance, coding standards, `CONTEXT.md` or
-`CONTEXT-MAP.md`, accepted ADRs, and the relevant existing code and tests. If
-no approved requirements source exists, run the standards-and-risk review only
-and report that requirements compliance could not be assessed.
+## Find requirements and standards sources
+
+Read the source specification in full. Specifications belong in
+`.specifications/`; do not treat a document elsewhere as an approved
+specification. Prefer a path supplied by the user. Otherwise, look for a
+matching approved file in `.specifications/`, using the branch outcome and an
+available ticket reference to narrow the match.
+
+When the branch starts with the name of a direct child directory of `.tickets/`
+followed by `-`, or equals that directory name, treat that directory as the
+candidate parent reference. Within it, try to identify the implementation
+ticket whose numbered filename and outcome title match the branch suffix. Read
+that ticket for its acceptance criteria, decisions, constraints, and link to
+the source specification. Use it only when the match is unambiguous; do not
+guess from a ticket-looking branch name or borrow guidance from a sibling
+ticket. The approved linked specification remains the requirements source;
+the ticket supplies additional implementation guidance.
+
+Read applicable repository guidance, `CONTEXT.md` or `CONTEXT-MAP.md`, accepted
+ADRs, and the relevant existing code and tests. Treat a Markdown
+`CODING_STANDARDS.md` at the repository root as the canonical coding-standards
+file. If it is absent, look for the same name under `docs/`, then for
+`CONTRIBUTING.md`, `STYLEGUIDE.md`, or `STYLE_GUIDE.md` at the root or under
+`docs/`. Read only files that actually state applicable coding standards.
+
+If no approved specification can be found, run the standards-and-risk review
+only and report that requirements compliance could not be assessed. If a
+candidate ticket exists but its source-specification link is missing or does
+not resolve beneath `.specifications/`, report that limitation rather than
+substituting another source.
 
 ## Delegation profiles
 
@@ -62,13 +87,13 @@ and required output. If the equivalent is unavailable, perform that bounded
 responsibility in the coordinating agent.
 
 - Use `read_low` as a locator. It inventories changed behaviour and tests,
-  identifies repository standards and source-artifact paths, and maps each
-  acceptance criterion to the most relevant changed code or test. It does not
-  judge the implementation.
+  identifies the specification, matching ticket, standards sources, and maps
+  each acceptance criterion to the most relevant changed code or test. It does
+  not judge the implementation.
 - Use `read_medium` only to check a bounded requirements-to-diff trace or
-  verification evidence when that cheaper audit will make the high-capability
-  review more precise. It reports missing evidence and contradictions, not
-  final findings.
+  verification and coverage evidence when that cheaper audit will make the
+  high-capability review more precise. It reports missing evidence and
+  contradictions, not final findings.
 - Use `read_high` for the review itself. It evaluates the diff in context,
   using the locator's evidence, and reports only actionable risks. For a large
   or materially risky change, run independent `read_high` reviews in parallel:
@@ -86,6 +111,22 @@ observable acceptance criterion, and applicable rollout or change constraint
 with the diff and its verification. Report missing, partial, or apparently
 incorrect behaviour; scope that the source did not ask for; and tests that do
 not actually observe the intended behaviour.
+
+Assess test coverage separately from whether tests pass. Map every new or
+changed observable behaviour to the added or updated test that exercises it at
+the agreed seam. Identify new error paths, branches, integration boundaries,
+and changed executable code with no credible regression coverage. Do not ask
+for tests of private implementation detail or unrelated pre-existing code.
+
+Where the repository provides a coverage command or report, inspect coverage
+for the diff or new code as well as any reported overall project coverage.
+Distinguish line, branch, and function coverage when the tooling reports them;
+new code can have good line coverage while important branches remain untested.
+Report the measured new-code or diff-coverage volume and the overall figure
+separately. Do not invent a percentage threshold: apply one only when the
+specification or repository standards define it. If no coverage measurement is
+available, state that limitation and assess coverage from the test-to-behaviour
+mapping instead.
 
 Then check standards and risk. Apply documented repository rules before
 general heuristics. Treat any heuristic as a judgement call, not a rule, and
@@ -116,8 +157,9 @@ For every finding, include:
 - the smallest credible fix or missing verification.
 
 End with the number of findings on each axis, the verification evidence
-reviewed, and any limitation such as an unavailable full test suite or missing
-requirements source. If nothing meets the threshold, say that no actionable
+reviewed, coverage evidence (including any new-code/diff and overall figures),
+and any limitation such as an unavailable coverage command, full test suite,
+or requirements source. If nothing meets the threshold, say that no actionable
 findings were identified; do not claim the change is defect-free.
 
 When this review follows `$engineering-implement`, return in-scope fixes to
