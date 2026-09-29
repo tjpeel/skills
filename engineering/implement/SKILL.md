@@ -90,6 +90,24 @@ the project command that gives fast feedback. Resolve failures before moving to
 the next slice. Do not weaken, delete, or skip an existing test merely to make
 the suite pass unless the approved change explicitly supersedes its behaviour.
 
+## Commit logical, tested increments
+
+When the user authorises commits, make each one the smallest logical increment
+that moves the approved solution forward. A commit should contain one coherent
+vertical slice, such as the regression test and the minimum production change
+that satisfies it; do not combine independent behaviours, speculative cleanup,
+or a later ticket's work. Keep related code, tests, and required documentation
+together when splitting them would leave the repository in a misleading or
+incomplete state.
+
+Before every commit, apply the repository's coding standards and complete its
+documented test cycle for that increment. This includes unit tests, integration
+tests, and every other required check, not only the narrow checks used while
+developing. Resolve failures before committing. If a documented check cannot
+run, do not commit it as fully verified: report the command, reason, and
+remaining risk to the user and wait for direction when the repository policy
+requires a clean cycle.
+
 ## Verify, review, and hand off
 
 Before declaring the work complete, inspect the final diff against the input.
