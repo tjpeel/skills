@@ -9,6 +9,12 @@ Make the supplied writing sound like it was written with intent. Keep its
 meaning, evidence, audience, and requested format intact. Edit the text rather
 than adding a new argument, research, or unsupported detail.
 
+## Platform compatibility
+
+This workflow is platform-agnostic. Use it in Codex, Claude Code, or another
+agent environment. If a platform does not support direct skill invocation,
+read and apply this `SKILL.md` directly; the editing standard does not change.
+
 ## First, establish the target
 
 - Treat the surrounding document, examples, and the user's stated voice as the

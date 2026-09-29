@@ -20,10 +20,12 @@ whether delegation would materially improve the result. This is a design
 check, not a blanket requirement to delegate: a small, direct workflow should
 remain in the coordinating agent.
 
-Where a skill needs delegation, document its profile choices and their bounded
-responsibilities in `SKILL.md`. Use the least sufficient reusable profile from
-`~/.codex/agents/`; profiles set effort and access, while the handoff supplies
-the task, inputs, constraints, and output shape:
+Where a skill needs delegation, document its platform-neutral bounded
+responsibilities in `SKILL.md`. Use the least sufficient reusable capability
+available in the current environment; profiles set effort and access, while the
+handoff supplies the task, inputs, constraints, and output shape. In Codex,
+use the installed profile names below from `~/.codex/agents/`. In Claude Code,
+use an equivalently bounded configured subagent only when one is available:
 
 - `read_low` for inventories, repository mapping, and quick evidence checks;
 - `read_medium` for bounded analysis, drafting, and evidence or acceptance
@@ -34,11 +36,11 @@ the task, inputs, constraints, and output shape:
   higher cost is justified; and
 - `write_medium` for one scoped local artifact change, with a single writer.
 
-Do not use a profile merely to restate the coordinator's work. Keep user
-questions, decisions, and external writes with the coordinator unless the
-skill explicitly authorises a bounded local writer. If a required profile is
-unavailable, perform that bounded responsibility directly instead of using a
-Codex built-in agent as a substitute.
+Do not use a profile or subagent merely to restate the coordinator's work. Keep
+user questions, decisions, and external writes with the coordinator unless the
+skill explicitly authorises a bounded local writer. If an equivalent capability
+is unavailable, perform that bounded responsibility directly instead of using a
+broader built-in role as a substitute.
 
 ## Catalogue boundaries
 

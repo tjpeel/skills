@@ -5,26 +5,38 @@ description: Safely inspect, push, and manage GitHub pull requests using local G
 
 # GitHub PR management
 
+## Platform compatibility
+
+This workflow is platform-agnostic. Use it in Codex, Claude Code, or another
+agent environment with local Git and GitHub CLI access. Follow all applicable
+repository instructions: this normally includes `AGENTS.md` in Codex and
+`CLAUDE.md` in Claude Code. Use each platform's normal approval mechanism for
+external writes; the explicit user-authorisation requirements below still
+apply.
+
 ## Delegation profiles
 
-If delegation materially helps, select the least sufficient custom profile from
-`~/.codex/agents/`: `read_low`, `read_medium`, `read_high`,
-`read_exceptional`, or `write_medium`. A profile is an effort and access
-boundary, not a task role: include the precise task, inputs, constraints, and
-output shape in every handoff. Never use Codex built-in `default`, `worker`, or
-`explorer` agents. If a required profile is unavailable, perform that bounded
-responsibility in the coordinating agent.
+If delegation materially helps, select the least sufficient delegated
+capability available in the current platform. In Codex, use the installed
+custom profiles `read_low`, `read_medium`, `read_high`, `read_exceptional`, or
+`write_medium`; do not substitute a Codex built-in role. In Claude Code, use an
+equivalently bounded subagent only when subagents are available. A profile or
+subagent is an effort and access boundary, not a task role: include the precise
+task, inputs, constraints, and output shape in every handoff. If the equivalent
+is unavailable, perform that bounded responsibility in the coordinating agent.
 
-Use this personal skill for GitHub work across repositories. Read the
-repository's `AGENTS.md` and `CLAUDE.md` files before acting; they may define
-branch, PR, or test requirements.
+Use this personal skill for GitHub work across repositories. Read applicable
+`AGENTS.md` and `CLAUDE.md` files before acting; they may define branch, PR, or
+test requirements. Follow the precedence rules of the current platform when
+the files conflict.
 
 ## Repository test gate
 
-Treat applicable repository `AGENTS.md` guidance as the source of truth for
-testing requirements. When no `AGENTS.md` exists, use applicable `CLAUDE.md`
-and repository documentation. Run every required validation before committing,
-pushing, creating a PR, or editing PR metadata.
+Treat applicable repository guidance as the source of truth for testing
+requirements: `AGENTS.md` in Codex, `CLAUDE.md` in Claude Code, and any
+repository documentation recognised by the current platform. Run every
+required validation before committing, pushing, creating a PR, or editing PR
+metadata.
 
 If a required test cannot run because of a missing dependency, occupied port,
 credentials, unavailable environment, or any other blocker, stop the

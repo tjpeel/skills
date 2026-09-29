@@ -12,9 +12,17 @@ Create that directory if it does not exist. If the repository cannot be
 resolved, the directory cannot be created, or the document cannot be written
 there, save it in the operating system's temporary directory instead.
 
-Use a new filename such as `codex-handoff-YYYYMMDD-HHMMSS.md`. The skill owns
+Use a new filename such as `agent-handoff-YYYYMMDD-HHMMSS.md`. The skill owns
 only that file: do not overwrite an existing handoff document or modify other
 workspace files. Report the path that was actually written.
+
+## Platform compatibility
+
+This workflow is platform-agnostic. Use it in Codex, Claude Code, or another
+agent environment with equivalent filesystem access. Follow all applicable
+repository instructions: this normally includes `AGENTS.md` in Codex and
+`CLAUDE.md` in Claude Code. If the platform cannot write a file, return the
+handoff as Markdown and state that it was not saved.
 
 Capture the current objective, completed work, decisions and constraints,
 remaining work, known risks or blockers, and the most useful next actions.

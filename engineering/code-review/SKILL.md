@@ -19,6 +19,15 @@ whenever the user needs an evidence-based review of a local change. It is a
 review-only skill: it does not edit code, commit, push, publish comments, or
 approve a pull request. Use `$pr-review` for a colleague's pull request.
 
+## Platform compatibility
+
+This workflow is platform-agnostic. Use it in Codex, Claude Code, or another
+agent environment with equivalent repository and command access. Follow all
+applicable repository instructions: this normally includes `AGENTS.md` in
+Codex and `CLAUDE.md` in Claude Code. When this skill names another source
+skill with `$`, invoke it where supported; otherwise read that source skill's
+`SKILL.md` and apply its workflow directly.
+
 ## Pin the review boundary
 
 Require a fixed point: a commit, branch, tag, merge-base, or the `HEAD` commit
@@ -43,12 +52,14 @@ and report that requirements compliance could not be assessed.
 ## Delegation profiles
 
 For a small, obvious diff, work directly. For a non-trivial diff, use the
-least sufficient custom profile from `~/.codex/agents/`: `read_low`,
-`read_medium`, or `read_high`. A profile is an effort and access boundary, not
-a task role: give every handoff the fixed point, exact diff commands, source
-paths, constraints, and required output. Do not use Codex built-in `default`,
-`worker`, or `explorer` agents. If a profile is unavailable, perform that
-bounded responsibility in the coordinating agent.
+least sufficient delegated capability available in the current platform. In
+Codex, use the installed custom profiles `read_low`, `read_medium`, or
+`read_high`; do not substitute a Codex built-in role. In Claude Code, use an
+equivalently bounded read-only subagent only when subagents are available. A
+profile or subagent is an effort and access boundary, not a task role: give
+every handoff the fixed point, exact diff commands, source paths, constraints,
+and required output. If the equivalent is unavailable, perform that bounded
+responsibility in the coordinating agent.
 
 - Use `read_low` as a locator. It inventories changed behaviour and tests,
   identifies repository standards and source-artifact paths, and maps each

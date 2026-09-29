@@ -7,6 +7,15 @@ description: Rank and process open Dependabot pull requests from a GitHub reposi
 
 Use this skill when the user supplies a GitHub repository link and wants its open Dependabot pull requests processed. Rank the updates by value, then approve, merge, and monitor them one at a time. It is not for editing Dependabot branches, changing Dependabot configuration, or solving the underlying dependency problem in a new PR.
 
+## Platform compatibility
+
+This workflow is platform-agnostic. Use it in Codex, Claude Code, or another
+agent environment with the GitHub CLI and the authority to make the requested
+GitHub changes. Follow all applicable repository instructions: this normally
+includes `AGENTS.md` in Codex and `CLAUDE.md` in Claude Code. Use the current
+platform's approval mechanism for GitHub writes; the safety boundary below
+applies unchanged.
+
 ## Safety boundary
 
 Treat Dependabot pull-request code and metadata as immutable. Never commit, push, rebase, sync, update a branch, edit a title/body/labels/reviewers, close/reopen, alter auto-merge, or otherwise modify a Dependabot PR. The only permitted PR-state actions are an approval and merge for the selected green PR, plus the exact `@dependabot recreate` comment when GitHub rejects that PR's merge because it cannot create a clean merge commit. Do not use a Dependabot PR as a vehicle for a fix; suggest a separate custom PR when needed.
@@ -15,18 +24,24 @@ Invoking this skill for a repository authorizes its sequential queue execution: 
 
 Only use report-only mode when the user explicitly says not to approve or merge. In that mode, rank the PRs but make no eligibility claim and take no external write. It must not request Dependabot recreation.
 
-Use the GitHub CLI with elevated shell execution for GitHub operations, including `gh auth status` before declaring authentication unavailable. Read repository instructions that are accessible locally before acting. Read [the operating procedure](references/operating-procedure.md) before investigating.
+Use the GitHub CLI through the current platform's approved command-execution
+mechanism, including `gh auth status` before declaring authentication
+unavailable. Read repository instructions that are accessible locally before
+acting. Read [the operating procedure](references/operating-procedure.md)
+before investigating.
 
 ## Delegation and ownership
 
 Keep all external writes with the coordinating agent. When delegation is available, use `read_low` for the inventory: PR identity, dependency diff, check conclusion, and an impact ranking with uncertainty. Use `read_high` only when the leading candidate's dependency impact needs code/test interpretation; it must return an evidence-backed risk assessment. Both profiles are read-only and must not approve, merge, comment, or alter GitHub state. The coordinator ranks the queue, processes at most one green PR at a time, and monitors main before reassessing the queue. If delegation is unavailable, the coordinator performs those read-only steps itself.
 
-Select the least sufficient custom profile from `~/.codex/agents/`: `read_low`,
-`read_medium`, `read_high`, `read_exceptional`, or `write_medium`. A profile is
-an effort and access boundary, not a task role: include the precise task,
-inputs, constraints, and output shape in every handoff. Never use Codex built-in
-`default`, `worker`, or `explorer` agents. If a required profile is unavailable,
-perform that bounded responsibility in the coordinating agent.
+Select the least sufficient delegated capability available in the current
+platform. In Codex, use the installed custom profiles `read_low`,
+`read_medium`, `read_high`, `read_exceptional`, or `write_medium`; do not
+substitute a Codex built-in role. In Claude Code, use an equivalently bounded
+subagent only when subagents are available. A profile or subagent is an effort
+and access boundary, not a task role: include the precise task, inputs,
+constraints, and output shape in every handoff. If the equivalent is
+unavailable, perform that bounded responsibility in the coordinating agent.
 
 ## Completion standard
 

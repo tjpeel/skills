@@ -56,6 +56,7 @@ for skill_directory in "${skills[@]}"; do
   destination="$TARGET_DIRECTORY/$installed_name"
 
   [[ "$(sed -n 's/^name: *//p' "$skill_directory/SKILL.md" | head -n 1)" == "$source_name" ]]
+  rg -q '^## Platform compatibility$' "$skill_directory/SKILL.md"
   [[ -d "$destination" && ! -L "$destination" ]]
   [[ "$(sed -n 's/^name: *//p' "$destination/SKILL.md" | head -n 1)" == "$installed_name" ]]
   [[ -f "$skill_directory/agents/openai.yaml" ]]

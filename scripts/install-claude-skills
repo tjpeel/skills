@@ -1,0 +1,150 @@
+#!/usr/bin/env bash
+# Install source skill packages in a Claude Code skill root.
+
+set -euo pipefail
+
+usage() {
+  cat <<'EOF'
+Usage: install-claude-skills [--check | --install] [TARGET_DIRECTORY]
+
+Modes:
+  --check    Report this repository's installed, missing, and conflicting skills.
+  --install  Add missing skills and leave every existing path untouched.
+
+Each source skill is stored at a nested path ending in SKILL.md. Packages are
+installed under their source frontmatter names. TARGET_DIRECTORY defaults to
+~/.claude/skills for the current user. A literal ~ or ~/ path is resolved
+against the current user's home directory.
+
+EOF
+}
+
+MODE="--install"
+TARGET_DIRECTORY="$HOME/.claude/skills"
+target_given=false
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --check|--install)
+      MODE="$1"
+      shift
+      ;;
+    --help|-h)
+      usage
+      exit 0
+      ;;
+    --)
+      shift
+      break
+      ;;
+    --*)
+      echo "Unknown option: $1" >&2
+      usage >&2
+      exit 2
+      ;;
+    *)
+      if [[ "$target_given" == true ]]; then
+        echo "Only one target directory may be supplied." >&2
+        usage >&2
+        exit 2
+      fi
+      TARGET_DIRECTORY="$1"
+      target_given=true
+      shift
+      ;;
+  esac
+done
+
+case "$TARGET_DIRECTORY" in
+  '~') TARGET_DIRECTORY="$HOME" ;;
+  '~/'*) TARGET_DIRECTORY="$HOME/${TARGET_DIRECTORY:2}" ;;
+esac
+
+if [[ "$TARGET_DIRECTORY" != /* ]]; then
+  echo "TARGET_DIRECTORY must be absolute or begin with ~/: $TARGET_DIRECTORY" >&2
+  exit 2
+fi
+
+SCRIPT_DIRECTORY="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)"
+REPOSITORY_DIRECTORY="$(CDPATH= cd -- "$SCRIPT_DIRECTORY/.." && pwd -P)"
+
+skills=()
+while IFS= read -r -d '' candidate; do
+  skills+=("${candidate%/SKILL.md}")
+done < <(find "$REPOSITORY_DIRECTORY" -mindepth 3 -type f -name SKILL.md -print0 | LC_ALL=C sort -z)
+
+if [[ ${#skills[@]} -eq 0 ]]; then
+  echo "No skills found. Add a nested path ending in SKILL.md under:" >&2
+  echo "  $REPOSITORY_DIRECTORY" >&2
+  exit 1
+fi
+
+source_name_for() {
+  sed -n 's/^name: *//p' "$1/SKILL.md" | head -n 1
+}
+
+is_owned_skill() {
+  local destination="$1" source_name="$2"
+
+  [[ -d "$destination" && -f "$destination/SKILL.md" && -f "$destination/.personal-skills-source" ]] || return 1
+  [[ "$(source_name_for "$destination")" == "$source_name" && "$(<"$destination/.personal-skills-source")" == "$source_name" ]]
+}
+
+source_names=()
+for skill_directory in "${skills[@]}"; do
+  source_name="$(source_name_for "$skill_directory")"
+  if [[ -z "$source_name" ]]; then
+    echo "Missing skill name: $skill_directory/SKILL.md" >&2
+    exit 1
+  fi
+  if [[ -n "${source_names[0]+set}" ]]; then
+    for known_source_name in "${source_names[@]}"; do
+      if [[ "$known_source_name" == "$source_name" ]]; then
+        echo "Duplicate skill name: $source_name" >&2
+        exit 1
+      fi
+    done
+  fi
+  source_names+=("$source_name")
+done
+
+if [[ ! -d "$TARGET_DIRECTORY" ]]; then
+  if [[ "$MODE" == "--check" ]]; then
+    echo "Target directory does not exist: $TARGET_DIRECTORY" >&2
+    exit 1
+  fi
+  mkdir -p -- "$TARGET_DIRECTORY"
+fi
+
+install_skill() {
+  local skill_directory="$1" source_name="$2" destination="$3" entry
+
+  mkdir -- "$destination"
+  for entry in "$skill_directory"/*; do
+    [[ "$(basename -- "$entry")" == "agents" ]] && continue
+    cp -R -- "$entry" "$destination/"
+  done
+  printf '%s\n' "$source_name" > "$destination/.personal-skills-source"
+}
+
+status=0
+for index in "${!skills[@]}"; do
+  skill_directory="${skills[$index]}"
+  source_name="${source_names[$index]}"
+  destination="$TARGET_DIRECTORY/$source_name"
+
+  if is_owned_skill "$destination" "$source_name"; then
+    echo "installed  $source_name"
+  elif [[ -e "$destination" || -L "$destination" ]]; then
+    echo "conflict   $source_name -> $destination" >&2
+    status=1
+  elif [[ "$MODE" == "--check" ]]; then
+    echo "missing    $source_name"
+    status=1
+  else
+    install_skill "$skill_directory" "$source_name" "$destination"
+    echo "installed  $source_name"
+  fi
+done
+
+exit "$status"

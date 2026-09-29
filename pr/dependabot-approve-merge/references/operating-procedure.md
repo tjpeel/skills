@@ -3,7 +3,9 @@
 ## 1. Preflight and queue inventory
 
 1. Accept a full GitHub repository URL or `OWNER/REPO`. Resolve it with `gh repo view`; report an invalid URL or inaccessible repository rather than guessing.
-2. Run elevated `gh auth status` for the target host. Stop if the account cannot read the repository or approve and merge when queue execution is requested.
+2. Run `gh auth status` for the target host through the current platform's
+   approved command-execution mechanism. Stop if the account cannot read the
+   repository or approve and merge when queue execution is requested.
 3. Read accessible repository instructions.
 4. Treat skill invocation as **queue execution** unless the user explicitly asks for a report without approvals or merges.
 5. List the open PRs and retain Dependabot-authored items. For each, collect only what is needed to rank and process it:

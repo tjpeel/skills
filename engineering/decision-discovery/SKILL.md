@@ -9,15 +9,26 @@ Turn an ambiguous prospective change into a shared set of explicit decisions.
 The user owns product and preference decisions. Establish facts from the
 repository, available tools, and supplied material before asking about them.
 
+## Platform compatibility
+
+This workflow is platform-agnostic. Use it in Codex, Claude Code, or another
+agent environment with equivalent repository and research access. Follow all
+applicable repository instructions: this normally includes `AGENTS.md` in
+Codex and `CLAUDE.md` in Claude Code. When this skill names another source
+skill with `$`, invoke it where supported; otherwise read that source skill's
+`SKILL.md` and apply its workflow directly.
+
 ## Delegation profiles
 
 For a small decision with a clear local boundary, work directly. When the
 evidence spans enough code, history, or independent concerns for delegation to
-help, use the least sufficient custom profile from `~/.codex/agents/`:
-`read_low`, `read_medium`, `read_high`, or `write_medium`. A profile is an
-effort and access boundary, not a task role: give every handoff its precise
-task, inputs, constraints, and required output. Do not use Codex built-in
-`default`, `worker`, or `explorer` agents. If a profile is unavailable, perform
+help, use the least sufficient delegated capability available in the current
+platform. In Codex, use the installed custom profiles `read_low`,
+`read_medium`, `read_high`, or `write_medium`; do not substitute a Codex
+built-in role. In Claude Code, use an equivalently bounded subagent only when
+subagents are available. A profile or subagent is an effort and access
+boundary, not a task role: give every handoff its precise task, inputs,
+constraints, and required output. If the equivalent is unavailable, perform
 that bounded responsibility in the coordinating agent.
 
 - Use `read_low` to map the affected code, existing terminology, accepted

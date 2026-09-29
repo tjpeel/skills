@@ -5,15 +5,25 @@ description: Draft an evidence-based pull-request title and Markdown description
 
 # Draft PR Description
 
+## Platform compatibility
+
+This workflow is platform-agnostic. Use it in Codex, Claude Code, or another
+agent environment with repository and GitHub read access. Follow all applicable
+repository instructions: this normally includes `AGENTS.md` in Codex and
+`CLAUDE.md` in Claude Code. When a source skill is named with `$`, invoke it
+where supported; otherwise read that source skill's `SKILL.md` and apply its
+workflow directly.
+
 ## Delegation profiles
 
-If delegation materially helps, select the least sufficient custom profile from
-`~/.codex/agents/`: `read_low`, `read_medium`, `read_high`,
-`read_exceptional`, or `write_medium`. A profile is an effort and access
-boundary, not a task role: include the precise task, inputs, constraints, and
-output shape in every handoff. Never use Codex built-in `default`, `worker`, or
-`explorer` agents. If a required profile is unavailable, perform that bounded
-responsibility in the coordinating agent.
+If delegation materially helps, select the least sufficient delegated
+capability available in the current platform. In Codex, use the installed
+custom profiles `read_low`, `read_medium`, `read_high`, `read_exceptional`, or
+`write_medium`; do not substitute a Codex built-in role. In Claude Code, use an
+equivalently bounded subagent only when subagents are available. A profile or
+subagent is an effort and access boundary, not a task role: include the precise
+task, inputs, constraints, and output shape in every handoff. If the equivalent
+is unavailable, perform that bounded responsibility in the coordinating agent.
 
 Create an accurate PR brief from repository evidence. Never create, edit, or push a PR.
 

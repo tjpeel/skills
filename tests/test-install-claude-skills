@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+# Lightweight end-to-end checks for source-name Claude Code skill installation.
+
+set -euo pipefail
+
+SCRIPT_DIRECTORY="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)"
+REPOSITORY_DIRECTORY="$(CDPATH= cd -- "$SCRIPT_DIRECTORY/.." && pwd -P)"
+INSTALLER="$REPOSITORY_DIRECTORY/scripts/install-claude-skills"
+UNINSTALLER="$REPOSITORY_DIRECTORY/scripts/uninstall-claude-skills"
+TEST_DIRECTORY="$(mktemp -d "${TMPDIR:-/tmp}/claude-skills-test.XXXXXX")"
+TARGET_DIRECTORY="$TEST_DIRECTORY/skills"
+
+cleanup() {
+  rm -rf -- "$TEST_DIRECTORY"
+}
+trap cleanup EXIT
+
+skills=()
+while IFS= read -r -d '' manifest; do
+  skills+=("${manifest%/SKILL.md}")
+done < <(find "$REPOSITORY_DIRECTORY" -mindepth 3 -type f -name SKILL.md -print0 | LC_ALL=C sort -z)
+
+[[ ${#skills[@]} -gt 0 ]]
+
+"$INSTALLER" "$TARGET_DIRECTORY" >/dev/null
+"$INSTALLER" --check "$TARGET_DIRECTORY" >/dev/null
+
+for skill_directory in "${skills[@]}"; do
+  source_name="$(sed -n 's/^name: *//p' "$skill_directory/SKILL.md" | head -n 1)"
+  destination="$TARGET_DIRECTORY/$source_name"
+
+  [[ -d "$destination" && ! -L "$destination" ]]
+  [[ -f "$destination/SKILL.md" ]]
+  [[ "$(sed -n 's/^name: *//p' "$destination/SKILL.md" | head -n 1)" == "$source_name" ]]
+  [[ "$(<"$destination/.personal-skills-source")" == "$source_name" ]]
+  [[ ! -e "$destination/agents/openai.yaml" ]]
+  grep -q '^## Platform compatibility$' "$destination/SKILL.md"
+
+  for resource in "$skill_directory"/*; do
+    [[ "$(basename -- "$resource")" == "agents" ]] && continue
+    [[ -e "$destination/$(basename -- "$resource")" ]]
+  done
+done
+
+foreign_target="$TARGET_DIRECTORY/foreign-skill"
+mkdir -p "$foreign_target"
+"$UNINSTALLER" --check "$TARGET_DIRECTORY" >/dev/null
+"$UNINSTALLER" "$TARGET_DIRECTORY" >/dev/null
+
+for skill_directory in "${skills[@]}"; do
+  source_name="$(sed -n 's/^name: *//p' "$skill_directory/SKILL.md" | head -n 1)"
+  [[ ! -e "$TARGET_DIRECTORY/$source_name" && ! -L "$TARGET_DIRECTORY/$source_name" ]]
+done
+[[ -d "$foreign_target" ]]
+
+foreign_name="$(sed -n 's/^name: *//p' "${skills[0]}/SKILL.md" | head -n 1)"
+mkdir -p "$TARGET_DIRECTORY/$foreign_name"
+printf '%s\n' '---' "name: $foreign_name" 'description: Foreign skill.' '---' 'Keep this skill.' > "$TARGET_DIRECTORY/$foreign_name/SKILL.md"
+if "$UNINSTALLER" "$TARGET_DIRECTORY" >/dev/null 2>&1; then
+  echo "Expected an unowned skill directory to remain a conflict." >&2
+  exit 1
+fi
+[[ -f "$TARGET_DIRECTORY/$foreign_name/SKILL.md" ]]
+
+first_skill="${skills[0]}"
+first_name="$(sed -n 's/^name: *//p' "$first_skill/SKILL.md" | head -n 1)"
+conflict_target="$TEST_DIRECTORY/conflict"
+mkdir -p "$conflict_target/$first_name"
+printf '%s\n' '---' 'name: preserved' 'description: Existing skill.' '---' 'Do not replace this skill.' > "$conflict_target/$first_name/SKILL.md"
+if "$INSTALLER" "$conflict_target" >/dev/null 2>&1; then
+  echo "Expected an existing skill directory to remain a conflict." >&2
+  exit 1
+fi
+[[ "$(sed -n 's/^name: *//p' "$conflict_target/$first_name/SKILL.md" | head -n 1)" == "preserved" ]]
+
+echo "Claude Code skill install and uninstall checks passed."

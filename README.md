@@ -1,15 +1,29 @@
-# Personal Codex skills
+# Personal agent skills
 
 Skills live at a nested path ending in `SKILL.md`. This repository is the
-source of truth; the installer creates a named manifest for each missing skill
-and links its supporting resources back to the source package. Every directory
-between the repository root and a skill is included in its source name.
+source of truth. Every directory between the repository root and a skill is
+included in its source name.
+
+## Platform support
+
+The source packages use the open `SKILL.md` format and keep their workflow
+instructions platform-neutral. They work in Codex and Claude Code when the
+environment provides the repository, command, and external-service access a
+workflow requires. Each skill states its own fallback when a capability, such
+as subagents or file writes, is unavailable.
+
+Cross-skill references use source names. In Codex, the installer rewrites them
+to the chosen prefixed installed names. In Claude Code, they remain source
+names: invoke the referenced skill when it is available, or read its
+`SKILL.md` directly.
 
 ## Execution profiles
 
-These skills use the reusable Codex and Claude execution profiles in
-[tjpeel/agents](https://github.com/tjpeel/agents). Install those profiles
-separately when a skill delegates work to one of them.
+Where installed, Codex can use the reusable profiles in
+[tjpeel/agents](https://github.com/tjpeel/agents). Claude Code can use a
+subagent with the same stated boundary when its configuration supports
+subagents. Every skill permits the coordinating agent to perform that bounded
+work directly when no equivalent delegation capability is available.
 
 ## Public-release gate
 
@@ -27,7 +41,7 @@ scripts/check-public-content
 The check detects common secret formats; it does not replace a deliberate
 human review of every changed skill, supporting file, and example.
 
-## Install missing skills
+## Install in Codex
 
 ```zsh
 ./scripts/install-codex-skills --prefix tjpeel ~/.codex/skills
@@ -49,7 +63,7 @@ command is equivalent:
 ./scripts/install-codex-skills --prefix tjpeel
 ```
 
-## Check current state
+### Check current state
 
 ```zsh
 ./scripts/install-codex-skills --prefix tjpeel --check ~/.codex/skills
@@ -62,7 +76,7 @@ definitions yourself before running it again. In particular, it leaves old
 `personal--*` installs in place. Restart Codex after installation so it reloads
 the skill catalogue.
 
-## Refresh installed skills
+### Refresh installed skills
 
 Run the separate uninstaller followed by the installer whenever an existing
 package changes:
@@ -77,7 +91,7 @@ specified prefix; it does not glob-match the shared skill directory, so it
 cannot remove another catalogue whose prefix begins the same way. Run it before
 renaming or removing a source package, then install the revised catalogue.
 
-## Test the installer
+### Test the installer
 
 ```zsh
 tests/test-install-codex-skills
@@ -92,6 +106,36 @@ Each package includes `agents/openai.yaml`. During installation, its
 prefix-qualified skill name; the generated `SKILL.md` name uses that same
 value. The installer never changes existing installed folders; use the explicit
 uninstaller before reinstalling to adopt new metadata.
+
+## Install in Claude Code
+
+```zsh
+./scripts/install-claude-skills
+```
+
+This installs each source package as a separate directory beneath
+`~/.claude/skills`. It copies `SKILL.md` and its supporting resources, but
+omits the Codex-only `agents/openai.yaml` metadata. Pass an absolute target
+directory to install project-scoped skills, for example:
+
+```zsh
+./scripts/install-claude-skills "$PWD/.claude/skills"
+```
+
+Use `--check` to inspect the target. The installer adds only missing skill
+directories; it will not replace existing ones. Run the separate uninstaller
+before reinstalling a revised package:
+
+```zsh
+./scripts/uninstall-claude-skills
+./scripts/install-claude-skills
+```
+
+Test this installer with:
+
+```zsh
+tests/test-install-claude-skills
+```
 
 ## Engineering workflow
 

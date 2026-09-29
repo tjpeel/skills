@@ -11,6 +11,15 @@ clearly bounded approved specification is also sufficient when no ticket set
 is needed. This is the build step after decision discovery, specification, and
 ticket decomposition.
 
+## Platform compatibility
+
+This workflow is platform-agnostic. Use it in Codex, Claude Code, or another
+agent environment with equivalent repository and command access. Follow all
+applicable repository instructions: this normally includes `AGENTS.md` in
+Codex and `CLAUDE.md` in Claude Code. When this skill names another source
+skill with `$`, invoke it where supported; otherwise read that source skill's
+`SKILL.md` and apply its workflow directly.
+
 ## Establish the implementation boundary
 
 Read the input in full and resolve its repository root before changing files.
@@ -43,12 +52,14 @@ small follow-up recommendation when you find work outside that boundary.
 ## Delegation profiles
 
 For a small, familiar change, work directly. When independent evidence would
-materially reduce risk, use the least sufficient custom profile from
-`~/.codex/agents/`: `read_low`, `read_medium`, `read_high`, or `write_medium`.
-A profile is an effort and access boundary, not a task role: give every
-handoff its precise task, input paths, constraints, and required output. Do
-not use Codex built-in `default`, `worker`, or `explorer` agents. If a profile
-is unavailable, perform that bounded responsibility in the coordinating agent.
+materially reduce risk, use the least sufficient delegated capability available
+in the current platform. In Codex, use the installed custom profiles
+`read_low`, `read_medium`, `read_high`, or `write_medium`; do not substitute a
+Codex built-in role. In Claude Code, use an equivalently bounded subagent only
+when subagents are available. A profile or subagent is an effort and access
+boundary, not a task role: give every handoff its precise task, input paths,
+constraints, and required output. If the equivalent is unavailable, perform
+that bounded responsibility in the coordinating agent.
 
 - Use `read_low` to map the affected behaviour, module boundary, conventions,
   existing tests, and the commands that exercise the agreed test seam.
