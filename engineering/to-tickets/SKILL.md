@@ -27,12 +27,13 @@ Work only in the Git repository from which this skill was invoked. Resolve its
 root before creating files; if there is no Git root, stop and ask the user for
 a repository. Do not create, update, or publish tickets in an external tracker.
 
-Ask for a reference number before publishing if the user has not supplied one.
-It must be a non-empty decimal string; preserve leading zeroes. Use it as the
-parent folder in this exact layout:
+Ask for a ticket reference before publishing if the user has not supplied one.
+It must be a non-empty, single directory name: it cannot be `.` or `..`, and
+cannot contain a path separator. Preserve it exactly, so references such as
+`MO-123` are valid. Use it as the parent folder in this exact layout:
 
 ```text
-<repository-root>/.tickets/<reference-number>/
+<repository-root>/.tickets/<ticket-reference>/
   01-<short-kebab-case-title>.md
   02-<short-kebab-case-title>.md
 ```
@@ -40,7 +41,7 @@ parent folder in this exact layout:
 Number tickets in dependency order, with at least two digits. A ticket may name
 only a lower-numbered ticket as a blocker. Never alter `.gitignore`. If the
 reference directory or a target file already exists, show the collision and ask
-the user for a new reference number. Never merge, replace, overwrite, or
+the user for a new ticket reference. Never merge, replace, overwrite, or
 partially reuse an existing ticket set.
 
 ## Delegation profiles
@@ -64,7 +65,7 @@ is unavailable, perform that bounded responsibility in the coordinating agent.
   concurrency, compatibility, or cross-service risk, including whether risk
   sequencing creates a necessary blocker.
 - Use `write_medium` as the sole local writer after explicit approval. Its
-  scope is the approved files beneath `.tickets/<reference-number>/`; it must
+  scope is the approved files beneath `.tickets/<ticket-reference>/`; it must
   not rewrite the agreed decomposition or overwrite existing files.
 
 The coordinator owns reference validation, user questions, the decomposition,
@@ -112,7 +113,7 @@ clearest record of a settled state machine, reducer, schema, or type decision.
 
 ## Approve, then write
 
-Validate the reference number before presenting the final draft. Before writing
+Validate the ticket reference before presenting the final draft. Before writing
 files, show the source-specification path, target directory, exact filenames,
 and the coverage audit. For each ticket, give its number, title, direct
 blockers, end-to-end behaviour, and acceptance criteria. Ask the user to
@@ -126,7 +127,7 @@ After approval, write one file for each ticket using this form:
 ```md
 # 01: <Outcome-oriented title>
 
-**Parent reference:** <reference-number>
+**Parent reference:** <ticket-reference>
 **Source specification:** [<title>](<relative-path-to-approved-specification>)
 **Status:** ready-for-agent
 **Blocked by:** None (can start immediately)
