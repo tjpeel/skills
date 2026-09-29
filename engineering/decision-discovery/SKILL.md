@@ -47,6 +47,17 @@ The coordinator owns the design conversation, user questions, recommendations,
 and external actions. Read-only handoffs do not contact the user or create
 records.
 
+Treat a user's response as both an answer and, when it clearly calls for an
+observable investigation, a possible bounded research request. For example,
+"explore service X" authorises the coordinator to delegate a focused map of
+that service and return the findings to the conversation; it need not repeat a
+separate delegation request. Select the profile from the investigation's
+scope and risk, not from the wording alone: use `read_low` for a bounded code
+or terminology map, `read_medium` for alternatives and trade-offs, and
+`read_high` only for the material risks listed above. Do not infer a handoff
+from a preference or a vague answer. The coordinator still defines the
+handoff's target, questions, constraints, and expected evidence.
+
 ## Establish the design boundary
 
 Read applicable repository guidance, existing `CONTEXT.md` or
