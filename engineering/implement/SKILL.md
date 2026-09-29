@@ -51,6 +51,10 @@ local `main`, and do not merge or rebase around a failed fast-forward. If
 `main`, its remote tracking branch, or the fast-forward update is unavailable,
 stop and report the condition to the user.
 
+Never commit directly to `main`. If the current branch is `main`, create or
+switch to the intended ticket branch before changing or committing files. All
+implementation commits belong on that ticket branch.
+
 For a ticket, take the exact value of its `**Parent reference:**` detail and
 append a concise kebab-case description of the ticket outcome. Create the new
 branch from the updated `main` commit using this form:
@@ -110,23 +114,36 @@ only. Do not run parallel writers in one working tree.
 
 Use the test seams recorded by the specification or ticket. If the input does
 not name one, identify the smallest existing public boundary that observes the
-required behaviour and ask the user to confirm it before adding a test. Do not
-test private details, mock internal collaborators, or assert values computed
-by the same logic under test. Mock only genuine system boundaries when the
+required changed behaviour, using the repository's existing test conventions.
+Add or update tests only for behaviour introduced or changed by the ticket; do
+not backfill coverage for unrelated, pre-existing functionality. Do not test
+private details, mock internal collaborators, or assert values computed by the
+same logic under test. Mock only genuine system boundaries when the
 repository's existing test style supports it.
 
-Where a test can express the next observable behaviour, work in small vertical
-slices: make one test fail for the agreed behaviour, implement only enough to
-make it pass, then proceed to the next behaviour. Use a pre-existing test when
-it is the clearest failing evidence. When test-first work is impractical,
-state why in the implementation summary and still add or update the smallest
-credible regression coverage at the agreed seam.
+Establish early test feedback. Prefer a unit test for isolated domain or
+application behaviour. Add an integration test when the changed behaviour
+depends on real wiring, persistence, contracts, or interaction between
+components; use the repository's local Docker Compose stack when it provides
+the appropriate integration environment. Do not replace an interaction that
+needs the local stack with mocks merely for convenience.
+
+Work in small vertical slices. Where a test can express the next observable
+behaviour, make it fail first, implement only enough to make it pass, then
+proceed to the next behaviour. Use a pre-existing test when it is the clearest
+failing evidence. Where test-first work would not give a clear boundary,
+complete one small implementation increment and add or update its smallest
+credible regression coverage before beginning the next increment. State why
+test-first was impractical in the implementation summary.
 
 Run the narrowest relevant verification after each meaningful change: the
 affected test or test file, type check or lint command where applicable, and
 the project command that gives fast feedback. Resolve failures before moving to
-the next slice. Do not weaken, delete, or skip an existing test merely to make
-the suite pass unless the approved change explicitly supersedes its behaviour.
+the next slice. Run the relevant local Compose-based integration check before
+calling an iteration complete when the change requires it. An iteration is
+complete only when its relevant checks pass. Do not weaken, delete, or skip an
+existing test merely to make the suite pass unless the approved change
+explicitly supersedes its behaviour.
 
 ## Commit logical, tested increments
 
@@ -137,6 +154,12 @@ not combine independent behaviours, speculative cleanup, or a later ticket's
 work. Keep related code, tests, and required documentation together when
 splitting them would leave the repository in a misleading or incomplete state.
 
+Periodically inspect the pending diff as a reviewer would. If it contains more
+than one independently understandable behaviour, mixes separable concerns, or
+cannot be clearly validated as one increment, stop extending it. Finish and
+verify the smallest coherent slice, commit it, then continue with the next
+slice. Use judgement rather than a file, line, or commit-count threshold.
+
 Before every commit, apply the repository's coding standards and complete its
 documented test cycle for that increment. This includes unit tests, integration
 tests, and every other required check, not only the narrow checks used while
@@ -144,6 +167,9 @@ developing. Resolve failures before committing. If a documented check cannot
 run, do not commit it as fully verified: report the command, reason, and
 remaining risk to the user and wait for direction when the repository policy
 requires a clean cycle.
+
+Commit a completed, fully tested iteration before beginning a later separable
+behaviour; do not defer all commits until the ticket is fully implemented.
 
 ## Verify, review, and hand off
 
