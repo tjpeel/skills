@@ -3,6 +3,8 @@
 Use this reference when an agreed future-facing decision may need a durable
 record. A prospective ADR records the context, decision, rationale, and any
 consequences that a future engineer would not safely infer from code.
+Do not generate ADRs by default. Save one only when requested or required and
+the decision qualifies below; an ADR is not a completion step for discovery.
 
 ## Qualification
 
@@ -40,6 +42,9 @@ Keep the ADR concise. It must state:
 - why that option was selected.
 
 Add considered options and consequences only when they preserve a non-obvious
-trade-off or downstream constraint. Do not require retrospective evidence such
+trade-off or downstream constraint. Link to the code or tests that implement
+the decision; for an unimplemented proposal, label that gap. Describe the
+rationale and constraints, not the algorithm, control flow or functionality
+already expressed by code. Do not require retrospective evidence such
 as commit, pull-request, or confidence fields: those belong to the historical
 recovery workflow.

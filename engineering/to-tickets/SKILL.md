@@ -12,6 +12,13 @@ plan, conversation, draft, unapproved specification, or a specification without
 a local path, return it to `$engineering-specification` rather than creating
 tickets.
 
+Local tickets are this workflow's planning output. They record intended changes
+and verification, while code documents implemented functionality. Do not add
+documentation tasks by default. Include one only when the approved specification
+requires it and it fills a material knowledge gap, provides a useful signpost
+or satisfies an explicit user or repository requirement. Do not ask an
+implementer to create a parallel explanation of feature behaviour.
+
 ## Platform compatibility
 
 This workflow is platform-agnostic. Use it in Codex, Claude Code, or another
@@ -124,10 +131,10 @@ For a non-trivial ticket, provide a short sequence of observable implementation
 increments, each with its verification seam. These are checkpoints within one
 ticket, not new layer-based tickets or a list of implementation files. State
 the current behaviour at deferred boundaries and name the later ticket that
-changes it. Request a short code comment only where the partial behaviour
-would otherwise mislead a reader; the comment must explain what happens now
-and what later work adds. Its meaning must remain understandable without the
-local ticket file.
+changes it. Request a short code comment only where the reason for a deliberate
+limitation would otherwise be unclear. Explain that constraint without
+repeating control flow or implying that the later capability exists. Its
+meaning must remain understandable without the local ticket file.
 
 Audit each ticket as an implementation handoff to a fresh agent. Using the
 ticket, linked specification and applicable repository sources, it must be able

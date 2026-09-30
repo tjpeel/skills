@@ -11,6 +11,27 @@ clearly bounded approved specification is also sufficient when no ticket set
 is needed. This is the build step after decision discovery, specification, and
 ticket decomposition.
 
+## Documentation boundary
+
+Code is the documentation of implemented functionality. Do not generate
+additional docs by default during implementation. Specifications and local
+tickets remain the planning inputs; they do not imply a need for new ADRs,
+context files, feature guides or implementation summaries.
+
+Prefer clear names, structure and tests. Use a focused comment for non-obvious
+rationale or a constraint close to the code it affects. Create or update a
+supporting document only for an explicit request, an applicable repository
+requirement or a material knowledge gap that code, tests and configuration
+cannot convey. Identify that need before writing. Keep the document to decision
+rationale, external constraints or domain context, with links to the relevant
+implementation and tests. Do not maintain a second explanation of algorithms,
+control flow or feature behaviour that can drift from the code.
+
+Check relevant existing docs when a change affects their claims. Remove stale
+or duplicated explanations, or replace them with signposts, rather than adding
+another account. Documentation must not conceal unclear code or contradict
+executable behaviour.
+
 ## Platform compatibility
 
 This workflow is platform-agnostic. Use it in Codex, Claude Code, or another
@@ -29,10 +50,11 @@ claim a review covers only this ticket when its diff includes other work.
 
 For a ticket, confirm that it is in `.tickets/`, has status `ready-for-agent`,
 and that every listed blocker is complete. Read its source specification,
-applicable repository guidance, `CONTEXT.md` or `CONTEXT-MAP.md`, and accepted
+applicable repository guidance, relevant existing context, and accepted
 ADRs. Treat the specification's required behaviour, accepted decisions,
-acceptance criteria, change constraints, and agreed test seams as the source
-of truth.
+acceptance criteria, change constraints, and agreed test seams as approved
+intent. Establish actual behaviour from code, tests and configuration. Surface
+a contradiction with supporting prose rather than silently trusting it.
 
 Use the ticket to select the behaviour due in this invocation. The full
 specification constrains its contracts and shared invariants; it does not
@@ -208,12 +230,11 @@ Cover material boundary and failure cases, including the effects that must not
 occur and how incomplete work is resolved where relevant. Verify the observable
 outcome and next action, not just an exception or a helper's return value.
 
-At a deliberately incomplete boundary, add the short explanation requested by
-the ticket when it prevents misunderstanding. Describe the actual current
-outcome, its consequences and later capability in terms a reader can understand
-without local planning files. A comment must explain what the partial
-implementation does, rather than imply that it already provides the final
-behaviour. Do not add speculative scaffolding for later work.
+At a deliberately incomplete boundary, add the short comment requested by the
+ticket when the reason for the limitation would otherwise be unclear. Explain
+the constraint without repeating control flow or implying that the final
+capability exists. Keep it understandable without local planning files. Do not
+add speculative scaffolding for later work.
 
 ## Commit logical, tested increments
 
@@ -221,8 +242,10 @@ Make each commit the smallest logical increment that moves the approved
 solution forward. A commit should contain one coherent vertical slice, such as
 the regression test and the minimum production change that satisfies it; do
 not combine independent behaviours, speculative cleanup, or a later ticket's
-work. Keep related code, tests, and required documentation together when
-splitting them would leave the repository in a misleading or incomplete state.
+work. Keep related code, tests, and documentation justified by the documentation
+boundary together when splitting them would leave the repository in a
+misleading or incomplete state. This does not require documentation in every
+increment.
 
 Periodically inspect the pending diff as a reviewer would. If it contains more
 than one independently understandable behaviour, mixes separable concerns, or
@@ -274,6 +297,9 @@ Return a concise handoff with:
 - acceptance criteria that remain unverified and why;
 - follow-up work or risks outside the ticket boundary; and
 - code-review findings, fixes, and any review limitations.
+
+Return this handoff in the conversation; do not create a summary file by
+default.
 
 Commit the logical, fully tested increments created during implementation. Do
 not push, create a pull request, or update an external tracker unless the user

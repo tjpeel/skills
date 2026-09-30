@@ -11,6 +11,12 @@ fresh implementation session. Synthesize the available conversation, decision
 record, and repository evidence. Do not restart design discovery or interview
 the user for information already established.
 
+The local specification is this workflow's planning output. It records intended
+changes and acceptance criteria; code documents implemented functionality. Do
+not generate additional context files, ADRs or functionality guides by default.
+Link to existing supporting records for rationale or constraints that code
+cannot convey, rather than copying their content into another explanation.
+
 ## Platform compatibility
 
 This workflow is platform-agnostic. Use it in Codex, Claude Code, or another
@@ -60,10 +66,11 @@ a proposed ADR is non-binding unless its underlying decision was separately
 confirmed. Explore the relevant code to establish present behaviour,
 constraints, and durable module or contract boundaries.
 
-The specification is an implementation snapshot. `CONTEXT.md` owns evolving
-domain vocabulary, while ADRs own durable architectural rationale. Link to
-applicable repository context and ADR documents, but do not copy them or add
-implementation file paths to the specification.
+The specification is a snapshot of implementation intent. Existing context
+files may preserve domain meaning unavailable from code, while ADRs preserve
+durable architectural rationale. Link to applicable repository context and
+ADR documents, but do not copy them or add implementation file paths to the
+specification.
 
 Call out conflicting sources or an unmade decision. Ask only the targeted
 question needed to resolve that gap. Do not use questions to substitute for

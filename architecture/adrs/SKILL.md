@@ -7,6 +7,12 @@ description: Recover retrospective architecture decision records from a codebase
 
 Create a reflective but concise set of ADRs that explains decisions still material to operating or changing the system. Use two complementary lenses: accountable historical coverage and current-code materiality. The output is evidence-led: distinguish a documented rationale from an inference drawn from code or history.
 
+Code documents implemented functionality. Use this workflow for requested ADR
+recovery, not as a default implementation step. An ADR must add knowledge code
+cannot convey: rationale, rejected alternatives, external constraints or
+consequential trade-offs. Signpost the relevant code and tests instead of
+retelling their functionality. A credible investigation may produce no ADRs.
+
 ## Platform compatibility
 
 This workflow is platform-agnostic. Use it in Codex, Claude Code, or another
@@ -61,10 +67,10 @@ Keep Astra selective:
 
 Each ADR should state the context, decision, status, consequences, and evidence. Cite precise PRs or commits and relevant paths. Explain whether each rationale is explicit, corroborated, or inferred. A coherent set may include both broad architectural boundaries and smaller source-to-domain policy decisions when both remain material; it should not turn implementation details, transient experiments, dependency upgrades, formatting changes, or superseded approaches into ADRs.
 
-Run `read_medium` over the complete ADR set, PR-coverage classification, and current-code seams considered. Resolve duplicate decisions, missing counter-evidence, unsupported causal claims, and contradictions with current code. The final handoff and ADR README should include:
+Run `read_medium` over the complete ADR set, PR-coverage classification, and current-code seams considered. Resolve duplicate decisions, missing counter-evidence, unsupported causal claims, and contradictions with current code. Return the final handoff in the conversation; add an ADR index or coverage file only when requested or required by repository conventions. Include:
 
 - the ADR index and coverage summary;
-- an accountable PR-coverage table or a link to a concise generated coverage record, with exclusions and reasons;
+- a concise PR-coverage table or a link to an existing coverage record, with exclusions and reasons;
 - source anchors considered but excluded, where they were material enough to investigate;
 - confidence gaps and open questions.
 

@@ -19,6 +19,14 @@ whenever the user needs an evidence-based review of a local change. It is a
 review-only skill: it does not edit code, commit, push, publish comments, or
 approve a pull request. Use `$pr-review` for a colleague's pull request.
 
+Code documents implemented functionality. Do not request additional docs by
+default. Specifications and local tickets are planning outputs; missing ADRs,
+context files or functionality guides alone are not defects. Request a new
+document only for an explicit requirement or material knowledge gap that code
+cannot convey. Report misleading claims or broken signposts in relevant docs
+when they could cause a concrete error in a future change or operation. Prefer
+removing duplicated explanations or linking to code over extending them.
+
 ## Platform compatibility
 
 This workflow is platform-agnostic. Use it in Codex, Claude Code, or another
@@ -66,7 +74,7 @@ approved file in `.specifications/` using the branch outcome and available
 reference. Specifications belong in `.specifications/`; do not treat a
 document elsewhere as an approved specification.
 
-Read applicable repository guidance, `CONTEXT.md` or `CONTEXT-MAP.md`, accepted
+Read applicable repository guidance, relevant existing context, accepted
 ADRs, and the relevant existing code and tests. Treat a Markdown
 `CODING_STANDARDS.md` at the repository root as the canonical coding-standards
 file. If it is absent, look for the same name under `docs/`, then for

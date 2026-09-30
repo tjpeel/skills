@@ -141,10 +141,16 @@ tests/test-install-claude-skills
 
 For work that spans more than one implementation session, the engineering
 skills form a local workflow: `decision-discovery` settles consequential
-choices, `specification` records observable behaviour, `to-tickets` writes the
-approved dependency-ordered ticket set into the invoking repository, and
-`implement` completes one ready ticket or approved specification slice before
-`code-review` independently checks it against intent and repository risk.
+choices, `specification` records intended changes and acceptance criteria,
+`to-tickets` writes the approved dependency-ordered ticket set into the invoking
+repository, and `implement` completes one ready ticket or approved specification
+slice before `code-review` independently checks it against intent and repository
+risk.
+Specifications and local tickets are deliberate planning outputs. Code
+documents implemented functionality; do not generate additional docs by
+default during implementation. ADRs and context files preserve rationale or
+constraints unavailable from code and signpost the relevant
+implementation, rather than maintaining a parallel explanation of behaviour.
 
 ## References
 

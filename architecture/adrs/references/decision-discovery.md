@@ -25,7 +25,7 @@ A seam is a candidate when all or most of the following are true:
 3. It has callers, tests, documents, or history that show it is retained rather than incidental.
 4. Its scope can be stated accurately: for example, a particular integration and workflow, not the whole domain.
 
-Do not promote an ADR merely because code has a conditional. Exclude a candidate when the rule is mechanical, private convenience, demonstrably superseded, or unsupported by enough evidence to state its scope without speculation.
+Do not promote an ADR merely because code has a conditional. Identify the rationale or constraint that a future engineer could not determine by reading the code and tests. If the evidence only restates functionality, exclude the candidate. Also exclude rules that are mechanical, private convenience, demonstrably superseded, or unsupported by enough evidence to state their scope without speculation.
 
 ## Trace the evidence
 

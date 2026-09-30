@@ -9,6 +9,14 @@ Turn an ambiguous prospective change into a shared set of explicit decisions.
 The user owns product and preference decisions. Establish facts from the
 repository, available tools, and supplied material before asking about them.
 
+Code is the documentation of implemented functionality. Do not generate
+supporting documents by default. Keep discovery in the conversation unless the
+user requests a saved record or an applicable repository rule requires one.
+An ADR or context file must preserve knowledge that code, tests and
+configuration cannot convey, and signpost the relevant sources. Do not create
+one merely because a decision or term was discussed, a file is missing, or
+repository writes have been authorised.
+
 ## Platform compatibility
 
 This workflow is platform-agnostic. Use it in Codex, Claude Code, or another
@@ -60,9 +68,9 @@ handoff's target, questions, constraints, and expected evidence.
 
 ## Establish the design boundary
 
-Read applicable repository guidance, existing `CONTEXT.md` or
-`CONTEXT-MAP.md`, decision records, and plans. Explore the affected code enough
-to distinguish facts, constraints, and existing decisions from assumptions.
+Read applicable repository guidance and relevant existing context, decision
+records and plans. Explore the affected code enough to distinguish facts,
+constraints, and existing decisions from assumptions.
 
 State the decision to make, its affected users or systems, known constraints,
 and what is explicitly outside the discussion. Keep a design tree of decisions
@@ -75,12 +83,14 @@ case and the proposed change using the same terms. Ask targeted questions where
 the evidence leaves meaning, responsibility or acceptable outcomes unclear.
 The model should expose decisions, not prescribe an implementation structure.
 
-Use the project's existing glossary and ADR conventions. When the discovery
-needs to create or update domain context, read
+Use the project's existing glossary and ADR conventions where relevant. First
+identify the knowledge gap that cannot be resolved by reading code. When an
+authorised record needs to capture that domain context, read
 [the repository-context guidance](references/repository-context.md). When it
 needs a prospective ADR, read [the prospective-ADR guidance](references/prospective-adrs.md).
-If no convention exists, propose the default location before creating it. Keep
-the working record in the conversation until repository writes are authorised.
+If a justified record has no convention, propose the default location before
+creating it. Keep the working record in the conversation until repository
+writes are authorised.
 
 ## Run decision rounds
 
@@ -118,22 +128,23 @@ is evidence for a choice, not agreement to adopt its entire lifecycle.
 
 ## Preserve terminology and decisions
 
-Maintain a concise working glossary of domain terms settled during discovery.
-Prefer one canonical term and note confusing alternatives when they would cause
-real ambiguity. Keep implementation detail, specifications, and unmade
-decisions out of glossary entries. After the user authorises repository writes,
-record a settled term incrementally in the applicable `CONTEXT.md`; do not
-write disputed or provisional language. Use the provided
-[CONTEXT.md template](assets/CONTEXT.md) only when the repository has no
-existing context format.
+Keep a concise working glossary in the conversation when terminology needs
+clarification. Prefer canonical names in code; record only domain meaning or
+confusing alternatives that code cannot explain. Keep implementation detail,
+specifications, and unmade decisions out of glossary entries. When a saved
+context record is requested or required, add only settled terms that fill that
+gap, with links to relevant code. Do not write disputed or provisional language.
+Use the provided [CONTEXT.md template](assets/CONTEXT.md) only when the
+repository has no existing context format.
 
 An ADR is a durable repository record of an architecture-significant decision,
 the context that made it necessary, why the chosen option won, and consequences
 that code alone would not safely explain. Create or amend one only when the
 decision is hard to reverse, would surprise a future engineer without context,
-and involved a meaningful trade-off. Use the project's ADR format and status
-convention. Confirm a decision before recording it as accepted; otherwise mark
-it proposed. Do not use this skill to recover historical ADRs; use
+and involved a meaningful trade-off. Link to the relevant implementation;
+explain why the decision exists without retelling how that code works. Use the
+project's ADR format and status convention. Confirm a decision before recording
+it as accepted; otherwise mark it proposed. Do not use this skill to recover historical ADRs; use
 `$architecture-adrs` for that work.
 
 ## Finish with a handoff
@@ -155,6 +166,8 @@ Check that another session can reconstruct the reasoning and next decisions
 from this record and its available sources, without relying on unstated answers
 from the conversation. Name missing evidence and the question it blocks.
 
-This handoff is an input to `$engineering-specification`. Do not write a full
-specification, publish to an issue tracker, or create implementation tickets
-unless the user explicitly asks for that follow-on work.
+Return this handoff in the conversation by default; it does not require a new
+repository document. It can be an input to `$engineering-specification` when
+the user requests that planning step. Do not write a full specification,
+publish to an issue tracker, or create implementation tickets unless the user
+explicitly asks for that follow-on work.

@@ -1,6 +1,9 @@
 # Evidence dossier
 
 Use one dossier per candidate decision before Astra is invoked. A dossier is an investigation record, not a draft ADR.
+Keep it in the investigation or delegated handoff unless a saved artifact is
+requested or required. It establishes missing rationale or constraints; it
+does not require repository documentation for every code seam.
 
 ## Required fields
 
@@ -21,7 +24,7 @@ Use one dossier per candidate decision before Astra is invoked. A dossier is an 
 - Treat PR descriptions, design documents, issue decisions, and review discussion as explicit rationale. Treat commit messages and code as supporting evidence unless they directly state a reason.
 - A current implementation proves that a pattern exists, not why it was selected. Do not manufacture rationale from apparent benefits.
 - Search for later changes before declaring a decision current. A reverted or superseded implementation normally belongs in the excluded history, not an ADR.
-- If an undocumented choice is clearly durable and important, a retrospective ADR may record it as inferred, with the confidence and missing rationale plainly labelled.
+- If an undocumented choice is clearly durable and important, a retrospective ADR may record a non-obvious constraint as inferred, with confidence and missing rationale plainly labelled. Durability alone does not qualify a description already recoverable from code.
 
 ## Candidate selection
 
