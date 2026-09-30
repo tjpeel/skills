@@ -89,6 +89,15 @@ acceptance criterion, and applicable change or rollout constraint in the
 specification must be owned by at least one ticket. Reject ticket scope that is
 not supported by the approved specification.
 
+Also audit the state of the system after each ticket lands. Assign ownership
+for failure and recovery paths, startup validation, readiness, and operational
+budgets to the ticket that first introduces the affected behaviour. Do not
+defer its safety or regression coverage to a later feature ticket. If a partial
+path receives real inputs, its current disposition and any eventual retry,
+dead-lettering, ordering or operator consequence must already be settled in the
+specification. Return a gap upstream rather than treating "out of scope" as a
+runtime policy.
+
 Identify necessary prefactoring first. Fold it into the first vertical slice by
 default. Create a separate prerequisite only when it can land green, is
 independently verifiable, and creates a necessary seam or materially reduces
@@ -112,6 +121,15 @@ baseline.
 Keep stale detail out of tickets: do not include file paths or code snippets.
 The only exception is a short, labelled prototype fragment when it is the
 clearest record of a settled state machine, reducer, schema, or type decision.
+
+For a non-trivial ticket, provide a short sequence of observable implementation
+increments, each with its verification seam. These are checkpoints within one
+ticket, not new layer-based tickets or a list of implementation files. State
+the current behaviour at deferred boundaries and name the later ticket that
+changes it. Request a short code comment only where the partial behaviour
+would otherwise mislead a reader; the comment must explain what happens now
+and what later work adds. Its meaning must remain understandable without the
+local ticket file.
 
 ## Create tickets
 
@@ -145,6 +163,15 @@ Write one file for each ticket using this form:
 
 <Only settled detail that a fresh implementation session needs. Omit this
 section when it is empty.>
+
+## Implementation increments
+
+<For non-trivial work, ordered observable checkpoints and their test seams.>
+
+## Deferred behaviour
+
+<When applicable, current behaviour and consequences at incomplete boundaries,
+the later ticket that changes each, and any comment needed to explain it.>
 ```
 
 For a blocked ticket, list every blocker as a relative Markdown link, such as
@@ -153,3 +180,9 @@ For a blocked ticket, list every blocker as a relative Markdown link, such as
 still decides whether it can start. Report the created paths and the ready
 frontier: tickets with no open blockers. Do not implement tickets, create
 branches, or make external changes.
+
+Before handing off, resolve every specification and blocker link from the
+directory of the file containing it. Confirm the specification target exists
+inside the invoking repository and blocker links resolve to the intended
+lower-numbered tickets. A written file with a broken source link is not ready
+for an isolated implementation session.

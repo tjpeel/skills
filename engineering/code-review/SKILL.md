@@ -45,11 +45,8 @@ them to the ticket.
 
 ## Find requirements and standards sources
 
-Read the source specification in full. Specifications belong in
-`.specifications/`; do not treat a document elsewhere as an approved
-specification. Prefer a path supplied by the user. Otherwise, look for a
-matching approved file in `.specifications/`, using the branch outcome and an
-available ticket reference to narrow the match.
+Prefer the ticket or specification path supplied by the user. Otherwise look
+for an unambiguous matching local ticket before choosing a specification.
 
 When the branch starts with the name of a direct child directory of `.tickets/`
 followed by `-`, or equals that directory name, treat that directory as the
@@ -58,8 +55,16 @@ ticket whose numbered filename and outcome title match the branch suffix. Read
 that ticket for its acceptance criteria, decisions, constraints, and link to
 the source specification. Use it only when the match is unambiguous; do not
 guess from a ticket-looking branch name or borrow guidance from a sibling
-ticket. The approved linked specification remains the requirements source;
-the ticket supplies additional implementation guidance.
+ticket. Resolve links from the ticket's own directory and read the approved
+source specification in full. The ticket selects the current delivery slice;
+the specification constrains its contracts and shared invariants. Do not report
+an explicitly deferred feature as missing from this ticket, or excuse a defect
+in its current partial behaviour because another ticket will extend it.
+
+Without a ticket, prefer a supplied specification path, then look for a matching
+approved file in `.specifications/` using the branch outcome and available
+reference. Specifications belong in `.specifications/`; do not treat a
+document elsewhere as an approved specification.
 
 Read applicable repository guidance, `CONTEXT.md` or `CONTEXT-MAP.md`, accepted
 ADRs, and the relevant existing code and tests. Treat a Markdown
@@ -68,10 +73,11 @@ file. If it is absent, look for the same name under `docs/`, then for
 `CONTRIBUTING.md`, `STYLEGUIDE.md`, or `STYLE_GUIDE.md` at the root or under
 `docs/`. Read only files that actually state applicable coding standards.
 
-If no approved specification can be found, run the standards-and-risk review
-only and report that requirements compliance could not be assessed. If a
-candidate ticket exists but its source-specification link is missing or does
-not resolve beneath `.specifications/`, report that limitation rather than
+If no approved specification can be found, still run the technical review
+and report which requirements could not be assessed. A matching ticket can
+establish its stated intent, but does not prove approval of a missing source.
+If a candidate ticket exists but its source-specification link is missing or
+does not resolve beneath `.specifications/`, report that limitation rather than
 substituting another source.
 
 ## Delegation profiles
@@ -98,7 +104,12 @@ responsibility in the coordinating agent.
   using the locator's evidence, and reports only actionable risks. For a large
   or materially risky change, run independent `read_high` reviews in parallel:
   one for requirements and test coverage, one for standards and technical
-  risks. Keep their findings separate until aggregation.
+  risks. Its initial evidence packet contains raw code, diff, repository
+  standards and runtime wiring, excluding requirements mappings, planning
+  artifacts and the implementer's explanation. Then supply intent evidence
+  to reconcile its conclusions. Keep the two assessments separate until
+  aggregation so shared assumptions do not
+  hide a defect.
 
 The coordinator owns the fixed-point decision, final assessment, user
 questions, and any repair. Read-only delegates do not alter code, contact
@@ -106,9 +117,25 @@ reviewers, or make external writes.
 
 ## Review the change
 
-First check requirements. Compare each required behaviour, accepted decision,
-observable acceptance criterion, and applicable rollout or change constraint
-with the diff and its verification. Report missing, partial, or apparently
+First trace the actual behaviour from public entry points through side effects,
+failure handling and recovery using code, tests and runtime configuration.
+Do this without relying on the implementer's narrative or treating the planning
+artifacts as proof of correctness. For the changed paths, check relevant:
+
+- recovery after a transient error versus permanent give-up, retry budgets,
+  cancellation, ownership loss and readiness while work is paused;
+- loop pacing after success, empty reads and failures, including the effective
+  throughput implied by defaults;
+- configuration validation before activation or work consumption, including
+  placeholders and disabled modes;
+- external API input constraints, offset and precision rules, persistence
+  round trips, and immutable-identity comparisons; and
+- actual retry, ordering and dead-letter consequences of deferred paths,
+  borrowed policy, service identifiers, and misleading comments or docs.
+
+Then check requirements. Compare each in-scope required behaviour, accepted
+decision, observable acceptance criterion, and applicable rollout or change
+constraint with the diff and its verification. Report missing, partial, or apparently
 incorrect behaviour; scope that the source did not ask for; and tests that do
 not actually observe the intended behaviour.
 
@@ -164,6 +191,8 @@ findings were identified; do not claim the change is defect-free.
 
 When this review follows `$engineering-implement`, return in-scope fixes to
 that implementation step. After repairs, rerun the affected verification and
-this review against the same fixed point. Escalate a finding that requires a
-new product or design decision to `$engineering-decision-discovery` or
+repository-required full checks for the repaired revision, and repeat this
+review against the same fixed point across the complete ticket diff.
+Escalate a finding that requires a new product or design decision to
+`$engineering-decision-discovery` or
 `$engineering-specification` instead of solving it in the diff.

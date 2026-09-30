@@ -166,6 +166,34 @@ decision-rich type, schema, state-machine, or reducer fragment only when a
 prototype is the clearest record of a settled constraint. Label its source and
 trim it to that constraint.
 
+For stateful or asynchronous work, turn the settled lifecycle into a compact
+behaviour table: trigger or current state, next action, durable effect,
+retry or recovery, and observable evidence. Include relevant transient and
+permanent failures, exhausted budgets, ownership loss, cancellation, and
+restart. State when work becomes ready and what health signals prove. A
+promise such as "retry safely" is insufficient if its stopping condition or
+recovery owner is unknown.
+
+Specify boundary rules where they affect the contract: external identifier
+lengths and character sets, timestamp offsets and storage precision,
+normalisation before identity comparison, and validation before side effects.
+Separate invalid service configuration from invalid work items. Required
+configuration, including placeholder values, must be checked at the agreed
+activation boundary so a configuration error cannot consume or discard valid
+work. Preserve intentionally disabled deployment modes where agreed.
+
+For loops and leases, distinguish successful-work pacing, empty reads and
+error backoff; identify timeout and ownership budgets and the consequence of
+expiry. Record estimates as estimates. Use representative backlog or timing
+calculations to expose an unintended throughput cap or an impossible budget.
+
+When delivery spans tickets, specify the safe intermediate behaviour as well
+as the final outcome. Explain what happens to inputs for deferred paths,
+including retry, eventual dead-lettering, ordering, recovery and activation
+constraints where applicable. An unresolved intermediate policy blocks approval
+even when the final design is settled. Record the agreed boundary of any
+reference implementation being reused; its policies are not implicit defaults.
+
 ## Produce the local specification
 
 Write the draft locally with its test seams, out-of-scope items, assumptions,
@@ -173,6 +201,12 @@ evidence gaps, and blocking questions clearly identified. Tell the user where
 it was saved and ask for approval without reproducing the document in chat. Do
 not mark it approved while a question affecting scope, required behaviour, a
 contract, or acceptance remains unresolved.
+
+Before seeking approval, trace each required outcome and material failure or
+recovery transition to an observable acceptance criterion and credible test
+seam. Audit timing, configuration and intermediate rollout behaviour alongside
+the happy path. Use the bounded independent audit described above when it would
+materially improve confidence; resolve contradictions before presenting the draft.
 
 After explicit approval, change the saved file's status to `approved`. Hand its
 local path to

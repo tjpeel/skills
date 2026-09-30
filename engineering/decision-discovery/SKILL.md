@@ -91,6 +91,27 @@ Record each agreed decision as: the decision, its rationale, alternatives when
 material, evidence, consequences, and remaining uncertainty. Do not turn a
 preference into a fact or imply agreement where the user has not made one.
 
+For a background worker, migration, or multi-stage rollout, test the design
+with a small state-and-outcome table before calling it settled. Cover the
+relevant success, invalid configuration, transient failure, exhausted retry,
+ownership loss, timeout, cancellation, and restart paths. For each, identify
+the next state, durable effects, retry owner and budget, readiness signal, and
+operator recovery. Distinguish a process that is alive from one able to do its
+work. Ask about unresolved choices; do not invent policy to complete the table.
+
+Check the operational meaning of agreed limits. Concurrency, batch size,
+long-poll wait, error backoff, and successful-work pacing are different
+controls; use a simple backlog or processing-budget calculation when their
+interaction could contradict the intended outcome. Verify external contract
+limits and parsing assumptions from authoritative documentation rather than
+leaving them to implementation.
+
+When another repository supplies an example, establish what should align:
+contract, deployment convention, or implementation mechanism. Identify which
+behaviour and policy are deliberately excluded, especially retries, startup
+gates, defaults, and ownership. An example is evidence for a choice, not
+agreement to adopt its entire lifecycle.
+
 ## Preserve terminology and decisions
 
 Maintain a concise working glossary of domain terms settled during discovery.
@@ -121,8 +142,10 @@ named external fact or decision. Return a concise decision record containing:
 - canonical terminology and relevant existing decision records;
 - repository-relative links to applicable `CONTEXT.md`, `CONTEXT-MAP.md`, and
   ADRs, when they exist;
-- deferred questions, assumptions, and evidence gaps; and
-- test seams or behavioural boundaries worth preserving for the later spec.
+- deferred questions, assumptions, and evidence gaps;
+- test seams or behavioural boundaries worth preserving for the later spec;
+- settled failure and recovery transitions, operational budgets, and any
+  boundaries on reuse from reference implementations.
 
 This handoff is an input to `$engineering-specification`. Do not write a full
 specification, publish to an issue tracker, or create implementation tickets

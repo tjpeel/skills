@@ -34,6 +34,12 @@ ADRs. Treat the specification's required behaviour, accepted decisions,
 acceptance criteria, change constraints, and agreed test seams as the source
 of truth.
 
+Use the ticket to select the behaviour due in this invocation. The full
+specification constrains its contracts and shared invariants; it does not
+authorise implementing every future feature. Read a sibling ticket only to
+resolve a named dependency or deferred boundary. Confirm what incomplete paths
+do today and what later work changes before coding them.
+
 Do not start when an input has blocking questions, conflicts with an accepted
 decision, has an unresolved blocker, or needs an unrecorded product or design
 choice. Return that choice to `$engineering-decision-discovery` or
@@ -44,9 +50,15 @@ neighbouring tickets.
 
 ## Prepare the ticket branch
 
-Create the implementation branch before changing files. In a clean working
-tree, fetch the remote that tracks `main`, switch to local `main`, and update
-it with a fast-forward-only pull from that remote. Do not start from a stale
+Establish the implementation branch before changing files. When resuming an
+already authorised ticket branch, verify its ticket, original fixed point and
+existing increments, then continue there. Do not reset it or create another
+branch for each handoff. If its boundary cannot be established, resolve that
+gap before editing.
+
+For new work in a clean working tree, fetch the remote that tracks `main`,
+switch to local `main`, and update it with a fast-forward-only pull from that
+remote. Do not start from a stale
 local `main`, and do not merge or rebase around a failed fast-forward. If
 `main`, its remote tracking branch, or the fast-forward update is unavailable,
 stop and report the condition to the user.
@@ -55,7 +67,7 @@ Never commit directly to `main`. If the current branch is `main`, create or
 switch to the intended ticket branch before changing or committing files. All
 implementation commits belong on that ticket branch.
 
-For a ticket, take the exact value of its `**Parent reference:**` detail and
+For a new ticket, take the exact value of its `**Parent reference:**` detail and
 append a concise kebab-case description of the ticket outcome. Create the new
 branch from the updated `main` commit using this form:
 
@@ -71,9 +83,10 @@ resulting branch already exists, do not repurpose it or silently choose a
 different name; ask the user whether to continue that branch or choose a new
 description.
 
-Record the updated `main` commit as the fixed point for the later independent
-review. The coordinator owns branch creation and selection; a delegated writer
-works only after that boundary exists.
+For new work, record the updated `main` commit as the fixed point for the later
+independent review; resumed work retains its original fixed point. The
+coordinator owns branch creation and selection; a delegated writer works only
+after that boundary exists.
 
 One invocation owns one ticket or one independently deliverable specification
 slice. Do not implement blocked or sibling tickets, add speculative
@@ -101,14 +114,52 @@ that bounded responsibility in the coordinating agent.
   concurrency, compatibility, or cross-service risk. It reports hazards,
   mitigations, and verification evidence; it does not make the change.
 - Use `write_medium` as the sole implementation writer when delegated. Give it
-  exactly one ready ticket or approved specification slice, the relevant
-  sources and test commands, and ownership of the resulting local code and
-  tests. It must not broaden the ticket, change the source artifact, make
-  external writes, or commit.
+  the ticket or approved slice as context, but authorise only the next planned
+  increment, with its observable outcome, boundaries, test commands and local
+  code and test ownership. It must stop and return its diff and verification
+  after that increment. It must not begin the next increment, broaden the
+  ticket, change the source artifact, make external writes, or commit.
 
 The coordinator owns the implementation boundary, user questions, branch and
 commit decisions, and any external action. Read-only handoffs return evidence
 only. Do not run parallel writers in one working tree.
+
+## Scrutinise reference implementations
+
+Before copying or adapting code from another repository, identify the requested
+alignment and inspect the source in context, including callers, configuration
+and tests. State what will be reused, what will be adapted, and what behaviour
+is excluded. Trace each imported policy to the destination ticket, accepted
+decision or repository requirement. A request to match a convention does not
+implicitly adopt the source's retry loop, startup gate, defaults or lifecycle.
+
+Check destination-specific effects: data and naming conventions, dependency
+versions, identifiers, time and precision rules, concurrency and ownership,
+timeouts, retries, readiness, resource scope, security and deployment wiring.
+Keep useful mechanisms without importing unrelated policy or dependencies.
+Preserve destination service identities rather than mechanically renaming
+source strings. An unsettled behavioural difference goes upstream; a routine
+adaptation that preserves approved behaviour does not need fresh permission.
+
+Verify the resulting destination behaviour at its own test seam, especially
+failure and recovery paths. Passing source tests or visual similarity is not
+evidence that the adaptation fits this service.
+
+## Plan bounded iterations
+
+Before editing, state a short ordered plan in the conversation. Each increment
+names one observable outcome, the acceptance criteria it advances, its credible
+regression check, and any relevant failure or recovery case. Use the ticket's
+checkpoints where supplied and refine them from repository evidence. Do not
+divide a vertical outcome into production-code-first and tests-later batches.
+
+Keep only one increment active. At its end, inspect the diff for scope and
+deferred behaviour, run focused verification and the repository's required
+pre-commit cycle, then commit the coherent result before starting the next
+separable behaviour. Report the completed outcome and next increment. If the
+slice grows beyond its stated outcome, reduce or revise the remaining plan
+before extending the diff. A large final commit followed by cleanup commits
+does not satisfy this iteration contract.
 
 ## Build one observable behaviour at a time
 
@@ -144,6 +195,20 @@ calling an iteration complete when the change requires it. An iteration is
 complete only when its relevant checks pass. Do not weaken, delete, or skip an
 existing test merely to make the suite pass unless the approved change
 explicitly supersedes its behaviour.
+
+Choose tests that can expose incorrect behaviour rather than confirm the
+implementation's assumptions. Where relevant, cover a transient failure then
+recovery, retry exhaustion, invalid enabled configuration before work begins,
+continuous processing after success, external input limits, time boundaries,
+ownership loss and cancellation. Verify the next action and durable effects,
+not just an exception or a helper's return value.
+
+At a deliberately incomplete boundary, add the short explanation requested by
+the ticket when it prevents misunderstanding. Describe the actual current
+outcome and later capability in terms a reader can understand without local
+planning files. For example, leaving a message undeleted can still mean retry,
+recipient-group blocking and eventual dead-lettering; a comment must not imply
+indefinite safe retention. Do not add speculative scaffolding for later work.
 
 ## Commit logical, tested increments
 
@@ -188,12 +253,20 @@ approved scope, rerun affected verification, and repeat the review against the
 same fixed point. Return a finding that needs a new decision to the relevant
 upstream workflow rather than expanding the ticket.
 
+The review covers all ticket commits and pending changes against that fixed
+point, including imported code, comments and configuration. It must include a
+technical assessment of the code's actual behaviour as well as requirements
+tracing. After repairs, complete the repository-required full check cycle for
+the final revision before declaring completion; results from an earlier
+revision do not verify the repaired result. If an independent reviewer is
+unavailable, perform the review directly and disclose that limitation.
+
 Return a concise handoff with:
 
 - the ticket or specification slice implemented;
 - changed behaviour and any deliberately untouched scope;
 - tests and other verification run, including outcomes;
-- acceptance criteria that remain unverified and why; and
+- acceptance criteria that remain unverified and why;
 - follow-up work or risks outside the ticket boundary; and
 - code-review findings, fixes, and any review limitations.
 
