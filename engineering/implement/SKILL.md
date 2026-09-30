@@ -137,17 +137,22 @@ that bounded responsibility in the coordinating agent.
 - Use `read_low` to map the affected behaviour, module boundary, conventions,
   existing tests, and the commands that exercise the agreed test seam.
 - Use `read_medium` to audit a proposed change plan against the ticket or
-  specification, identify unsupported scope, and check that each acceptance
-  criterion has a credible observable verification path.
+  specification, check that each increment is a coherent, committable step
+  within the ticket, identify unsupported scope, and check that each acceptance
+  criterion has a credible observable verification path. Audit the plan as one
+  bounded handoff; recheck only affected increments when its boundaries change.
 - Use `read_high` only for credible migration, data-loss, security,
   concurrency, compatibility, or cross-service risk. It reports hazards,
   mitigations, and verification evidence; it does not make the change.
 - Use `write_medium` as the sole implementation writer when delegated. Give it
   the ticket or approved slice as context, but authorise only the next planned
-  increment, with its observable outcome, boundaries, test commands and local
-  code and test ownership. It must stop and return its diff and verification
-  after that increment. It must not begin the next increment, broaden the
-  ticket, change the source artifact, make external writes, or commit.
+  increment, with its starting commit SHA, verifiable purpose, excluded work,
+  test commands and local code and test ownership. It must stop after
+  verification and return its diff and check results. The full ticket is
+  context, not authorisation to implement later increments. It must not begin
+  the next increment, broaden the ticket, change the source artifact, make
+  external writes, or commit. A later increment needs a new handoff after the
+  coordinator verifies that the preceding increment was committed.
 
 The coordinator owns the implementation boundary, user questions, branch and
 commit decisions, and any external action. Read-only handoffs return evidence
@@ -172,23 +177,69 @@ Verify the resulting destination behaviour at its own test seam, especially
 failure and recovery paths. Passing source tests or visual similarity is not
 evidence that the adaptation fits this service.
 
-## Plan bounded iterations
+## Plan commit boundaries before coding
 
-Before editing, state a short ordered plan in the conversation. Each increment
-names one observable outcome, the acceptance criteria it advances, its credible
-regression check, and any relevant failure or recovery case. Use the ticket's
-checkpoints where supplied and refine them from repository evidence. Do not
-divide a vertical outcome into production-code-first and tests-later batches.
+The ticket is the useful vertical slice delivered by this invocation. A
+commit increment is a smaller coherent step towards that outcome, not a
+separate ticket or necessarily a complete vertical slice. It can introduce a
+bounded behaviour, preserve behaviour through necessary preparation, or
+establish an agreed partial capability. Each increment must land green with
+credible checks and acceptable intermediate behaviour. Use the
+specification's settled policy at incomplete boundaries; do not invent it to
+make a commit possible.
 
-Keep only one increment active. At its end, inspect the diff for scope and
-deferred behaviour, run focused verification and the repository's required
-pre-commit cycle, then commit the coherent result before starting the next
-separable behaviour. Report the completed outcome and next increment. If the
-slice grows beyond its stated outcome, reduce or revise the remaining plan
-before extending the diff. A large final commit followed by cleanup commits
-does not satisfy this iteration contract.
+Before editing, state a short ordered commit plan in the conversation. Each
+planned increment has one verifiable purpose and a commit boundary: name the
+ticket outcome or prerequisite it advances, its regression check and
+relevant failure or recovery cases, and the work excluded until later
+increments. Keep the plan in the conversation; do not create a planning
+document. Use the ticket's checkpoints as input, but refine their commit
+boundaries from code before authorising the writer.
 
-## Build one observable behaviour at a time
+Audit each proposed increment for both cohesion and achievability. Split a
+bundle when it contains separable steps that can each be committed and
+checked with acceptable intermediate behaviour. Keep coupled changes
+together when splitting would break wiring, violate a contract or remove the
+credible test seam; state that reason. Include the regression coverage and
+guard rails needed for the step. Do not require a complete user feature per
+commit, separate every test case or function, or leave changed behaviour
+untested until a later commit. An atomic mechanical batch follows the same
+test: keep it bounded and explain why it cannot safely be split.
+
+For non-trivial work, have `read_medium` independently audit the proposed
+boundaries before coding. It returns `accept` or `revise` for each
+increment, checking both excessive scope and fragmentation that prevents a
+coherent commit. When recommending a split, name a credible smaller
+committable step and its verification; a shorter title or fewer files is not
+enough. Resolve those findings before authorising the writer. If equivalent
+delegation is unavailable, perform the same audit directly and disclose that
+it was not independent. A small, clearly indivisible change can be checked
+directly.
+
+Keep only one increment active. If it grows beyond its authorised outcome,
+stop extending the diff and revise the boundary before adding behaviour.
+Reaudit affected boundaries when the plan changes materially. A large final
+commit followed by cleanup commits does not satisfy this contract.
+
+After the increment's focused verification and required pre-commit cycle,
+stop editing. The coordinator inspects the actual diff against the
+authorised outcome. Resolve scope violations and verify the final increment
+revision before committing. Commit only that coherent increment, then verify
+in Git that the commit exists on the ticket branch and includes the completed
+increment, with none of its changes left pending. Report the completed outcome
+and verification results in the conversation. Passing
+checks or a writer's completion message alone do not permit the next
+increment. If checks or the commit are blocked, keep the increment active
+and report the blocker; do not continue into later behaviour. Follow any
+explicit user instruction that changes the commit workflow.
+
+The coordinator can authorise the next increment autonomously within
+approved scope once this gate is satisfied. Apply the same stop, inspect,
+commit and verify sequence when the coordinator also writes the code. Git
+provides the commit history; include a SHA in a writer handoff or resumption
+context when it is needed to pin the starting state.
+
+## Build and verify one increment at a time
 
 Use the test seams recorded by the specification or ticket. If the input does
 not name one, identify the smallest existing public boundary that observes the
@@ -206,22 +257,24 @@ components; use the repository's local Docker Compose stack when it provides
 the appropriate integration environment. Do not replace an interaction that
 needs the local stack with mocks merely for convenience.
 
-Work in small vertical slices. Where a test can express the next observable
-behaviour, make it fail first, implement only enough to make it pass, then
-proceed to the next behaviour. Use a pre-existing test when it is the clearest
-failing evidence. Where test-first work would not give a clear boundary,
-complete one small implementation increment and add or update its smallest
-credible regression coverage before beginning the next increment. State why
-test-first was impractical in the implementation summary.
+Work within the authorised increment. Where a test can express its next
+observable case, make it fail first, implement only enough to make it pass,
+then proceed to the next case within that outcome. Use a pre-existing test
+when it is the clearest failing evidence. Where test-first work would not
+give a clear boundary, complete one small implementation increment and add
+or update its smallest credible regression coverage before beginning the
+next increment. State why test-first was impractical in the implementation
+summary.
 
 Run the narrowest relevant verification after each meaningful change: the
 affected test or test file, type check or lint command where applicable, and
-the project command that gives fast feedback. Resolve failures before moving to
-the next slice. Run the relevant local Compose-based integration check before
-calling an iteration complete when the change requires it. An iteration is
-complete only when its relevant checks pass. Do not weaken, delete, or skip an
-existing test merely to make the suite pass unless the approved change
-explicitly supersedes its behaviour.
+the project command that gives fast feedback. Resolve failures before moving
+to the next slice. Run the relevant local Compose-based integration check
+before returning an increment for commit when the change requires it. Its
+relevant checks must pass, and its commit must be verified before the next
+increment. Do not weaken, delete, or skip an existing test merely to
+make the suite pass unless the approved change explicitly supersedes its
+behaviour.
 
 Derive regression cases from the ticket's acceptance criteria and relevant
 domain rules, contracts and guard rails. Use conditions and expected results
@@ -238,20 +291,20 @@ add speculative scaffolding for later work.
 
 ## Commit logical, tested increments
 
-Make each commit the smallest logical increment that moves the approved
-solution forward. A commit should contain one coherent vertical slice, such as
-the regression test and the minimum production change that satisfies it; do
-not combine independent behaviours, speculative cleanup, or a later ticket's
-work. Keep related code, tests, and documentation justified by the documentation
-boundary together when splitting them would leave the repository in a
-misleading or incomplete state. This does not require documentation in every
-increment.
+Make each commit a coherent, committable step that moves the approved ticket
+forward, with its relevant verification. For changed behaviour, keep the
+regression test and the production change that satisfies it together; do not
+combine independent behaviours, speculative cleanup, or a later ticket's
+work. Keep related code, tests, and documentation justified by the
+documentation boundary together when splitting them would leave the
+repository in a misleading or incomplete state. This does not require
+documentation in every increment.
 
-Periodically inspect the pending diff as a reviewer would. If it contains more
-than one independently understandable behaviour, mixes separable concerns, or
-cannot be clearly validated as one increment, stop extending it. Finish and
-verify the smallest coherent slice, commit it, then continue with the next
-slice. Use judgement rather than a file, line, or commit-count threshold.
+Periodically inspect the pending diff as a reviewer would. If it exceeds the
+authorised purpose, bundles separable committable steps, or cannot be
+credibly verified as one increment, stop extending it. Resolve the boundary,
+verify the coherent step, and complete the commit gate before continuing.
+Use judgement rather than a file, line, or commit-count threshold.
 
 Before every commit, apply the repository's coding standards and complete its
 documented test cycle for that increment. This includes unit tests, integration
@@ -261,8 +314,9 @@ run, do not commit it as fully verified: report the command, reason, and
 remaining risk to the user and wait for direction when the repository policy
 requires a clean cycle.
 
-Commit a completed, fully tested iteration before beginning a later separable
-behaviour; do not defer all commits until the ticket is fully implemented.
+Verify that the completed increment was committed before beginning or authorising
+a later step, using the completion gate above. Do not defer all
+commits until the ticket is fully implemented.
 
 ## Verify, review, and hand off
 

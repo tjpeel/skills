@@ -68,8 +68,8 @@ is unavailable, perform that bounded responsibility in the coordinating agent.
 - Use `read_low` to map unfamiliar current behaviour, domain vocabulary,
   decisions, and test seams needed to make the tickets credible.
 - Use `read_medium` to audit a non-trivial draft for vertical slicing,
-  dependency cycles, session-sized scope, omissions, and criteria that could
-  actually fail at the baseline.
+  dependency cycles, session-sized scope, overly broad implementation
+  checkpoints, omissions, and criteria that could actually fail at the baseline.
 - Use `read_high` only for credible migration, data-loss, security,
   concurrency, compatibility, or cross-service risk, including whether risk
   sequencing creates a necessary blocker.
@@ -116,6 +116,15 @@ independently green where possible. Create a final integrate-and-verify ticket
 only when isolated green batches are genuinely impossible, and state that
 exception in the ticket.
 
+Keep ticket size achievable as well as useful. A vertical slice is a bounded
+capability or scenario, not necessarily the whole feature. If it cannot fit
+one fresh implementation session, narrow the scenario or choose a smaller
+agreed milestone with meaningful verification and acceptable deferred
+behaviour. Do not inflate a ticket just to cover every layer or edge of a
+feature, or make separate tickets for incidental implementation steps.
+Return an unsettled intermediate policy to specification before marking the
+narrower ticket ready.
+
 Build an acyclic blocker graph. Give every ticket explicit blockers, or `None
 (can start immediately)`. A blocker represents an actual prerequisite, not a
 preferred order. Each acceptance criterion must be observable, unambiguous,
@@ -127,14 +136,29 @@ Keep stale detail out of tickets: do not include file paths or code snippets.
 The only exception is a short, labelled prototype fragment when it is the
 clearest record of a settled state machine, reducer, schema, or type decision.
 
-For a non-trivial ticket, provide a short sequence of observable implementation
-increments, each with its verification seam. These are checkpoints within one
-ticket, not new layer-based tickets or a list of implementation files. State
-the current behaviour at deferred boundaries and name the later ticket that
-changes it. Request a short code comment only where the reason for a deliberate
-limitation would otherwise be unclear. Explain that constraint without
-repeating control flow or implying that the later capability exists. Its
-meaning must remain understandable without the local ticket file.
+For a non-trivial ticket, provide a short sequence of observable
+implementation increments. The ticket delivers the vertical slice; an
+increment is a smaller committable step towards it and need not deliver a
+standalone user capability. It may be necessary preparation, a bounded
+behaviour change or an agreed partial capability. Give each checkpoint one
+verifiable purpose, its regression check and seam, and a commit boundary
+excluding later work. Keep relevant tests and guard rails with each step; it
+must land green with acceptable intermediate behaviour.
+
+Reject a checkpoint that bundles separable committable steps. Also reject a
+split that leaves broken wiring, violates a contract or loses a credible
+test seam; explain the coupling instead. Do not turn every function, test
+case or layer into a checkpoint. Resolve overly broad checkpoints before
+marking the ticket ready, and explain why an atomic batch cannot safely be
+split when that exception applies. The implementer must audit the proposed
+boundaries against actual repository evidence before coding; they are not
+permission to make an oversized commit.
+
+State the current behaviour at deferred boundaries and name the later ticket
+that changes it. Request a short code comment only where the reason for a
+deliberate limitation would otherwise be unclear. Explain that constraint
+without repeating control flow or implying that the later capability exists.
+Its meaning must remain understandable without the local ticket file.
 
 Audit each ticket as an implementation handoff to a fresh agent. Using the
 ticket, linked specification and applicable repository sources, it must be able
@@ -193,7 +217,10 @@ Link to shared definitions rather than duplicating them.>
 
 ## Implementation increments
 
-<For non-trivial work, ordered observable checkpoints and their test seams.>
+<For non-trivial work, ordered committable steps within this ticket: each step's
+verifiable purpose, regression check and seam, acceptable intermediate behaviour
+and boundary excluding later work. Each step need not be a complete vertical
+slice.>
 
 ## Deferred behaviour
 
