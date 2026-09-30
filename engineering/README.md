@@ -8,10 +8,14 @@
 | [`implement`](implement/SKILL.md) | Implements one ready ticket in bounded, tested increments, scrutinises adapted reference code, and runs full checks before review. |
 | [`code-review`](code-review/SKILL.md) | Reviews actual runtime behaviour and the complete local diff, then checks the current delivery slice against approved intent. |
 
-Each handoff preserves failure and recovery behaviour as well as the intended
-success path. The specification defines safe intermediate states; tickets own
-the checks and deferred-boundary explanations needed when each slice lands.
-Implementation completes and verifies one increment before beginning the next.
+Discovery establishes the domain rules and derives the guard rails from them.
+Each handoff preserves those rules, observable outcomes and relevant boundary
+and failure cases without relying on the previous conversation. The
+specification defines acceptable intermediate states; tickets connect the
+slice's contracts, prerequisites and verification for a fresh implementation
+agent. Independent ready tickets can be assigned to separate agents, with one
+owner per ticket and isolated checkouts. Implementation completes and verifies
+one increment before beginning the next.
 Review assesses the code independently of the planning assumptions, then checks
 requirements. Local tickets and specifications support the agent workflow;
 the code, comments and service documentation must remain understandable to a

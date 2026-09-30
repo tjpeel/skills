@@ -89,14 +89,12 @@ acceptance criterion, and applicable change or rollout constraint in the
 specification must be owned by at least one ticket. Reject ticket scope that is
 not supported by the approved specification.
 
-Also audit the state of the system after each ticket lands. Assign ownership
-for failure and recovery paths, startup validation, readiness, and operational
-budgets to the ticket that first introduces the affected behaviour. Do not
-defer its safety or regression coverage to a later feature ticket. If a partial
-path receives real inputs, its current disposition and any eventual retry,
-dead-lettering, ordering or operator consequence must already be settled in the
-specification. Return a gap upstream rather than treating "out of scope" as a
-runtime policy.
+Also audit the state of the system after each ticket lands. The ticket that
+introduces behaviour owns the relevant guard rails, boundary and failure
+outcomes, and their verification. Do not defer its safety to a later feature
+ticket. The specification must already settle how affected actors or inputs
+are handled while a capability is incomplete. Return a gap upstream rather
+than treating "out of scope" as a runtime policy.
 
 Identify necessary prefactoring first. Fold it into the first vertical slice by
 default. Create a separate prerequisite only when it can land green, is
@@ -131,6 +129,22 @@ would otherwise mislead a reader; the comment must explain what happens now
 and what later work adds. Its meaning must remain understandable without the
 local ticket file.
 
+Audit each ticket as an implementation handoff to a fresh agent. Using the
+ticket, linked specification and applicable repository sources, it must be able
+to identify the starting behaviour, intended delta, relevant domain rules and
+contracts, boundary and failure outcomes, exclusions, prerequisites and
+credible verification. Include the slice-specific detail needed to connect
+those sources; do not copy the whole specification. Resolve a missing fact
+from evidence or ask a targeted question and return an unsettled choice
+upstream before marking the ticket ready.
+
+The blocker graph also identifies which tickets can be assigned independently.
+For that frontier, make shared contracts and any integration dependencies
+explicit. A ticket must not depend on another agent's unpublished decisions or
+unfinished changes. Assign one implementation owner per ticket; multiple
+ready tickets may use separate agents and isolated checkouts when their
+dependencies and integration boundaries permit it.
+
 ## Create tickets
 
 Validate the ticket reference and inspect its target directory before writing.
@@ -163,6 +177,12 @@ Write one file for each ticket using this form:
 
 <Only settled detail that a fresh implementation session needs. Omit this
 section when it is empty.>
+
+## Contracts and verification
+
+<The slice's relevant inputs, preconditions, outcomes and effects; boundary or
+failure examples and expected results; and the seams that can verify them.
+Link to shared definitions rather than duplicating them.>
 
 ## Implementation increments
 

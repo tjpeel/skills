@@ -40,6 +40,13 @@ authorise implementing every future feature. Read a sibling ticket only to
 resolve a named dependency or deferred boundary. Confirm what incomplete paths
 do today and what later work changes before coding them.
 
+Check the handoff before editing: can the available sources establish the
+relevant domain rules, valid inputs and preconditions, intended outcomes and
+effects, boundary cases, and credible verification? Investigate missing facts
+in the repository. Ask a targeted question when the remaining gap changes
+observable behaviour or a guard rail. Routine implementation choices that
+preserve those contracts remain the implementer's responsibility.
+
 Do not start when an input has blocking questions, conflicts with an accepted
 decision, has an unresolved blocker, or needs an unrecorded product or design
 choice. Return that choice to `$engineering-decision-discovery` or
@@ -58,8 +65,8 @@ gap before editing.
 
 For new work in a clean working tree, fetch the remote that tracks `main`,
 switch to local `main`, and update it with a fast-forward-only pull from that
-remote. Do not start from a stale
-local `main`, and do not merge or rebase around a failed fast-forward. If
+remote. Do not start from a stale local `main`, and do not merge or rebase
+around a failed fast-forward. If
 `main`, its remote tracking branch, or the fast-forward update is unavailable,
 stop and report the condition to the user.
 
@@ -129,17 +136,15 @@ only. Do not run parallel writers in one working tree.
 Before copying or adapting code from another repository, identify the requested
 alignment and inspect the source in context, including callers, configuration
 and tests. State what will be reused, what will be adapted, and what behaviour
-is excluded. Trace each imported policy to the destination ticket, accepted
-decision or repository requirement. A request to match a convention does not
-implicitly adopt the source's retry loop, startup gate, defaults or lifecycle.
+is excluded. Compare the source's assumptions, responsibilities, contracts and
+effects with the destination's agreed guard rails. Trace each imported policy
+to the destination ticket, accepted decision or repository requirement. A
+request to match a convention does not implicitly adopt unrelated behaviour.
 
-Check destination-specific effects: data and naming conventions, dependency
-versions, identifiers, time and precision rules, concurrency and ownership,
-timeouts, retries, readiness, resource scope, security and deployment wiring.
-Keep useful mechanisms without importing unrelated policy or dependencies.
-Preserve destination service identities rather than mechanically renaming
-source strings. An unsettled behavioural difference goes upstream; a routine
-adaptation that preserves approved behaviour does not need fresh permission.
+Adapt the mechanism to the destination's actual contracts and environment;
+do not rely on renamed code or copied defaults as evidence of alignment. An
+unsettled behavioural difference goes upstream; a routine adaptation that
+preserves approved behaviour does not need fresh permission.
 
 Verify the resulting destination behaviour at its own test seam, especially
 failure and recovery paths. Passing source tests or visual similarity is not
@@ -196,19 +201,19 @@ complete only when its relevant checks pass. Do not weaken, delete, or skip an
 existing test merely to make the suite pass unless the approved change
 explicitly supersedes its behaviour.
 
-Choose tests that can expose incorrect behaviour rather than confirm the
-implementation's assumptions. Where relevant, cover a transient failure then
-recovery, retry exhaustion, invalid enabled configuration before work begins,
-continuous processing after success, external input limits, time boundaries,
-ownership loss and cancellation. Verify the next action and durable effects,
-not just an exception or a helper's return value.
+Derive regression cases from the ticket's acceptance criteria and relevant
+domain rules, contracts and guard rails. Use conditions and expected results
+that can distinguish a correct outcome from a plausible wrong implementation.
+Cover material boundary and failure cases, including the effects that must not
+occur and how incomplete work is resolved where relevant. Verify the observable
+outcome and next action, not just an exception or a helper's return value.
 
 At a deliberately incomplete boundary, add the short explanation requested by
 the ticket when it prevents misunderstanding. Describe the actual current
-outcome and later capability in terms a reader can understand without local
-planning files. For example, leaving a message undeleted can still mean retry,
-recipient-group blocking and eventual dead-lettering; a comment must not imply
-indefinite safe retention. Do not add speculative scaffolding for later work.
+outcome, its consequences and later capability in terms a reader can understand
+without local planning files. A comment must explain what the partial
+implementation does, rather than imply that it already provides the final
+behaviour. Do not add speculative scaffolding for later work.
 
 ## Commit logical, tested increments
 

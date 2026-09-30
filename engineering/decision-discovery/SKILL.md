@@ -68,6 +68,13 @@ State the decision to make, its affected users or systems, known constraints,
 and what is explicitly outside the discussion. Keep a design tree of decisions
 and their prerequisites. A settled decision may expose later decisions.
 
+Build a small domain model from the evidence: the actors, concepts and
+relationships involved; who owns each decision or effect; the rules that must
+remain true; and the observable outcomes. Walk through a representative current
+case and the proposed change using the same terms. Ask targeted questions where
+the evidence leaves meaning, responsibility or acceptable outcomes unclear.
+The model should expose decisions, not prescribe an implementation structure.
+
 Use the project's existing glossary and ADR conventions. When the discovery
 needs to create or update domain context, read
 [the repository-context guidance](references/repository-context.md). When it
@@ -91,26 +98,23 @@ Record each agreed decision as: the decision, its rationale, alternatives when
 material, evidence, consequences, and remaining uncertainty. Do not turn a
 preference into a fact or imply agreement where the user has not made one.
 
-For a background worker, migration, or multi-stage rollout, test the design
-with a small state-and-outcome table before calling it settled. Cover the
-relevant success, invalid configuration, transient failure, exhausted retry,
-ownership loss, timeout, cancellation, and restart paths. For each, identify
-the next state, durable effects, retry owner and budget, readiness signal, and
-operator recovery. Distinguish a process that is alive from one able to do its
-work. Ask about unresolved choices; do not invent policy to complete the table.
+Derive the guard rails from that domain model. Ask what inputs or actions are
+allowed, what makes an outcome valid, what must never happen, and who resolves
+an incomplete or failed outcome. Walk through relevant boundary and failure
+cases rather than following a fixed technology checklist. When state or
+external effects matter, record the trigger, outcome, effects and recovery in
+a small table. Ask about unresolved policy; do not invent it to fill the table.
 
-Check the operational meaning of agreed limits. Concurrency, batch size,
-long-poll wait, error backoff, and successful-work pacing are different
-controls; use a simple backlog or processing-budget calculation when their
-interaction could contradict the intended outcome. Verify external contract
-limits and parsing assumptions from authoritative documentation rather than
-leaving them to implementation.
+Investigate constraints that can be measured or documented. Use a small
+calculation or concrete counterexample when interacting limits could defeat
+the agreed outcome, and verify external contracts from authoritative sources.
+Ask the user to choose only where evidence cannot settle an intentional policy
+or trade-off. Match the depth of modelling to the change's uncertainty and risk.
 
 When another repository supplies an example, establish what should align:
-contract, deployment convention, or implementation mechanism. Identify which
-behaviour and policy are deliberately excluded, especially retries, startup
-gates, defaults, and ownership. An example is evidence for a choice, not
-agreement to adopt its entire lifecycle.
+contract, convention, or implementation mechanism. Identify the assumptions
+behind the example and which behaviour or policy should carry over. An example
+is evidence for a choice, not agreement to adopt its entire lifecycle.
 
 ## Preserve terminology and decisions
 
@@ -144,8 +148,12 @@ named external fact or decision. Return a concise decision record containing:
   ADRs, when they exist;
 - deferred questions, assumptions, and evidence gaps;
 - test seams or behavioural boundaries worth preserving for the later spec;
-- settled failure and recovery transitions, operational budgets, and any
-  boundaries on reuse from reference implementations.
+- the relevant domain relationships, invariants, boundary and failure outcomes,
+  verified constraints, and any boundaries on reuse from reference implementations.
+
+Check that another session can reconstruct the reasoning and next decisions
+from this record and its available sources, without relying on unstated answers
+from the conversation. Name missing evidence and the question it blocks.
 
 This handoff is an input to `$engineering-specification`. Do not write a full
 specification, publish to an issue tracker, or create implementation tickets

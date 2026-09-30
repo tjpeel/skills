@@ -108,8 +108,7 @@ responsibility in the coordinating agent.
   standards and runtime wiring, excluding requirements mappings, planning
   artifacts and the implementer's explanation. Then supply intent evidence
   to reconcile its conclusions. Keep the two assessments separate until
-  aggregation so shared assumptions do not
-  hide a defect.
+  aggregation so shared assumptions do not hide a defect.
 
 The coordinator owns the fixed-point decision, final assessment, user
 questions, and any repair. Read-only delegates do not alter code, contact
@@ -117,27 +116,26 @@ reviewers, or make external writes.
 
 ## Review the change
 
-First trace the actual behaviour from public entry points through side effects,
-failure handling and recovery using code, tests and runtime configuration.
-Do this without relying on the implementer's narrative or treating the planning
-artifacts as proof of correctness. For the changed paths, check relevant:
+First trace the actual behaviour from public entry points through effects,
+failure handling and recovery using code, tests and applicable configuration.
+Identify the actors, inputs, state changes, contracts and invariants affected
+by the diff. Derive concrete boundary and failure scenarios from those paths
+and the surrounding system. Check who can act, which conditions permit effects,
+what happens when an operation is incomplete, and how the next action follows.
+Investigate interacting limits or imported assumptions when they create a
+credible failure scenario. Compare comments and docs with executable behaviour.
 
-- recovery after a transient error versus permanent give-up, retry budgets,
-  cancellation, ownership loss and readiness while work is paused;
-- loop pacing after success, empty reads and failures, including the effective
-  throughput implied by defaults;
-- configuration validation before activation or work consumption, including
-  placeholders and disabled modes;
-- external API input constraints, offset and precision rules, persistence
-  round trips, and immutable-identity comparisons; and
-- actual retry, ordering and dead-letter consequences of deferred paths,
-  borrowed policy, service identifiers, and misleading comments or docs.
+Do this without relying on the implementer's narrative or treating the planning
+artifacts as proof of correctness. If an expected domain outcome is uncertain,
+use available repository evidence or ask a targeted question while continuing
+the review of unaffected paths. Distinguish a verified technical defect from a
+requirements question; do not invent policy to resolve the latter.
 
 Then check requirements. Compare each in-scope required behaviour, accepted
 decision, observable acceptance criterion, and applicable rollout or change
-constraint with the diff and its verification. Report missing, partial, or apparently
-incorrect behaviour; scope that the source did not ask for; and tests that do
-not actually observe the intended behaviour.
+constraint with the diff and its verification. Report missing, partial, or
+apparently incorrect behaviour; scope that the source did not ask for; and
+tests that do not actually observe the intended behaviour.
 
 Assess test coverage separately from whether tests pass. Map every new or
 changed observable behaviour to the added or updated test that exercises it at

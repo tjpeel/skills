@@ -61,15 +61,15 @@ do not expose private artifact contents in external comments.
 3. Ask `read_high` to evaluate the complete diff. Its initial packet contains raw code, runtime wiring, repository standards and the behaviour map, excluding planning artifacts, requirements mappings and the author's explanation. Then supply intent and coverage evidence to reconcile its conclusions. It should report only correctness, regression, security, compatibility, concurrency, or missing-test risks.
 4. Use a separate `read_high` handoff only when a finding concerns a plausible high-impact security, data-loss, migration, concurrency, or cross-service failure.
 
-In changed workers and integration boundaries, scrutinise relevant transient
-failure and recovery, exhausted retries, readiness, lease ownership, timeout
-and cancellation; successful-work pacing and effective throughput; startup
-validation of enabled settings and placeholders; external identifier limits,
-timestamp offsets and storage precision; and actual retry, ordering and DLQ
-effects of deferred paths. Inspect adapted reference code for imported policy
-and incorrect destination identifiers. Check comments against executable
-behaviour. Apply these checks where the diff creates a credible failure path,
-not as a demand to redesign unrelated code.
+Derive the technical checks from the changed paths and surrounding system:
+identify affected actors, inputs, state changes, effects, contracts and
+invariants, then walk concrete boundary and failure scenarios. Check which
+conditions permit effects and how incomplete work is resolved. Investigate
+interacting limits, adapted reference code and partial capabilities where they
+create a credible failure path. Check comments against executable behaviour.
+If a domain outcome remains uncertain, research it or ask a targeted question
+while reviewing unaffected paths; do not invent policy or present that
+uncertainty as a verified defect.
 
 Assess test coverage by whether tests expose those outcomes, separately from
 whether the suite passes. Inspect the required-check evidence for the pinned

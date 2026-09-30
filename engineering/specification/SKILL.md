@@ -166,33 +166,26 @@ decision-rich type, schema, state-machine, or reducer fragment only when a
 prototype is the clearest record of a settled constraint. Label its source and
 trim it to that constraint.
 
-For stateful or asynchronous work, turn the settled lifecycle into a compact
-behaviour table: trigger or current state, next action, durable effect,
-retry or recovery, and observable evidence. Include relevant transient and
-permanent failures, exhausted budgets, ownership loss, cancellation, and
-restart. State when work becomes ready and what health signals prove. A
-promise such as "retry safely" is insufficient if its stopping condition or
-recovery owner is unknown.
+Translate the domain model and settled guard rails into contracts an
+implementer can apply: who may act, which inputs and preconditions are valid,
+the observable result, effects and invariants, and what happens outside the
+successful case. Include relevant boundary examples with their expected
+outcomes. For stateful behaviour, use a compact trigger-and-outcome table where
+it clarifies transitions, incomplete work and recovery responsibility.
+State the condition, observable result and any effects that must not occur;
+an adjective such as "safe" or "valid" alone does not define a contract.
 
-Specify boundary rules where they affect the contract: external identifier
-lengths and character sets, timestamp offsets and storage precision,
-normalisation before identity comparison, and validation before side effects.
-Separate invalid service configuration from invalid work items. Required
-configuration, including placeholder values, must be checked at the agreed
-activation boundary so a configuration error cannot consume or discard valid
-work. Preserve intentionally disabled deployment modes where agreed.
+Derive technical constraints from those contracts and the affected repository
+and integrations. Record where they are enforced and what invalid conditions
+cause before effects occur. Make interacting limits explicit when they could
+defeat an outcome; distinguish verified constraints from estimates. Do not
+import a reference implementation's policy without a settled reason to adopt it.
 
-For loops and leases, distinguish successful-work pacing, empty reads and
-error backoff; identify timeout and ownership budgets and the consequence of
-expiry. Record estimates as estimates. Use representative backlog or timing
-calculations to expose an unintended throughput cap or an impossible budget.
-
-When delivery spans tickets, specify the safe intermediate behaviour as well
-as the final outcome. Explain what happens to inputs for deferred paths,
-including retry, eventual dead-lettering, ordering, recovery and activation
-constraints where applicable. An unresolved intermediate policy blocks approval
-even when the final design is settled. Record the agreed boundary of any
-reference implementation being reused; its policies are not implicit defaults.
+When work will land in stages, specify the acceptable intermediate behaviour
+as well as the final outcome. Explain how each affected actor or input is
+handled while a capability is deferred, any resulting effects and recovery,
+and what makes the stage safe to use. An unresolved intermediate policy blocks
+approval even when the final design is settled.
 
 ## Produce the local specification
 
@@ -202,11 +195,14 @@ it was saved and ask for approval without reproducing the document in chat. Do
 not mark it approved while a question affecting scope, required behaviour, a
 contract, or acceptance remains unresolved.
 
-Before seeking approval, trace each required outcome and material failure or
-recovery transition to an observable acceptance criterion and credible test
-seam. Audit timing, configuration and intermediate rollout behaviour alongside
-the happy path. Use the bounded independent audit described above when it would
-materially improve confidence; resolve contradictions before presenting the draft.
+Before seeking approval, trace each required outcome and material boundary or
+failure case to an observable acceptance criterion and credible test seam.
+Check that a fresh session can understand the actors, domain rules, contracts,
+intermediate states and verification from the specification and its linked
+sources. A required behaviour must not depend on an answer retained only in the
+conversation. Use the bounded independent audit described above when it would
+materially improve confidence. Resolve omissions through repository evidence
+or a targeted question; do not silently turn a gap into a default.
 
 After explicit approval, change the saved file's status to `approved`. Hand its
 local path to
