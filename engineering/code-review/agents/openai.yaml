@@ -1,6 +1,6 @@
 interface:
   display_name: "Engineering code review"
   short_description: "Review a local engineering diff against intent and risk"
-  default_prompt: "Use $engineering-code-review to review this complete local diff for runtime defects, then check its delivery slice against the available ticket or specification."
+  default_prompt: "Use $engineering-code-review to review this complete local diff for runtime defects, then check its delivery slice against the explicitly selected ticket or specification."
 policy:
   allow_implicit_invocation: false

@@ -38,16 +38,26 @@ any working-tree changes separately; they are not part of the published PR.
 
 ## Find local intent when available
 
-Prefer a ticket path supplied by the user. Otherwise inspect `.tickets/` in
-the checkout without requiring it to exist. Match the branch, PR title and
-stated outcome to a parent reference and numbered ticket; use a match only
-when unambiguous. Resolve its specification link from the ticket's directory
-and read the target when available. The ticket selects the current delivery
+Use only a ticket path or specification slice explicitly supplied for this
+review. New process files live beneath `.sdlc/work/<reference>/`, where the
+reference is an opaque folder key, not a tracker identifier. Explicit legacy
+inputs in `.tickets/` or `.specifications/` remain valid during transition.
+Do not scan those directories or infer a task from a branch, PR title, recency,
+or matching reference. A reference alone does not select a file.
+
+Resolve a selected ticket's specification link from the ticket's directory
+and read the target when available inside this checkout. Read other process
+files only when directly linked and relevant to the slice, a named dependency,
+or a deferred boundary. Do not load unselected files in the same work folder
+or follow unrelated work. Check source claims against current code; surface
+stale or conflicting intent. Give delegates the same selected paths and input
+boundary. The ticket selects the current delivery
 slice; the specification supplies contract and shared invariants. Check deferred
 behaviour against the actual intermediate runtime outcome, without demanding
 features explicitly assigned to later tickets.
 
-These local artifacts supplement the review; their absence, ambiguous match or
+These local artifacts are uncommitted process inputs, not ongoing
+documentation. They supplement the review; their absence, unselected path or
 broken links do not block it. State the requirements limitation and use the PR's
 stated intent, code, tests and repository contracts for the available assessment.
 Do not require private planning artifacts to be committed or shared. Findings
@@ -57,7 +67,7 @@ do not expose private artifact contents in external comments.
 ## Workflow
 
 1. Read applicable repository instructions, coding standards, service contracts and required check commands. Trace changed code from entry points through runtime wiring, side effects and recovery before relying on the author's explanation or planning artifacts.
-2. For a non-trivial review, run `read_low` and `read_medium` in parallel: one maps behaviour and ownership; the other locates any matching local ticket and checks stated intent and test coverage.
+2. For a non-trivial review, run `read_low` and `read_medium` in parallel: one maps behaviour and ownership; the other checks the explicitly supplied intent sources and test coverage.
 3. Ask `read_high` to evaluate the complete diff. Its initial packet contains raw code, runtime wiring, repository standards and the behaviour map, excluding planning artifacts, requirements mappings and the author's explanation. Then supply intent and coverage evidence to reconcile its conclusions. It should report only correctness, regression, security, compatibility, concurrency, or missing-test risks.
 4. Use a separate `read_high` handoff only when a finding concerns a plausible high-impact security, data-loss, migration, concurrency, or cross-service failure.
 

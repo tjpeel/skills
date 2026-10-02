@@ -15,8 +15,10 @@ ticket decomposition.
 
 Code is the documentation of implemented functionality. Do not generate
 additional docs by default during implementation. Specifications and local
-tickets remain the planning inputs; they do not imply a need for new ADRs,
-context files, feature guides or implementation summaries.
+tickets are uncommitted process inputs, not ongoing documentation. Do not
+refresh them to describe implemented behaviour or include them in commits.
+They do not imply a need for new ADRs, context files, feature guides or
+implementation summaries.
 
 Prefer clear names, structure and tests. Use a focused comment for non-obvious
 rationale or a constraint close to the code it affects. Create or update a
@@ -43,17 +45,37 @@ skill with `$`, invoke it where supported; otherwise read that source skill's
 
 ## Establish the implementation boundary
 
-Read the input in full and resolve its repository root before changing files.
+Require the current task's explicitly supplied ticket path or approved
+specification slice. A work reference selects an opaque folder key in
+`.sdlc/work/<reference>/`, not every file beneath it. If only a reference was
+supplied, ask for the input file or bounded slice rather than loading the
+folder. Do not infer inputs from branch names, titles, recency, or matching
+references. Read the selected input in full and resolve its repository root
+before changing files.
 If the working tree contains unrelated changes, identify them and ask the user
 to isolate the ticket or supply a different fixed point before editing. Do not
 claim a review covers only this ticket when its diff includes other work.
 
-For a ticket, confirm that it is in `.tickets/`, has status `ready-for-agent`,
-and that every listed blocker is complete. Read its source specification,
-applicable repository guidance, relevant existing context, and accepted
-ADRs. Treat the specification's required behaviour, accepted decisions,
-acceptance criteria, change constraints, and agreed test seams as approved
-intent. Establish actual behaviour from code, tests and configuration. Surface
+For a ticket, confirm that its path is beneath the invoking repository's
+`.sdlc/work/<reference>/tickets/`, has status `ready-for-agent`, and that every
+listed blocker is complete. Explicitly supplied legacy tickets in `.tickets/`
+and specifications in `.specifications/` remain valid during transition; do
+not discover or migrate them. Resolve the ticket's source-specification link
+from its own directory, verify it stays inside this repository, and read that
+approved specification. Check that any stated work reference agrees with the
+selected folder; it has no required tracker or naming format.
+
+Read only selected process inputs and directly linked sources relevant to
+this slice or its named blockers and deferred boundaries. Do not scan work or
+legacy directories, open unrelated files in the same folder, or follow links
+to unrelated work. A missing source is a gap to report, not a reason to pick
+another specification. Give delegates the same explicit inputs and boundary.
+
+Read applicable repository guidance and relevant context or accepted ADRs
+identified by that guidance or the selected sources. Treat the specification's
+required behaviour, accepted decisions, acceptance criteria, change constraints,
+and agreed test seams as approved intent. Establish actual behaviour from code,
+tests and configuration. Surface
 a contradiction with supporting prose rather than silently trusting it.
 
 Use the ticket to select the behaviour due in this invocation. The full
@@ -96,16 +118,24 @@ Never commit directly to `main`. If the current branch is `main`, create or
 switch to the intended ticket branch before changing or committing files. All
 implementation commits belong on that ticket branch.
 
-For a new ticket, take the exact value of its `**Parent reference:**` detail and
-append a concise kebab-case description of the ticket outcome. Create the new
-branch from the updated `main` commit using this form:
+The work reference is a folder key and may contain characters invalid in a Git
+branch. Preserve it in process paths and ticket metadata. For a new ticket,
+read `**Work reference:**` (or legacy `**Parent reference:**`) and use it
+unchanged as a branch prefix only when the resulting branch is valid. Otherwise
+choose a short branch-safe rendering separately, without renaming the work
+folder or changing its reference. Validate it with
+`git check-ref-format --branch`. Create it from the updated `main` commit using
+this form:
 
 ```text
-<parent-reference>-<short-ticket-description>
+<branch-safe-reference>-<short-ticket-description>
 ```
 
-For example, a ticket with parent reference `MO-123` and outcome “Add read
-path” uses `MO-123-add-read-path`. Derive the description from the ticket's
+Treat references and branch names as literal data in filesystem and shell
+operations, not executable text.
+
+For example, work reference `read-cache` and outcome “Add read
+path” uses `read-cache-add-read-path`. Derive the description from the ticket's
 outcome title rather than its sequence number or source-specification name.
 Keep it short, lowercase, and limited to letters, numbers, and hyphens. If the
 resulting branch already exists, do not repurpose it or silently choose a
@@ -313,6 +343,13 @@ developing. Resolve failures before committing. If a documented check cannot
 run, do not commit it as fully verified: report the command, reason, and
 remaining risk to the user and wait for direction when the repository policy
 requires a clean cycle.
+
+Stage only the implementation files for that increment. Never stage process
+inputs from `.sdlc/work/`, `.specifications/`, or `.tickets/`, including with a
+force-add or broad staging command. Inspect the staged paths before committing.
+Do not untrack existing files, edit ignore rules, or maintain planning inputs
+as part of implementation. An unrelated local process folder is not permission
+to load its contents.
 
 Verify that the completed increment was committed before beginning or authorising
 a later step, using the completion gate above. Do not defer all

@@ -1,6 +1,6 @@
 interface:
   display_name: "Engineering decision discovery"
   short_description: "Resolve a design before writing its specification"
-  default_prompt: "Use $engineering-decision-discovery to resolve and record the decisions for this proposed change."
+  default_prompt: "Use $engineering-decision-discovery to resolve the decisions for this proposed change using only its selected inputs; save a handoff under its work reference only if requested."
 policy:
   allow_implicit_invocation: false

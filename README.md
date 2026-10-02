@@ -146,8 +146,16 @@ choices, `specification` records intended changes and acceptance criteria,
 repository, and `implement` completes one ready ticket or approved specification
 slice before `code-review` independently checks it against intent and repository
 risk.
-Specifications and local tickets are deliberate planning outputs. Code
-documents implemented functionality; do not generate additional docs by
+New engineering process files live in `.sdlc/work/<reference>/` in the invoking
+repository; the reference is an arbitrary folder key. Specifications and local
+tickets are uncommitted inputs to the selected task, not ongoing documentation.
+Skills read only explicitly selected process inputs and directly linked
+relevant sources; they do not discover intent from other work folders or branch
+names. Explicit `.specifications/` and `.tickets/` inputs remain supported for
+now. See the [engineering workflow conventions](engineering/README.md) for
+layout, ownership, input boundaries, and local Git exclusion.
+
+Code documents implemented functionality; do not generate additional docs by
 default during implementation. ADRs and context files preserve rationale or
 constraints unavailable from code and signpost the relevant
 implementation, rather than maintaining a parallel explanation of behaviour.

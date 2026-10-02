@@ -20,8 +20,10 @@ review-only skill: it does not edit code, commit, push, publish comments, or
 approve a pull request. Use `$pr-review` for a colleague's pull request.
 
 Code documents implemented functionality. Do not request additional docs by
-default. Specifications and local tickets are planning outputs; missing ADRs,
-context files or functionality guides alone are not defects. Request a new
+default. Specifications and local tickets are uncommitted process inputs, not
+ongoing documentation; do not require them to be committed, refreshed, or
+maintained after delivery. Missing ADRs, context files or functionality guides
+alone are not defects. Request a new
 document only for an explicit requirement or material knowledge gap that code
 cannot convey. Report misleading claims or broken signposts in relevant docs
 when they could cause a concrete error in a future change or operation. Prefer
@@ -53,40 +55,44 @@ them to the ticket.
 
 ## Find requirements and standards sources
 
-Prefer the ticket or specification path supplied by the user. Otherwise look
-for an unambiguous matching local ticket before choosing a specification.
+Use only the ticket path or approved specification slice explicitly supplied
+for this review. New process inputs belong in
+`.sdlc/work/<reference>/specification.md` and
+`.sdlc/work/<reference>/tickets/`; the reference is an opaque folder key with
+no required tracker or naming format. Explicitly supplied legacy files in
+`.specifications/` and `.tickets/` remain valid during transition. Do not infer
+inputs from branch names, titles, recency, or matching references, or scan those
+directories for intent. A folder reference alone does not select an input;
+report the missing source and continue the technical review.
 
-When the branch starts with the name of a direct child directory of `.tickets/`
-followed by `-`, or equals that directory name, treat that directory as the
-candidate parent reference. Within it, try to identify the implementation
-ticket whose numbered filename and outcome title match the branch suffix. Read
-that ticket for its acceptance criteria, decisions, constraints, and link to
-the source specification. Use it only when the match is unambiguous; do not
-guess from a ticket-looking branch name or borrow guidance from a sibling
-ticket. Resolve links from the ticket's own directory and read the approved
-source specification in full. The ticket selects the current delivery slice;
-the specification constrains its contracts and shared invariants. Do not report
-an explicitly deferred feature as missing from this ticket, or excuse a defect
-in its current partial behaviour because another ticket will extend it.
+For a selected ticket, read its acceptance criteria, decisions, constraints,
+and source-specification link. Resolve links from the ticket's own directory;
+verify the source is inside the invoking repository and read the approved
+specification in full. Read other process files only when directly linked and
+relevant to the current slice, a named dependency, or a deferred boundary.
+Do not load unselected files in the same folder or follow unrelated work.
+Give every delegate the same explicit source paths and input boundary.
 
-Without a ticket, prefer a supplied specification path, then look for a matching
-approved file in `.specifications/` using the branch outcome and available
-reference. Specifications belong in `.specifications/`; do not treat a
-document elsewhere as an approved specification.
+The ticket selects the current delivery slice; the specification constrains
+its contracts and shared invariants. Do not report an explicitly deferred
+feature as missing from this ticket, or excuse a defect in its current partial
+behaviour because another ticket will extend it. Check source claims against
+current code and surface stale or conflicting intent instead of adopting it.
 
-Read applicable repository guidance, relevant existing context, accepted
-ADRs, and the relevant existing code and tests. Treat a Markdown
+Read applicable repository guidance, relevant context and accepted ADRs
+identified by that guidance or the selected sources, and the relevant existing
+code and tests. Treat a Markdown
 `CODING_STANDARDS.md` at the repository root as the canonical coding-standards
 file. If it is absent, look for the same name under `docs/`, then for
 `CONTRIBUTING.md`, `STYLEGUIDE.md`, or `STYLE_GUIDE.md` at the root or under
 `docs/`. Read only files that actually state applicable coding standards.
 
-If no approved specification can be found, still run the technical review
-and report which requirements could not be assessed. A matching ticket can
-establish its stated intent, but does not prove approval of a missing source.
-If a candidate ticket exists but its source-specification link is missing or
-does not resolve beneath `.specifications/`, report that limitation rather than
-substituting another source.
+If no approved specification was supplied or linked, still run the technical
+review and report which requirements could not be assessed. A selected ticket
+can establish its stated intent, but does not prove approval of a missing source.
+If the selected ticket's source-specification link is missing, is outside the
+repository, or does not resolve, report that limitation rather than searching
+for a substitute. This review never changes process files or ignore rules.
 
 ## Delegation profiles
 
@@ -101,8 +107,9 @@ and required output. If the equivalent is unavailable, perform that bounded
 responsibility in the coordinating agent.
 
 - Use `read_low` as a locator. It inventories changed behaviour and tests,
-  identifies the specification, matching ticket, standards sources, and maps
-  each acceptance criterion to the most relevant changed code or test. It does
+  verifies the selected specification and ticket links, locates standards
+  sources, and maps each acceptance criterion to the most relevant changed code
+  or test. It does
   not judge the implementation.
 - Use `read_medium` only to check a bounded requirements-to-diff trace or
   verification and coverage evidence when that cheaper audit will make the

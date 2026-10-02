@@ -1,4 +1,4 @@
 interface:
   display_name: "PR Review"
   short_description: "Review a pull request for actionable risks"
-  default_prompt: "Use $pr-review to review the complete pull request for actionable defects, using a matching local ticket when available and continuing when planning files are absent."
+  default_prompt: "Use $pr-review to review the complete pull request for actionable defects, using only explicitly selected planning inputs and continuing the technical review when they are absent."

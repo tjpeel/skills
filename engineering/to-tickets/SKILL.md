@@ -12,8 +12,9 @@ plan, conversation, draft, unapproved specification, or a specification without
 a local path, return it to `$engineering-specification` rather than creating
 tickets.
 
-Local tickets are this workflow's planning output. They record intended changes
-and verification, while code documents implemented functionality. Do not add
+Local tickets are uncommitted process inputs for the selected work. They record
+intended changes and verification; do not maintain them as ongoing system
+documentation. Code documents implemented functionality. Do not add
 documentation tasks by default. Include one only when the approved specification
 requires it and it fills a material knowledge gap, provides a useful signpost
 or satisfies an explicit user or repository requirement. Do not ask an
@@ -34,24 +35,43 @@ Work only in the Git repository from which this skill was invoked. Resolve its
 root before creating files; if there is no Git root, stop and ask the user for
 a repository. Do not create, update, or publish tickets in an external tracker.
 
-Ask for a ticket reference before creating tickets if the user has not supplied
-one.
-It must be a non-empty, single directory name: it cannot be `.` or `..`, and
-cannot contain a path separator. Preserve it exactly, so references such as
-`MO-123` are valid. Use it as the parent folder in this exact layout:
+Use the work reference explicitly selected for this task, or the reference in
+the supplied `.sdlc/work/<reference>/specification.md` path. If neither supplies
+it, ask before writing. A conflicting reference must be resolved with the user.
+The reference is an opaque folder key, not a tracker identifier: any non-empty
+single folder name is valid except `.` or `..`, path separators, or control
+characters. Preserve it exactly, with no required format or case conversion.
+Do not derive it from a branch, title, or another work item. Confirm the resolved
+output stays beneath `.sdlc/work/`, including when paths are symlinks.
+Treat the key as literal data in filesystem and shell operations.
+
+Use this layout:
 
 ```text
-<repository-root>/.tickets/<ticket-reference>/
+<repository-root>/.sdlc/work/<reference>/tickets/
   01-<short-kebab-case-title>.md
   02-<short-kebab-case-title>.md
 ```
 
 Number tickets in dependency order, with at least two digits. A ticket may name
-only a lower-numbered ticket as a blocker. Never alter `.gitignore`. If the
-reference directory exists and contains anything, show the collision and ask
-the user for a new ticket reference. If it does not exist, or exists but is
-empty, create the new ticket set there. Never merge, replace, overwrite, or
-partially reuse an existing ticket set.
+only a lower-numbered ticket as a blocker. This skill owns the new ticket files
+only. An existing specification or decision record in the work folder is
+expected; check the `tickets/` subdirectory for collisions. Create the set if
+that subdirectory is absent or empty. If it contains anything, report the
+collision and ask for a new work reference or explicit direction; do not merge,
+replace, overwrite, or partially reuse the existing set. Leave it untouched
+while the collision is unresolved.
+
+Before writing, ensure `/.sdlc/work/` is locally ignored. If it is not already
+ignored, append that rule to the Git exclude file resolved by
+`git rev-parse --git-path info/exclude`, preserving existing entries. Never
+alter `.gitignore`, stage, or commit process files. If exclusion cannot be
+established or any output target is already tracked, report the condition
+rather than writing or silently untracking it.
+
+Explicitly supplied legacy specifications in `.specifications/` and tickets in
+`.tickets/` remain valid inputs during transition. Do not discover, migrate, or
+write new files in those directories; new ticket sets use `.sdlc/work/`.
 
 ## Delegation profiles
 
@@ -74,7 +94,7 @@ is unavailable, perform that bounded responsibility in the coordinating agent.
   concurrency, compatibility, or cross-service risk, including whether risk
   sequencing creates a necessary blocker.
 - Use `write_medium` as the sole local writer when delegation is warranted.
-  Its scope is the new files beneath `.tickets/<ticket-reference>/`; it must
+  Its scope is the new files beneath `.sdlc/work/<reference>/tickets/`; it must
   not rewrite the agreed decomposition or overwrite existing files.
 
 The coordinator owns reference validation, user questions, the decomposition,
@@ -83,11 +103,17 @@ only.
 
 ## Build the ticket set
 
-Read the approved saved specification in full. Confirm that its status is
-`approved`, it has no blocking questions, and its path belongs to the invoking
-repository. Check the repository, glossary, decisions, and tests only to fill
-material evidence gaps; do not repeat investigation already captured by the
-specification. Return an unsettled product or design choice to
+Read the explicitly supplied approved specification in full. Confirm that its
+status is `approved`, it has no blocking questions, and its path belongs to the
+invoking repository. If no path was supplied, ask for it; do not search for a
+specification. Read only that input and directly linked relevant sources. Do
+not scan `.sdlc/work/`, `.specifications/`, `.tickets/`, or other files in the
+work folder for context. Apply the same boundary to delegates.
+
+Check applicable repository guidance, affected code, and tests only to fill
+material evidence gaps or verify source claims; do not repeat settled research
+or treat old prose as proof of current behaviour. Surface stale or conflicting
+intent instead of adopting it. Return an unsettled product or design choice to
 `$engineering-decision-discovery` or `$engineering-specification` instead of
 inventing it.
 
@@ -178,19 +204,18 @@ dependencies and integration boundaries permit it.
 
 ## Create tickets
 
-Validate the ticket reference and inspect its target directory before writing.
-If the directory exists and contains anything, show the collision and ask for a
-new reference; do not show a preview as a substitute for writing. Otherwise,
-write the ticket set immediately. A missing `.tickets/` directory, or an empty
-parent reference directory, is not a blocker and may be created as part of this
-write.
+Validate the selected work reference and inspect only its `tickets/` target for
+collisions. If absent or empty, write the ticket set immediately after the
+local-exclusion check. A missing `.sdlc/work/` or work folder may be created as
+part of this write. Do not show a preview as a substitute for writing, and do
+not load other files merely because the work folder already exists.
 
 Write one file for each ticket using this form:
 
 ```md
 # 01: <Outcome-oriented title>
 
-**Parent reference:** <ticket-reference>
+**Work reference:** <reference>
 **Source specification:** [<title>](<relative-path-to-approved-specification>)
 **Status:** ready-for-agent
 **Blocked by:** None (can start immediately)

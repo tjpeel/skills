@@ -11,8 +11,9 @@ fresh implementation session. Synthesize the available conversation, decision
 record, and repository evidence. Do not restart design discovery or interview
 the user for information already established.
 
-The local specification is this workflow's planning output. It records intended
-changes and acceptance criteria; code documents implemented functionality. Do
+The local specification is an uncommitted process input. It records intended
+changes and acceptance criteria for this work, not ongoing documentation of
+the implemented system; code documents implemented functionality. Do
 not generate additional context files, ADRs or functionality guides by default.
 Link to existing supporting records for rationale or constraints that code
 cannot convey, rather than copying their content into another explanation.
@@ -48,23 +49,32 @@ that bounded responsibility in the coordinating agent.
   concurrency, compatibility, or cross-service risk.
 - Use `write_medium` as the sole local writer only when the user authorises
   creating or updating the specification file. It must not expand the agreed
-  scope, turn unresolved questions into decisions, or overwrite an existing
-  artifact.
+  scope, turn unresolved questions into decisions, or replace an unselected
+  artifact. An update is limited to the explicitly selected specification.
 
 The coordinator owns scope decisions, targeted user questions, and external
 actions. Read-only handoffs return evidence and audit findings only.
 
 ## Establish the source of truth
 
-Read the supplied decision record, specification draft, issue, or conversation
-in full. A document in `.handoffs/` may provide transient context, but is not a
-long-term source artifact: the specification replaces it as the durable record
-for the work. Read applicable repository guidance, `CONTEXT.md` or
-`CONTEXT-MAP.md`, and accepted ADRs. Use canonical domain terminology without
-copying the glossary into the specification. Treat accepted ADRs as constraints;
-a proposed ADR is non-binding unless its underlying decision was separately
+Read the current request and the explicitly supplied decision record,
+specification draft, issue, or conversation in full. A supplied `.handoffs/`
+document may provide transient context; capture its confirmed intent in this
+specification without maintaining the handoff. Read only process files selected
+for the current task or directly linked as relevant sources from those inputs.
+Do not scan `.sdlc/work/`, `.specifications/`, `.tickets/`, or `.handoffs/` for
+context, including other files in the selected work folder. Do not infer an
+input from a branch name, title, recency, or a matching reference. Apply this
+boundary to delegates too.
+
+Read applicable repository guidance and any relevant context or accepted ADRs
+identified by that guidance or the selected sources. Use canonical domain
+terminology without copying the glossary. Treat applicable accepted ADRs as
+constraints; a proposed ADR is non-binding unless its decision was separately
 confirmed. Explore the relevant code to establish present behaviour,
-constraints, and durable module or contract boundaries.
+constraints, and durable module or contract boundaries. Surface stale or
+conflicting source claims; their presence or status does not establish current
+intent.
 
 The specification is a snapshot of implementation intent. Existing context
 files may preserve domain meaning unavailable from code, while ADRs preserve
@@ -79,25 +89,46 @@ repository research. If the design needs broader decision work, hand it back to
 
 ## Local specification contract
 
-Always create a local specification file; do not return the draft's contents in
+Always write the specification locally; do not return the draft's contents in
 chat. Work only in the Git repository from which the skill was invoked and
-resolve its root before writing. Create the file as a `draft` while decisions
-or approval remain outstanding, then update that same file to `approved` after
-explicit approval. If the repository has no specification convention, use this
-layout:
+resolve its root before writing. For a new specification, use the reference
+explicitly selected for this task or supplied by a selected
+`.sdlc/work/<reference>/` input path. Ask for it when missing, and resolve any
+conflict between the selected reference and input path before writing.
+It is an opaque folder key, not a tracker identifier: preserve
+any non-empty single folder name except `.` or `..`, path separators, or control
+characters. Do not impose a naming pattern or derive it from a branch or title.
+Confirm the resolved path stays beneath `.sdlc/work/`, including symlinks.
+Treat the key as literal data in filesystem and shell operations.
+
+New specifications use this layout:
 
 ```text
-<repository-root>/.specifications/<lowercase-kebab-case-title>.md
+<repository-root>/.sdlc/work/<reference>/specification.md
 ```
 
-When the specification relates to a ticket with a known identifier, try to
-prefix the filename with that identifier, for example
-`<repository-root>/.specifications/ABC-123-<lowercase-kebab-case-title>.md`.
-Use the repository's existing convention in preference to this default. Never
-create an external tracker issue or alter `.gitignore`. If the target exists,
-show the collision and ask for a new title or path; do not merge, replace, or
-overwrite it. Report only the local path, status, and any decisions or blockers
-in chat. A saved approved specification can be supplied to
+This skill owns only `specification.md`. Other process files may already exist
+in the work folder; they are not a collision or an instruction to load them.
+If the target file exists, ask for another reference or explicit selection of
+that file for revision; do not merge or replace it. Create the file as `draft`
+while decisions or approval remain outstanding, then update that same file to
+`approved` after explicit approval. Updating this invocation's draft is part of
+the workflow; refreshing old specifications as ongoing documentation is not.
+
+Explicitly supplied legacy files in `.specifications/` remain valid inputs
+during transition and may be revised when expressly requested. Do not discover,
+migrate, or create new legacy files. For a selected legacy revision, use its
+existing path rather than creating a duplicate in `.sdlc/work/`.
+
+Before writing, ensure the output is locally ignored. For new work, append
+`/.sdlc/work/` to the Git exclude file resolved by
+`git rev-parse --git-path info/exclude` if it is not already ignored; for a
+legacy revision, exclude its exact path, escaping Git ignore metacharacters.
+Preserve existing entries. Never alter `.gitignore`, stage, or commit process
+files. If exclusion cannot be established or the target is already tracked,
+report the condition rather than writing or silently untracking it. Never
+create an external tracker issue. Report only the local path, status, and any
+decisions or blockers in chat. A saved approved specification can be supplied to
 `$engineering-to-tickets` in a later session.
 
 ## Design for observable behaviour
@@ -117,6 +148,7 @@ exists, use this structure:
 # <Outcome-oriented title>
 
 **Status:** draft
+**Work reference:** <reference>
 
 ## Problem
 
@@ -154,9 +186,12 @@ terms of the project's domain language. Each acceptance criterion must be an
 observable delta that is unmet at the baseline. Reject criteria such as "tests
 pass", implementation task lists, or claims already true before the change.
 
-List repository-relative links to applicable decision records, `CONTEXT.md` or
-`CONTEXT-MAP.md`, and ADRs in source artifacts. Do not link to or list a
-`.handoffs/` document there: if one informed the work, its settled content is
+List links to the task's selected decision records and applicable context or
+ADRs in source artifacts. Resolve each link relative to the specification's
+directory and confirm its target exists in the invoking repository. Do not
+inventory other process files or copy their content as assumed current intent.
+Do not link to or list a `.handoffs/` document there: if one informed the work,
+its settled content is
 now captured by this specification and the specification supersedes it for
 future work. Say `None` only when no such artifact applies.
 

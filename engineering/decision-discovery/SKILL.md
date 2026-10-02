@@ -68,9 +68,12 @@ handoff's target, questions, constraints, and expected evidence.
 
 ## Establish the design boundary
 
-Read applicable repository guidance and relevant existing context, decision
-records and plans. Explore the affected code enough to distinguish facts,
-constraints, and existing decisions from assumptions.
+Start with the current request and the sources explicitly supplied for it.
+Read applicable repository guidance and explore the affected code enough to
+distinguish facts, constraints, and existing decisions from assumptions. Read
+relevant context or decision records only when the selected sources or
+repository guidance identify them. Verify their claims against current code;
+surface stale or conflicting intent rather than silently adopting it.
 
 State the decision to make, its affected users or systems, known constraints,
 and what is explicitly outside the discussion. Keep a design tree of decisions
@@ -91,6 +94,41 @@ needs a prospective ADR, read [the prospective-ADR guidance](references/prospect
 If a justified record has no convention, propose the default location before
 creating it. Keep the working record in the conversation until repository
 writes are authorised.
+
+## Local process records
+
+When the user requests a saved discovery handoff, write it to
+`<repository-root>/.sdlc/work/<reference>/decisions.md`. Resolve the invoking
+Git repository's root first. Reuse the reference explicitly selected for this
+task; ask for one if neither the request nor a selected work path supplies it.
+The reference is an opaque folder key, not a tracker identifier. Preserve it
+exactly: any non-empty single folder name is valid except `.` or `..`, path
+separators, or control characters. Do not require a pattern or derive it from
+a branch, title, or another work item. Confirm the resolved path stays beneath
+the repository's `.sdlc/work/`, including when existing paths are symlinks.
+Treat the key as literal data in filesystem and shell operations.
+
+Read only process files explicitly supplied for this task or directly linked
+as relevant sources from those inputs. Do not scan `.sdlc/work/`,
+`.specifications/`, `.tickets/`, or `.handoffs/` for background context. Other
+work folders and unselected files in the same folder must not steer discovery.
+The same input boundary applies to delegated work.
+
+The saved handoff is an uncommitted process input, not ongoing repository
+documentation. This skill owns only `decisions.md`; existing specifications,
+tickets, and other files may coexist in the folder. Check that file for a
+collision, not whether the whole work folder is empty. Create it only when
+absent; update an existing file only when the user explicitly selects it for
+revision. Do not merge, refresh, move, or delete other process files.
+
+Before writing, ensure `/.sdlc/work/` is locally ignored. If it is not already
+ignored, append that rule to the Git exclude file resolved by
+`git rev-parse --git-path info/exclude`, preserving existing entries. Never
+alter `.gitignore`, stage, or commit process files. If exclusion cannot be
+established or the target is already tracked, report the condition rather than
+writing or silently untracking it. Durable ADRs and context records require
+their own explicit request or repository requirement and retain their existing
+conventions; this process folder does not authorise their creation.
 
 ## Run decision rounds
 
@@ -166,8 +204,9 @@ Check that another session can reconstruct the reasoning and next decisions
 from this record and its available sources, without relying on unstated answers
 from the conversation. Name missing evidence and the question it blocks.
 
-Return this handoff in the conversation by default; it does not require a new
-repository document. It can be an input to `$engineering-specification` when
+Return this handoff in the conversation by default; save it under the local
+process contract only when requested. It can be an input to
+`$engineering-specification` when
 the user requests that planning step. Do not write a full specification,
 publish to an issue tracker, or create implementation tickets unless the user
 explicitly asks for that follow-on work.
