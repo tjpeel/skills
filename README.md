@@ -1,205 +1,47 @@
 # Personal agent skills
 
-Skills live at a nested path ending in `SKILL.md`. This repository is the
-source of truth. Every directory between the repository root and a skill is
-included in its source name.
+Reusable workflows for building software, managing pull requests, recovering
+architecture decisions, handing off work and editing prose. Start with the
+skill that matches the task; each group explains its inputs and handoffs.
 
-## Platform support
+## Choose a workflow
 
-The source packages use the open `SKILL.md` format and keep their workflow
-instructions platform-neutral. They work in Codex and Claude Code when the
-environment provides the repository, command, and external-service access a
-workflow requires. Each skill states its own fallback when a capability, such
-as subagents or file writes, is unavailable.
+| Group | Use it to |
+| --- | --- |
+| [Engineering](engineering/README.md#using-the-workflow) | Investigate failures, find refactors, settle decisions, specify work, implement and verify it. |
+| [Pull requests](pr/README.md#using-the-workflow) | Draft, publish, monitor, review or reproduce PRs, and process Dependabot updates. |
+| [Architecture](architecture/README.md#using-the-workflow) | Recover retrospective ADRs from code and history. |
+| [Productivity](productivity/README.md#using-the-workflow) | Prepare a compact handoff for another session. |
+| [Writing](writing/README.md#using-the-workflow) | Make supplied prose direct and specific while preserving its meaning and voice. |
 
-Cross-skill references use source names. In Codex, the installer rewrites them
-to the chosen prefixed installed names. In Claude Code, they remain source
-names: invoke the referenced skill when it is available, or read its
-`SKILL.md` directly.
+## Install
 
-## Execution profiles
-
-Where installed, Codex can use the reusable profiles in
-[tjpeel/agents](https://github.com/tjpeel/agents). Claude Code can use a
-subagent with the same stated boundary when its configuration supports
-subagents. Every skill permits the coordinating agent to perform that bounded
-work directly when no equivalent delegation capability is available.
-
-## Public-release gate
-
-This repository may be made public. No sensitive or internal information may be
-committed: credentials, tokens, private keys, connection strings, personal or
-customer data, private URLs or hostnames, internal repositories or paths,
-non-public tickets or incidents, or screenshots containing private data.
-
-Before every commit, review the complete diff and run:
+Run from this repository. Choose the command for your platform:
 
 ```zsh
-scripts/check-public-content
-```
-
-The check detects common secret formats; it does not replace a deliberate
-human review of every changed skill, supporting file, and example.
-
-## Install in Codex
-
-```zsh
-./scripts/install-codex-skills --prefix tjpeel ~/.codex/skills
-```
-
-`--prefix` is required and must use lowercase letters, digits, and hyphens. It
-is included in every installed skill name. A skill at `pr/review/SKILL.md`
-installed with `--prefix tjpeel` becomes:
-
-```text
-~/.codex/skills/tjpeel-pr-review/
-```
-
-Its generated manifest declares `name: tjpeel-pr-review`, so invoke it as
-`$tjpeel-pr-review`. The target defaults to `~/.codex/skills`, so this shorter
-command is equivalent:
-
-```zsh
+# Codex
 ./scripts/install-codex-skills --prefix tjpeel
-```
 
-### Check current state
-
-```zsh
-./scripts/install-codex-skills --prefix tjpeel --check ~/.codex/skills
-```
-
-`--check` exits non-zero for missing or conflicting skills. The default
-`--install` mode adds only missing skills. It never replaces, removes, moves, or
-otherwise changes an existing path; resolve conflicts and remove obsolete
-definitions yourself before running it again. In particular, it leaves old
-`personal--*` installs in place. Restart Codex after installation so it reloads
-the skill catalogue.
-
-### Refresh installed skills
-
-Run the separate uninstaller followed by the installer whenever an existing
-package changes:
-
-```zsh
-./scripts/uninstall-codex-skills --prefix tjpeel ~/.codex/skills
-./scripts/install-codex-skills --prefix tjpeel ~/.codex/skills
-```
-
-The uninstaller removes only this repository's current package names for the
-specified prefix; it does not glob-match the shared skill directory, so it
-cannot remove another catalogue whose prefix begins the same way. Run it before
-renaming or removing a source package, then install the revised catalogue.
-
-### Test the installer
-
-```zsh
-tests/test-install-codex-skills
-```
-
-This temporary-directory check covers grouped-skill discovery, generated
-prefix-qualified names, linked resources, uninstall-then-install refreshes,
-repeat installation, and conflicts.
-
-Each package includes `agents/openai.yaml`. During installation, its
-`display_name` and default prompt are rendered with the installed
-prefix-qualified skill name; the generated `SKILL.md` name uses that same
-value. The installer never changes existing installed folders; use the explicit
-uninstaller before reinstalling to adopt new metadata.
-
-## Install in Claude Code
-
-```zsh
+# Claude Code
 ./scripts/install-claude-skills
 ```
 
-This installs each source package as a separate directory beneath
-`~/.claude/skills`. It copies `SKILL.md` and its supporting resources, but
-omits the Codex-only `agents/openai.yaml` metadata. Pass an absolute target
-directory to install project-scoped skills, for example:
+The installers add missing packages and leave existing paths untouched.
+See [installation and refresh](docs/installation.md) for names, custom
+targets, conflict checks and updating an installed catalogue.
 
-```zsh
-./scripts/install-claude-skills "$PWD/.claude/skills"
-```
+The source packages use the open `SKILL.md` format. Workflows require the
+repository, command or service access named in their instructions. Bounded
+delegation falls back to the coordinating agent when an equivalent configured
+capability is unavailable.
 
-Use `--check` to inspect the target. The installer adds only missing skill
-directories; it will not replace existing ones. Run the separate uninstaller
-before reinstalling a revised package:
+## Maintain the catalogue
 
-```zsh
-./scripts/uninstall-claude-skills
-./scripts/install-claude-skills
-```
-
-Test this installer with:
-
-```zsh
-tests/test-install-claude-skills
-```
-
-## Engineering workflow
-
-See [Using the workflow](engineering/README.md#using-the-workflow) for starting
-points, example prompts and the handoffs between skills.
-
-Use `investigation` for an observed failure or runtime discrepancy: establish
-the relevant running artifact, trace the path and distinguish causes with
-comparable evidence before choosing a repair. It complements architecture
-survey's search for worthwhile structural improvements.
-
-When the work is not yet selected, `architecture-survey` identifies
-evidence-backed refactoring opportunities and ranks their benefit, effort and
-risk. Selecting a candidate supplies evidence for the design workflow; it does
-not settle its design.
-
-For work that spans more than one implementation session, the engineering
-skills form a local workflow: `decision-discovery` settles consequential
-choices, `specification` records intended changes and acceptance criteria,
-`to-tickets` writes the approved dependency-ordered ticket set into the invoking
-repository, and `implement` completes one ready ticket or approved specification
-slice before `code-review` independently checks it against intent and repository
-risk.
-
-For an explicitly selected PR stack, launches bind each dependent ticket to
-its verified predecessor revision and intended PR base. Upstream repairs make
-affected descendants stale until carried through and reverified. Lifecycle
-contracts preserve the relevant startup, coexistence, activation and recovery
-states through discovery, specification, tickets and verification.
-
-When publishing and monitoring were requested, `pr/manage` handles authorised
-publication and `pr/monitor` follows the actual published head through the
-requested checks. Repair authority, merge authority and history-rewrite
-authority remain distinct.
-
-The [testing guidance](engineering/testing/SKILL.md) applies across planning,
-implementation and review: identify a concrete coverage gap before adding a
-test, reuse existing checks where sufficient, and avoid tests that restate
-implementation or duplicate protection.
-
-The [verification guidance](engineering/verification/SKILL.md) applies at
-increment completion and during review. It checks the real artifact, binds
-evidence to the content tested, and reports expected and observed outcomes
-alongside unresolved criteria. Its [optional behavioural evaluation cases](engineering/verification/references/evaluation-cases.md)
-help assess whether workflow changes alter agents' actions.
-
-New engineering process files live in `.sdlc/work/<reference>/` in the invoking
-repository; the reference is an arbitrary folder key. Saved survey reports,
-specifications and local tickets are uncommitted process artifacts for the
-selected task, not ongoing documentation.
-Skills read only explicitly selected process inputs and directly linked
-relevant sources; they do not discover intent from other work folders or branch
-names. Before a worker starts in another checkout, the launcher or coordinator
-transfers only the selected inputs, preserves their relative paths, and checks
-their links and exclusion in the destination. Local Git exclusion is sufficient;
-a committed `.gitignore` rule is not required. Explicit `.specifications/` and
-`.tickets/` inputs remain supported for now. See the
-[engineering workflow conventions](engineering/README.md) for
-layout, ownership, input boundaries, and local Git exclusion.
-
-Code documents implemented functionality; do not generate additional docs by
-default during implementation. ADRs and context files preserve rationale or
-constraints unavailable from code and signpost the relevant
-implementation, rather than maintaining a parallel explanation of behaviour.
+This repository is the source of truth. Keep source names prefix-free and
+follow [the repository conventions](AGENTS.md). The
+[maintenance guide](docs/maintenance.md) covers packaging, validation and the
+public-release gate. Review every changed file for sensitive information and
+run `scripts/check-public-content` before committing.
 
 ## References
 

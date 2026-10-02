@@ -28,9 +28,11 @@ straight to implementation.
 | An approved specification spanning several implementation sessions | `$engineering-to-tickets` | The exact saved specification path. |
 | A ready ticket or small approved specification slice | `$engineering-implement` | The exact ticket path or explicitly bounded specification slice. |
 | An existing change needing review | `$engineering-code-review` | The fixed point for the diff and any selected ticket or specification. |
+| A test plan or suite needing a coverage assessment | `$engineering-testing` | Required behaviour, credible failures and the relevant existing checks. |
+| A completion claim needing evidence | `$engineering-verification` | The selected artifact, required outcomes and available check results. |
 
 The prompts below use source skill names. In Codex, use the installed names
-derived from your chosen prefix; see the [installation guidance](../README.md#install-in-codex).
+derived from your chosen prefix; see [how to invoke a skill](../docs/installation.md#invoke-a-skill).
 In Claude Code, use the source names. If a skill is not loaded, ask the agent
 to read its selected `SKILL.md` and apply the workflow directly.
 
@@ -52,6 +54,18 @@ the relevant running artifact, traces the affected path and separates facts
 from hypotheses. Existing checks and comparable controls guide the next
 action. It returns evidence for a repair or a consequential design choice;
 it does not require the full planning sequence merely to investigate a bug.
+
+```text
+Use $engineering-investigation to investigate this write operation: it
+succeeds with the local defaults but fails with strict validation enabled.
+Use the supplied local reproducer and configurations. Check the actual
+execution path and distinguish supported causes from unresolved hypotheses.
+```
+
+Investigation returns findings and the smallest supported next action in the
+conversation. A repair needs its own authority or an existing request that
+includes it. Scratch evidence stays in an owned temporary directory; live
+data changes and deployments are outside an investigation-only request.
 
 For example, adding a check for broken local skill links could use work
 reference `link-check`:
@@ -103,6 +117,14 @@ starts from its verified predecessor. Parent repairs make affected children
 stale until the repaired content is carried through and reverified. Branch
 state belongs in the launch context, rather than maintained local tickets.
 
+```text
+Coordinate implementation of <selected-parent-ticket-path> followed by
+<selected-child-ticket-path>, one ticket per invocation. Use the parent's
+verified delivered revision for the child's launch and its branch as the
+intended PR base. Carry any parent repair through the selected child and
+reverify the affected content. Finish with verified local commits.
+```
+
 Implementation already applies testing and verification guidance and invokes
 code review after its checks. You do not need a separate prompt for each.
 Use those skills directly for a focused test assessment, evidence audit or
@@ -119,6 +141,8 @@ off to `$pr-manage` and `$pr-monitor` within that authority. The latter checks
 the current published SHA through the requested terminal results, and repairs
 only when authorised. A local pass or initial check lookup does not complete
 that delivery request. Merge and history-rewrite authority remain separate.
+See the [PR workflow](../pr/README.md#using-the-workflow) for publication and
+monitoring prompts, including a bounded repair-and-publish loop.
 
 Use `$engineering-testing` when planning, writing or reviewing verification.
 Existing coverage and verification without new tests are valid outcomes; a
@@ -132,6 +156,32 @@ result, and any required checks that failed, were blocked or were not run.
 Reuse existing checks and reviewers. When changing agent workflow behaviour,
 the [optional evaluation cases](verification/references/evaluation-cases.md)
 provide small tasks for checking agents' actions and outputs.
+
+For a focused assessment, select the boundary rather than requesting tests
+for every changed file:
+
+```text
+Use $engineering-testing to assess this change's period-eligibility rule
+against the supplied contract and existing tests. Identify concrete gaps
+and the checks that already protect the required outcomes.
+```
+
+```text
+Use $engineering-verification to assess the supplied completion claim.
+Check the current revision, whether the required assertions actually ran,
+and the resulting persisted state. Report expected and observed outcomes
+and any failed, blocked or unrun criterion.
+```
+
+Testing returns a coverage assessment and justified test choices. Verification
+returns evidence for the selected content; it does not repair code merely
+because a check exposes a defect. For a standalone local review:
+
+```text
+Use $engineering-code-review on the complete change since <fixed-point-SHA>.
+Use <selected-ticket-path> as the delivery slice and resolve its linked
+specification. Report actionable findings and verification limitations.
+```
 
 For changes crossing lifecycle or external-effect boundaries, discovery
 settles the relevant startup, coexistence, activation, retry and recovery
