@@ -10,6 +10,79 @@
 | [`testing`](testing/SKILL.md) | Selects tests for concrete coverage gaps and rejects tautological, implementation-coupled, change-detector and other weak or redundant tests. |
 | [`verification`](verification/SKILL.md) | Checks actual outcomes and safety assumptions, identifies the tested artifact, and reports evidence and unresolved criteria. |
 
+## Using the workflow
+
+Start with the skill that matches the work you have. Use the full sequence
+when consequential decisions and work spanning several sessions need explicit
+handoffs. A small, settled change can go from an approved specification
+straight to implementation.
+
+| What you have | Start with | Supply |
+| --- | --- | --- |
+| An outcome with unresolved design choices | `$engineering-decision-discovery` | The proposed change, constraints and selected evidence. |
+| Settled decisions needing an implementation contract | `$engineering-specification` | The decision handoff or current conversation, and a work reference. |
+| An approved specification spanning several implementation sessions | `$engineering-to-tickets` | The exact saved specification path. |
+| A ready ticket or small approved specification slice | `$engineering-implement` | The exact ticket path or explicitly bounded specification slice. |
+| An existing change needing review | `$engineering-code-review` | The fixed point for the diff and any selected ticket or specification. |
+
+The prompts below use source skill names. In Codex, use the installed names
+derived from your chosen prefix; see the [installation guidance](../README.md#install-in-codex).
+In Claude Code, use the source names. If a skill is not loaded, ask the agent
+to read its selected `SKILL.md` and apply the workflow directly.
+
+For example, adding a check for broken local skill links could use work
+reference `link-check`:
+
+1. Resolve the decisions. Request a saved handoff when another session will
+   need it; otherwise discovery can stay in the conversation.
+
+   ```text
+   Use $engineering-decision-discovery for work reference link-check.
+   Explore a small check for broken local links in this skills catalogue.
+   Settle its scope, expected results and verification. Save the settled handoff.
+   ```
+
+2. Write the specification from the selected decisions.
+
+   ```text
+   Use $engineering-specification with
+   .sdlc/work/link-check/decisions.md for work reference link-check.
+   Write the implementation specification with observable acceptance criteria.
+   ```
+
+3. Review the saved specification, then explicitly approve it and request
+   decomposition if separate tickets would help.
+
+   ```text
+   I approve .sdlc/work/link-check/specification.md.
+   Use $engineering-to-tickets on that specification to create small,
+   independently verifiable tickets.
+   ```
+
+4. Select one ticket whose blockers are complete. Replace the placeholder
+   with the exact path returned by ticket decomposition.
+
+   ```text
+   Use $engineering-implement on <exact-ready-ticket-path>.
+   Implement that ticket in verified increments and finish with code review.
+   ```
+
+For the smaller route, approve the saved specification and invoke
+`$engineering-implement` with its exact path and the slice to deliver. A work
+reference identifies a folder; it does not select every input inside it.
+Select each later ticket explicitly once its blockers are complete.
+
+Implementation already applies testing and verification guidance and invokes
+code review after its checks. You do not need a separate prompt for each.
+Use those skills directly for a focused test assessment, evidence audit or
+review of an existing change. For a standalone review, supply the original
+commit or other fixed point so the review covers the intended diff.
+
+Planning stages save local, ignored process inputs. Implementation creates
+verified local commits according to repository instructions. Request pushing,
+PR creation or tracker updates separately. For another checkout, use the
+selected-input handoff described under [Local work folders](#local-work-folders).
+
 Use `$engineering-testing` when planning, writing or reviewing verification.
 Existing coverage and verification without new tests are valid outcomes; a
 new case needs a required behaviour or credible failure that current checks

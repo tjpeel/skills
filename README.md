@@ -139,6 +139,9 @@ tests/test-install-claude-skills
 
 ## Engineering workflow
 
+See [Using the workflow](engineering/README.md#using-the-workflow) for starting
+points, example prompts and the handoffs between skills.
+
 For work that spans more than one implementation session, the engineering
 skills form a local workflow: `decision-discovery` settles consequential
 choices, `specification` records intended changes and acceptance criteria,
