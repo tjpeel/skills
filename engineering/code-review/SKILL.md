@@ -152,6 +152,14 @@ constraint with the diff and its verification. Report missing, partial, or
 apparently incorrect behaviour; scope that the source did not ask for; and
 tests that do not actually observe the intended behaviour.
 
+Apply `$engineering-verification` when assessing the supplied evidence.
+Confirm that results describe the actual revision or working-tree content
+under review, that checks observed their claimed outcomes, and that blocked
+or skipped checks remain explicit gaps. Check a shared contract's concrete
+safety assumptions when material to the diff. Reuse the existing reviewers;
+a completion summary is not an independent verification result. Rerun a
+relevant check when evidence is stale, missing or cannot establish the claim.
+
 Apply `$engineering-testing` when assessing coverage and test quality. Map
 required changed behaviour and credible failures to existing, updated or new
 tests at the agreed seam, or to justified alternative verification. An unchanged

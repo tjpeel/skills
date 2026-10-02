@@ -8,12 +8,20 @@
 | [`implement`](implement/SKILL.md) | Implements one ready ticket in bounded, verified increments, scrutinises adapted reference code, and runs full checks before review. |
 | [`code-review`](code-review/SKILL.md) | Reviews actual runtime behaviour and the complete local diff, then checks the current delivery slice against approved intent. |
 | [`testing`](testing/SKILL.md) | Selects tests for concrete coverage gaps and rejects tautological, implementation-coupled, change-detector and other weak or redundant tests. |
+| [`verification`](verification/SKILL.md) | Checks actual outcomes and safety assumptions, identifies the tested artifact, and reports evidence and unresolved criteria. |
 
 Use `$engineering-testing` when planning, writing or reviewing verification.
 Existing coverage and verification without new tests are valid outcomes; a
 new case needs a required behaviour or credible failure that current checks
 do not adequately cover. Test count and coverage percentages alone do not
 justify additions.
+
+Use `$engineering-verification` at increment completion and during review.
+Record what actually ran against which revision, the expected and observed
+result, and any required checks that failed, were blocked or were not run.
+Reuse existing checks and reviewers. When changing agent workflow behaviour,
+the [optional evaluation cases](verification/references/evaluation-cases.md)
+provide small tasks for checking agents' actions and outputs.
 
 Code is the documentation of implemented functionality. Do not generate
 additional docs by default during implementation. Read the code, tests and

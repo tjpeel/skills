@@ -422,6 +422,13 @@ commits until the ticket is fully implemented.
 
 ## Verify, review, and hand off
 
+Apply `$engineering-verification` to each increment's completion evidence and
+the final handoff. Identify the actual revision or working-tree content
+checked, expected and observed outcomes, and any failed, blocked or omitted
+required checks. For shared code or contracts, check the concrete safety
+assumptions within the ticket's impact. Reuse the checks and evidence already
+gathered; this does not require another test suite, report file or delegate.
+
 Before declaring the work complete, inspect the final diff against the input.
 Check every acceptance criterion and applicable change constraint against an
 observable result. Run the full relevant test suite or the repository's
@@ -449,7 +456,8 @@ Return a concise handoff with:
 
 - the ticket or specification slice implemented;
 - changed behaviour and any deliberately untouched scope;
-- tests and other verification run, including outcomes;
+- tests and other verification run, checked revision or artifact, expected
+  and observed outcomes, and any evidence paths;
 - acceptance criteria that remain unverified and why;
 - follow-up work or risks outside the ticket boundary; and
 - code-review findings, fixes, and any review limitations.

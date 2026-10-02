@@ -1,0 +1,4 @@
+interface:
+  display_name: "Engineering verification"
+  short_description: "Verify real outcomes and evidence for the current revision"
+  default_prompt: "Use $engineering-verification to check this selected change's actual outcomes and report the checked revision, expected and observed results, and any unverified criteria."

@@ -152,6 +152,12 @@ implementation and review: identify a concrete coverage gap before adding a
 test, reuse existing checks where sufficient, and avoid tests that restate
 implementation or duplicate protection.
 
+The [verification guidance](engineering/verification/SKILL.md) applies at
+increment completion and during review. It checks the real artifact, binds
+evidence to the content tested, and reports expected and observed outcomes
+alongside unresolved criteria. Its [optional behavioural evaluation cases](engineering/verification/references/evaluation-cases.md)
+help assess whether workflow changes alter agents' actions.
+
 New engineering process files live in `.sdlc/work/<reference>/` in the invoking
 repository; the reference is an arbitrary folder key. Specifications and local
 tickets are uncommitted inputs to the selected task, not ongoing documentation.
@@ -174,6 +180,10 @@ implementation, rather than maintaining a parallel explanation of behaviour.
 
 - The public [Cursor plugins repository](https://github.com/cursor/plugins) is
   a source of inspiration for selected skills in this catalogue.
+- The engineering verification skill and its evaluation cases were informed
+  by pstack's [Prove It Works](https://github.com/cursor/plugins/blob/main/pstack/skills/principle-prove-it-works/SKILL.md),
+  [Blast Radius](https://github.com/cursor/plugins/blob/main/pstack/skills/blast-radius/SKILL.md)
+  and [Eval playbook](https://github.com/cursor/plugins/blob/main/pstack/skills/poteto-mode/playbooks/eval.md).
 - The productivity handoff skill was adapted from the public
   [mattpocock/skills handoff skill](https://github.com/mattpocock/skills/blob/main/skills/productivity/handoff/SKILL.md).
 - The engineering decision-discovery, specification, to-tickets,
