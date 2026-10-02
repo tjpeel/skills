@@ -67,6 +67,20 @@ ownership before driving a running instance. Use an isolated test instance
 when concurrent sessions could alter each other's results; leave the user's
 active session alone unless the task explicitly selects it.
 
+Check evidence at the point the required assertion or scenario should run.
+A successful setup job or a test that returns before its assertion cannot
+establish the business outcome. Report an omitted outcome as not run, or as
+blocked when its prerequisite prevented execution, even if the runner reports
+success. For a user flow, follow the relevant action through its resulting
+state; loading the page alone does not establish that submission or
+persistence obeys the contract.
+
+Compare the environment assumptions that can trigger the reported failure
+with the assumptions exercised by the check, such as a data-store setting,
+validation mode or downstream response. Exercise the material difference at
+an appropriate boundary, or state what remains unproven. This needs only the
+relevant assumptions, not an inventory of every environment setting.
+
 After a repair or change to relevant inputs, rerun affected verification and
 the invoking workflow's required full checks. Committing the same verified
 content does not by itself invalidate evidence. A changed implementation,
@@ -83,6 +97,14 @@ fact established only by inspection or inference accordingly, and name what
 remains unproven. A caller inventory or empty search alone is not proof that
 the change is safe. Keep this check within the selected change's credible
 impact; do not produce a speculative risk catalogue.
+
+When selected lifecycle rows govern safety, verify the relevant readiness,
+permitted effects and recovery under their stated conditions. A startup pass
+does not establish mixed-version compatibility or recovery after an external
+effect. For an explicitly selected stack, bind evidence to the relevant
+parent and child content; repaired local branches do not verify older remote
+heads. Keep unexercised transitions explicit rather than extending a passing
+steady-state result to them.
 
 ## Ownership and delegation
 

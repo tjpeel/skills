@@ -209,6 +209,17 @@ affected decision to `$engineering-decision-discovery`. Assumptions and
 evidence gaps may remain only when they do not alter required behaviour, scope,
 contracts, or acceptance criteria; state their effect if false.
 
+When lifecycle or cross-system effects matter, carry the settled states into
+a compact contract in that section. Record the relevant versions or
+configuration, actor and prerequisites, observable readiness, permitted and
+forbidden effects, and recovery responsibility. Include only states that
+change behaviour; do not require a full combination of every setting. Make
+activation order and the meaning of the boundary explicit, including which
+timestamp or event determines it. State how retries and replays behave on
+either side. Name any point after which reverting code or configuration is
+insufficient, and the agreed recovery then. An unresolved state that can
+change an effect blocks approval of the affected scope.
+
 Keep accepted decisions distinct from proposals and assumptions. Preserve a
 decision-rich type, schema, state-machine, or reducer fragment only when a
 prototype is the clearest record of a settled constraint. Label its source and

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Engineering investigation"
+  short_description: "Trace observed failures and distinguish supported causes"
+  default_prompt: "Use $engineering-investigation to investigate this observed problem, check the relevant running artifacts and assumptions, and report supported findings and the smallest next action."

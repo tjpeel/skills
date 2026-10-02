@@ -1,0 +1,4 @@
+interface:
+  display_name: "PR monitor"
+  short_description: "Follow PR checks and authorised repairs to the current head"
+  default_prompt: "Use $pr-monitor to follow this pull request's required checks for its current published revision and report the final delivery state, repairing and publishing only within the scope I requested."

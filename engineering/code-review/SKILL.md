@@ -160,6 +160,14 @@ safety assumptions when material to the diff. Reuse the existing reviewers;
 a completion summary is not an independent verification result. Rerun a
 relevant check when evidence is stale, missing or cannot establish the claim.
 
+For relevant lifecycle contracts, check the actual startup, mixed-version,
+activation, retry and recovery paths against the selected state rows. Verify
+what readiness permits and what can still happen after a partial external
+effect; a healthy host does not by itself prove its worker can process safely.
+For a stack, verify that the reviewed child includes its required predecessor
+repairs and that its base isolates the intended slice. Keep local repairs and
+the published PR head distinct when assessing delivery claims.
+
 Apply `$engineering-testing` when assessing coverage and test quality. Map
 required changed behaviour and credible failures to existing, updated or new
 tests at the agreed seam, or to justified alternative verification. An unchanged

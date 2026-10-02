@@ -36,6 +36,7 @@ Create an accurate PR brief from repository evidence. Never create, edit, or pus
    - If no key is available, state that the draft is repository-only.
 3. Inspect the branch, merge base, commits, staged and unstaged changes. Establish the exact implementation scope from code, configuration, migrations, documentation, and tests; do not rely on the ticket alone.
 4. Inspect test changes and available test or build output. Distinguish the test approach from verification results. Never claim a command passed unless its result is available in the current task.
+5. For a selected stack, establish the actual predecessor and base before describing this PR's slice. Separate inherited work from new behaviour, local repairs from published content, and this slice from deferred capabilities. Use public behaviour and the supplied work reference in external wording; do not expose private process paths or local ticket sequence numbers as tracker identities.
 
 ## Write the draft
 

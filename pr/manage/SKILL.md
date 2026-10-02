@@ -57,6 +57,11 @@ If a present preflight script fails, treat that as a blocker.
 Verify that `gh auth status` is authenticated for the target GitHub host before
 creating or editing a PR. Do not expose credentials or tokens.
 
+When repository policy requires signed commits, verify the effective identity
+and signing configuration before the relevant commit or push, then check the
+resulting signature. Report whether local or GitHub verification was observed.
+An unsigned commit does not authorise rewriting history or force pushing.
+
 ## Branch naming
 
 Always create ticket branches as `<TICKET>-<short-kebab-description>`, for
@@ -103,6 +108,16 @@ whether an existing PR will update automatically.
 
 ## Create a PR
 
+For an explicitly selected stack, use the supplied predecessor branch as the
+PR base. Compare its current head with the delivered predecessor revision in
+the launch context and reconcile any difference before creating the PR. An
+independent root targets the repository's selected integration branch. Do not
+silently target `main` for a child or change an existing PR's base. After an
+upstream repair, identify affected descendants and complete only authorised
+restacking and publication; a repaired local branch does not update a remote
+child by itself. Keep this branch state in the current handoff rather than
+editing local tickets to track heads.
+
 Use the ticket-formatted branch and title above, plus the repository's required
 PR-description structure. Write the body to a temporary Markdown file to
 preserve formatting, then create a draft unless the user explicitly requests a
@@ -113,6 +128,10 @@ gh pr create --base <base> --head <branch> --title <title> --body-file <body-fil
 ```
 
 After creation, retrieve the PR URL and checks with `gh pr view`.
+
+When the user requested monitoring after publication, continue with
+`$pr-monitor` against the verified remote SHA. Creating the PR and retrieving
+its current checks once does not complete that requested follow-through.
 
 ## PR Markdown formatting
 

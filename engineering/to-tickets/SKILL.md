@@ -166,6 +166,14 @@ and capable of failing at the starting revision. Reject criteria such as
 "tests pass", implementation task lists, or claims already true at the
 baseline.
 
+A blocker does not by itself select a Git base. When the user requests a
+stacked series, identify which selected dependencies require the predecessor's
+delivered code. The coordinator later binds those dependencies to verified
+branches and revisions in the launch context; decomposition must not invent
+SHAs or treat a planned prerequisite as delivered. Independent roots can start
+from updated `main`. Even when the user requests coordination of a selected
+series, give each unit its own implementation invocation.
+
 Keep stale detail out of tickets: do not include file paths or code snippets.
 The only exception is a short, labelled prototype fragment when it is the
 clearest record of a settled state machine, reducer, schema, or type decision.
@@ -193,6 +201,13 @@ that changes it. Request a short code comment only where the reason for a
 deliberate limitation would otherwise be unclear. Explain that constraint
 without repeating control flow or implying that the later capability exists.
 Its meaning must remain understandable without the local ticket file.
+
+Carry the specification's relevant lifecycle rows into the slice's contracts
+and verification: what permits work to start, which effects are allowed while
+another stage is incomplete, how retry or replay behaves, and who recovers a
+partial effect. Name the prerequisite that makes a transition available. Do
+not mark a ticket ready while its observable intermediate behaviour depends
+on an unsettled rollout or recovery policy.
 
 Audit each ticket as an implementation handoff to a fresh agent. Using the
 ticket, linked specification and applicable repository sources, it must be able
@@ -299,3 +314,6 @@ selected ticket or specification slice, and exact process input paths. Keep
 this handoff in the launch message or conversation; do not create another
 maintained document. Ticket decomposition ends with the input list and ready
 frontier; checkout setup and implementation need their own authorised step.
+For a selected stack, also identify the code dependency whose verified branch
+and revision the coordinator must supply. Do not rewrite the ticket or
+specification to track changing branch heads.

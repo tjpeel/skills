@@ -153,6 +153,16 @@ cases rather than following a fixed technology checklist. When state or
 external effects matter, record the trigger, outcome, effects and recovery in
 a small table. Ask about unresolved policy; do not invent it to fill the table.
 
+For a change crossing service, schema or external-effect boundaries, work
+through the relevant lifecycle states before settling the design: startup or
+incomplete migration, coexistence of versions, activation, retry or replay,
+and recovery after a partial effect. Select only states that can change the
+outcome. For each, establish the actor, prerequisites, permitted effects and
+recovery owner. Clarify what health or readiness proves and which work it
+permits. Identify when reverting code or configuration ceases to undo the
+effect, and settle recovery on either side of that point. A shared activation
+date alone does not establish compatible behaviour across systems.
+
 Investigate constraints that can be measured or documented. Use a small
 calculation or concrete counterexample when interacting limits could defeat
 the agreed outcome, and verify external contracts from authoritative sources.
@@ -198,7 +208,9 @@ named external fact or decision. Return a concise decision record containing:
 - deferred questions, assumptions, and evidence gaps;
 - test seams or behavioural boundaries worth preserving for the later spec;
 - the relevant domain relationships, invariants, boundary and failure outcomes,
-  verified constraints, and any boundaries on reuse from reference implementations.
+  verified constraints, and any boundaries on reuse from reference implementations;
+- relevant lifecycle states, compatibility and activation conditions, and the
+  recovery policy before and after an irreversible effect.
 
 Check that another session can reconstruct the reasoning and next decisions
 from this record and its available sources, without relying on unstated answers

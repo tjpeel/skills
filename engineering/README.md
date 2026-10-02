@@ -3,6 +3,7 @@
 | Skill | Overview |
 | --- | --- |
 | [`architecture-survey`](architecture-survey/SKILL.md) | Finds and ranks evidence-backed architectural refactoring opportunities before work is selected. |
+| [`investigation`](investigation/SKILL.md) | Traces an observed failure or regression and distinguishes supported causes before a repair is chosen. |
 | [`decision-discovery`](decision-discovery/SKILL.md) | Leads an evidence-informed conversation that resolves prospective engineering decisions for later specification. |
 | [`specification`](specification/SKILL.md) | Turns settled decisions into a reviewable implementation specification for later ticket decomposition. |
 | [`to-tickets`](to-tickets/SKILL.md) | Turns an approved specification into dependency-ordered local Markdown tickets. |
@@ -21,6 +22,7 @@ straight to implementation.
 | What you have | Start with | Supply |
 | --- | --- | --- |
 | An existing codebase with no improvement selected | `$engineering-architecture-survey` | A target area, pain point or request for a broader survey. |
+| An observed failure, regression or runtime discrepancy | `$engineering-investigation` | The symptom, selected repositories or environment, and available triggering or comparison evidence. |
 | An outcome with unresolved design choices | `$engineering-decision-discovery` | The proposed change, constraints and selected evidence. |
 | Settled decisions needing an implementation contract | `$engineering-specification` | The decision handoff or current conversation, and a work reference. |
 | An approved specification spanning several implementation sessions | `$engineering-to-tickets` | The exact saved specification path. |
@@ -44,6 +46,12 @@ The survey returns a shortlist without modifying code or settling its design.
 Select a candidate before moving into decision discovery. Request a saved
 report only when another session needs it; Markdown is the default, with HTML
 available when requested.
+
+For a runtime problem, start with `$engineering-investigation`. It establishes
+the relevant running artifact, traces the affected path and separates facts
+from hypotheses. Existing checks and comparable controls guide the next
+action. It returns evidence for a repair or a consequential design choice;
+it does not require the full planning sequence merely to investigate a bug.
 
 For example, adding a check for broken local skill links could use work
 reference `link-check`:
@@ -87,6 +95,14 @@ For the smaller route, approve the saved specification and invoke
 reference identifies a folder; it does not select every input inside it.
 Select each later ticket explicitly once its blockers are complete.
 
+When explicitly requesting a dependent series, supply the selected tickets
+and intended dependency order. The coordinator launches one implementation
+unit at a time with its predecessor revision, destination branch, review
+boundary and PR base. Independent roots start from updated `main`; a child
+starts from its verified predecessor. Parent repairs make affected children
+stale until the repaired content is carried through and reverified. Branch
+state belongs in the launch context, rather than maintained local tickets.
+
 Implementation already applies testing and verification guidance and invokes
 code review after its checks. You do not need a separate prompt for each.
 Use those skills directly for a focused test assessment, evidence audit or
@@ -97,6 +113,12 @@ Planning stages save local, ignored process inputs. Implementation creates
 verified local commits according to repository instructions. Request pushing,
 PR creation or tracker updates separately. For another checkout, use the
 selected-input handoff described under [Local work folders](#local-work-folders).
+
+If the request also includes publishing and monitoring, implementation hands
+off to `$pr-manage` and `$pr-monitor` within that authority. The latter checks
+the current published SHA through the requested terminal results, and repairs
+only when authorised. A local pass or initial check lookup does not complete
+that delivery request. Merge and history-rewrite authority remain separate.
 
 Use `$engineering-testing` when planning, writing or reviewing verification.
 Existing coverage and verification without new tests are valid outcomes; a
@@ -110,6 +132,14 @@ result, and any required checks that failed, were blocked or were not run.
 Reuse existing checks and reviewers. When changing agent workflow behaviour,
 the [optional evaluation cases](verification/references/evaluation-cases.md)
 provide small tasks for checking agents' actions and outputs.
+
+For changes crossing lifecycle or external-effect boundaries, discovery
+settles the relevant startup, coexistence, activation, retry and recovery
+states. Specification preserves their prerequisites and permitted effects;
+tickets carry the slice's rows into implementation and verification. Model
+only states that can change the outcome, including the point after which
+reverting configuration cannot undo an effect. A common activation date or
+healthy host alone does not establish those contracts.
 
 Code is the documentation of implemented functionality. Do not generate
 additional docs by default during implementation. Read the code, tests and

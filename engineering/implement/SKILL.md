@@ -159,6 +159,27 @@ fixed point and increments. Do not refresh `main` or silently select a newer
 starting revision. A mismatch stops the launch until the coordinator resolves
 it. An already prepared branch can be used before it has implementation commits.
 
+For an explicitly requested stack, the coordinator prepares each selected
+ticket as a separate launch. Record its predecessor branch and verified SHA,
+destination branch, review fixed point, and intended PR base alongside the
+selected inputs. A dependent ticket starts from that predecessor's verified
+content; an independent root follows the updated-`main` path below. Do not
+fall back to `main` for a missing predecessor or commit a child's work onto
+the parent's branch. If delivery depends on a published predecessor, verify
+its remote head as well as the local commit before launching the child.
+
+An upstream repair makes affected descendants stale until the coordinator
+carries that repair through the selected stack and reverifies the resulting
+content. Retain each ticket's original fixed point; after an authorised
+restack, record how it maps to the new base and head so review still covers
+the whole ticket rather than only its latest repair. Reuse
+unaffected evidence only when its content and assumptions remain valid. A
+local repair does not establish that a published child contains it.
+Use only authorised restack operations; permission to repair or publish does
+not by itself authorise force pushing or rewriting another owner's work.
+Keep branch state in the existing launch context, without maintaining process inputs or
+creating another tracker. One invocation still owns one selected ticket.
+
 For new work without a prepared launch, in a clean working tree, fetch the
 remote that tracks `main`,
 switch to local `main`, and update it with a fast-forward-only pull from that
@@ -461,6 +482,13 @@ Return a concise handoff with:
 - acceptance criteria that remain unverified and why;
 - follow-up work or risks outside the ticket boundary; and
 - code-review findings, fixes, and any review limitations.
+
+For stacked work, also report the predecessor revision used, current review
+boundary and intended PR base, and any selected descendants made stale by
+repairs. Distinguish verified local content from published content. When the
+user also requested publishing and monitoring, continue through `$pr-manage`
+and `$pr-monitor` within that authority; local verification alone does not
+complete the requested delivery loop.
 
 Return this handoff in the conversation; do not create a summary file by
 default.

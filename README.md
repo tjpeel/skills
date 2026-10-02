@@ -142,6 +142,11 @@ tests/test-install-claude-skills
 See [Using the workflow](engineering/README.md#using-the-workflow) for starting
 points, example prompts and the handoffs between skills.
 
+Use `investigation` for an observed failure or runtime discrepancy: establish
+the relevant running artifact, trace the path and distinguish causes with
+comparable evidence before choosing a repair. It complements architecture
+survey's search for worthwhile structural improvements.
+
 When the work is not yet selected, `architecture-survey` identifies
 evidence-backed refactoring opportunities and ranks their benefit, effort and
 risk. Selecting a candidate supplies evidence for the design workflow; it does
@@ -154,6 +159,17 @@ choices, `specification` records intended changes and acceptance criteria,
 repository, and `implement` completes one ready ticket or approved specification
 slice before `code-review` independently checks it against intent and repository
 risk.
+
+For an explicitly selected PR stack, launches bind each dependent ticket to
+its verified predecessor revision and intended PR base. Upstream repairs make
+affected descendants stale until carried through and reverified. Lifecycle
+contracts preserve the relevant startup, coexistence, activation and recovery
+states through discovery, specification, tickets and verification.
+
+When publishing and monitoring were requested, `pr/manage` handles authorised
+publication and `pr/monitor` follows the actual published head through the
+requested checks. Repair authority, merge authority and history-rewrite
+authority remain distinct.
 
 The [testing guidance](engineering/testing/SKILL.md) applies across planning,
 implementation and review: identify a concrete coverage gap before adding a
