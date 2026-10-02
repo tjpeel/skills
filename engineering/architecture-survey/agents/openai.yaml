@@ -1,0 +1,4 @@
+interface:
+  display_name: "Engineering architecture survey"
+  short_description: "Find and rank worthwhile architectural refactors"
+  default_prompt: "Use $engineering-architecture-survey to find and rank evidence-backed refactoring opportunities in this repository, then present a shortlist before design or implementation."

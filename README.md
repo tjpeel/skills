@@ -142,6 +142,11 @@ tests/test-install-claude-skills
 See [Using the workflow](engineering/README.md#using-the-workflow) for starting
 points, example prompts and the handoffs between skills.
 
+When the work is not yet selected, `architecture-survey` identifies
+evidence-backed refactoring opportunities and ranks their benefit, effort and
+risk. Selecting a candidate supplies evidence for the design workflow; it does
+not settle its design.
+
 For work that spans more than one implementation session, the engineering
 skills form a local workflow: `decision-discovery` settles consequential
 choices, `specification` records intended changes and acceptance criteria,
@@ -162,8 +167,9 @@ alongside unresolved criteria. Its [optional behavioural evaluation cases](engin
 help assess whether workflow changes alter agents' actions.
 
 New engineering process files live in `.sdlc/work/<reference>/` in the invoking
-repository; the reference is an arbitrary folder key. Specifications and local
-tickets are uncommitted inputs to the selected task, not ongoing documentation.
+repository; the reference is an arbitrary folder key. Saved survey reports,
+specifications and local tickets are uncommitted process artifacts for the
+selected task, not ongoing documentation.
 Skills read only explicitly selected process inputs and directly linked
 relevant sources; they do not discover intent from other work folders or branch
 names. Before a worker starts in another checkout, the launcher or coordinator
@@ -192,6 +198,10 @@ implementation, rather than maintaining a parallel explanation of behaviour.
 - The engineering decision-discovery, specification, to-tickets,
   implementation, code-review, and testing skills were informed by the public
   [mattpocock/skills](https://github.com/mattpocock/skills) repository.
+- The engineering architecture survey was informed by its
+  [improve-codebase-architecture](https://github.com/mattpocock/skills/blob/main/skills/engineering/improve-codebase-architecture/SKILL.md)
+  and [codebase-design](https://github.com/mattpocock/skills/blob/main/skills/engineering/codebase-design/SKILL.md)
+  skills.
 - The testing guidance also draws on Google's
   [Change-Detector Tests Considered Harmful](https://testing.googleblog.com/2015/01/testing-on-toilet-change-detector-tests.html)
   and the [Unit Testing chapter of Software Engineering at Google](https://abseil.io/resources/swe-book/html/ch12.html)

@@ -193,8 +193,8 @@ named external fact or decision. Return a concise decision record containing:
 - the problem and agreed scope;
 - settled decisions and their rationale;
 - canonical terminology and relevant existing decision records;
-- repository-relative links to applicable `CONTEXT.md`, `CONTEXT-MAP.md`, and
-  ADRs, when they exist;
+- repository-relative links to applicable domain records, such as
+  `GLOSSARY.md`, `CONTEXT.md` or `CONTEXT-MAP.md`, and ADRs, when they exist;
 - deferred questions, assumptions, and evidence gaps;
 - test seams or behavioural boundaries worth preserving for the later spec;
 - the relevant domain relationships, invariants, boundary and failure outcomes,

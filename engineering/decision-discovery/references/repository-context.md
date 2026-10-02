@@ -11,17 +11,27 @@ edits to implementation.
 
 Respect the repository's existing terminology and document locations first.
 
+The domain glossary may be a `GLOSSARY.md`, the language section of a
+`CONTEXT.md`, or another established record. A context document may also
+contain domain constraints and relationships beyond terminology. Determine
+the record's role from its content and repository guidance, not its filename.
+When both files exist, use the relevant content in each and surface conflicting
+definitions. Do not rename, duplicate or synchronise them merely to adopt a
+preferred naming convention.
+
 - If a root `CONTEXT-MAP.md` exists, use it to find the relevant bounded
-  context and its `CONTEXT.md`.
-- If a root `CONTEXT.md` exists without a map, treat the repository as one
-  context unless repository guidance says otherwise.
-- If neither exists, create nothing unless a specific knowledge gap justifies
-  a saved record. For an authorised record, propose a root `CONTEXT.md` after
-  its content is settled.
+  context and follow the linked records, whatever their names.
+- If an existing `CONTEXT.md`, `GLOSSARY.md` or equivalent record already
+  serves the requested purpose, use it at its established location. A missing
+  alternative filename is not a knowledge gap or a reason to create a map.
+- If no suitable record exists, create nothing unless a specific knowledge gap
+  justifies a saved record. For an authorised record with no existing naming
+  convention, propose a root `CONTEXT.md` after its content is settled.
 - Propose `CONTEXT-MAP.md` only when a requested or required record needs to
   preserve non-obvious relationships between separately owned bounded
   contexts. Multiple directories alone do not justify a map. Put each context's
-  `CONTEXT.md` near that context's source root.
+  record near that context's source root, preserving existing names; use
+  `CONTEXT.md` only when no convention exists.
 
 An agreed map should link to the relevant source roots and any existing context
 records, stating only relationships the code cannot convey. Do not create a

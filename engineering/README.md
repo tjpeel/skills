@@ -2,6 +2,7 @@
 
 | Skill | Overview |
 | --- | --- |
+| [`architecture-survey`](architecture-survey/SKILL.md) | Finds and ranks evidence-backed architectural refactoring opportunities before work is selected. |
 | [`decision-discovery`](decision-discovery/SKILL.md) | Leads an evidence-informed conversation that resolves prospective engineering decisions for later specification. |
 | [`specification`](specification/SKILL.md) | Turns settled decisions into a reviewable implementation specification for later ticket decomposition. |
 | [`to-tickets`](to-tickets/SKILL.md) | Turns an approved specification into dependency-ordered local Markdown tickets. |
@@ -19,6 +20,7 @@ straight to implementation.
 
 | What you have | Start with | Supply |
 | --- | --- | --- |
+| An existing codebase with no improvement selected | `$engineering-architecture-survey` | A target area, pain point or request for a broader survey. |
 | An outcome with unresolved design choices | `$engineering-decision-discovery` | The proposed change, constraints and selected evidence. |
 | Settled decisions needing an implementation contract | `$engineering-specification` | The decision handoff or current conversation, and a work reference. |
 | An approved specification spanning several implementation sessions | `$engineering-to-tickets` | The exact saved specification path. |
@@ -29,6 +31,19 @@ The prompts below use source skill names. In Codex, use the installed names
 derived from your chosen prefix; see the [installation guidance](../README.md#install-in-codex).
 In Claude Code, use the source names. If a skill is not loaded, ask the agent
 to read its selected `SKILL.md` and apply the workflow directly.
+
+For maintenance discovery, start with a survey:
+
+```text
+Use $engineering-architecture-survey to examine the installer and its callers.
+Find refactors that would reduce coordinated changes or difficult verification.
+Rank the candidates by benefit, effort and risk, with source evidence.
+```
+
+The survey returns a shortlist without modifying code or settling its design.
+Select a candidate before moving into decision discovery. Request a saved
+report only when another session needs it; Markdown is the default, with HTML
+available when requested.
 
 For example, adding a check for broken local skill links could use work
 reference `link-check`:
@@ -119,6 +134,7 @@ repository:
 
 ```text
 .sdlc/work/<reference>/
+  architecture-survey.md # only when a saved survey report is requested
   decisions.md          # only when a saved discovery handoff is requested
   specification.md
   tickets/
@@ -140,7 +156,9 @@ Do not discover intent from branch names, titles, recency, sibling work folders,
 or unselected files in the same folder. Verify source claims against current
 code and surface stale or conflicting intent. Delegates inherit this boundary.
 
-Discovery owns only its requested `decisions.md`; specification owns only its
+Survey owns only its requested `architecture-survey.md` (or
+`architecture-survey.html` when HTML was requested); discovery owns only its
+requested `decisions.md`; specification owns only its
 selected specification; ticket decomposition owns only its new `tickets/` set.
 Check collisions at those targets, not at the whole work folder. Never overwrite
 an unselected artifact, merge an existing ticket set, or migrate other work.
