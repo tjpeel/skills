@@ -43,6 +43,49 @@ Codex and `CLAUDE.md` in Claude Code. When this skill names another source
 skill with `$`, invoke it where supported; otherwise read that source skill's
 `SKILL.md` and apply its workflow directly.
 
+## Prepare selected process inputs
+
+When implementation will run in a different checkout, the launcher or
+coordinating agent owns input setup before invoking the worker. Use the
+explicit source checkout, destination checkout, agreed starting commit, and
+selected ticket or specification slice. Build an explicit repository-relative
+file list from that input and only its linked process sources, named
+dependencies, or deferred-boundary tickets needed for the slice. Do not scan or
+copy whole work folders. Tracked code and repository guidance come from the
+destination checkout at the agreed commit.
+
+Preflight the complete file list before copying any input. Treat paths
+literally: use literal pathspecs for commands such as `git ls-files`, while
+`git check-ignore` takes pathnames without pathspec magic. Confirm every source
+exists inside the source checkout and every resolved destination stays inside
+the destination checkout, including symlinks. Preserve file bytes, work
+references, and repository-relative paths, including selected legacy paths;
+do not rewrite links or update input content. Reuse an existing destination
+only when its bytes match the selected source. Stop before copying on a missing
+source, differing destination, or tracked output target; do not overwrite,
+untrack, or merge files. Leave unrelated destination files untouched.
+
+Verify Git exclusion in the destination for every input to be copied. An
+existing `.gitignore` rule or local exclude may satisfy this; a committed
+ignore rule is not required. If needed, append `/.sdlc/work/` to the local
+exclude file resolved there by `git rev-parse --git-path info/exclude`; for
+legacy inputs, use literal rules for their selected paths, escaping Git ignore
+metacharacters. Preserve existing entries and never change `.gitignore` or
+copy Git metadata from the source checkout. Recheck the resulting exclusion
+with `git check-ignore` before copying. If any input remains unignored, do not
+copy or launch; report the condition.
+
+After copying, resolve the ticket's specification and required process-source
+and dependency links inside the destination. Confirm the input set is complete,
+remains untracked and ignored, and the destination still has the agreed
+starting commit. Pass the worker the destination root, starting commit, exact
+ticket or specification slice, and input paths; it must not search for missing
+or alternative inputs. A failed handoff does not authorise implementation.
+If copying or final validation fails, report which selected paths were copied
+and what remains unresolved; do not launch with an incomplete set.
+For work in the same checkout, no copying is needed; use the selected inputs
+and verify their links without requiring a new handoff document.
+
 ## Establish the implementation boundary
 
 Require the current task's explicitly supplied ticket path or approved
@@ -50,8 +93,10 @@ specification slice. A work reference selects an opaque folder key in
 `.sdlc/work/<reference>/`, not every file beneath it. If only a reference was
 supplied, ask for the input file or bounded slice rather than loading the
 folder. Do not infer inputs from branch names, titles, recency, or matching
-references. Read the selected input in full and resolve its repository root
-before changing files.
+references. For a prepared launch, verify the supplied destination root,
+starting commit, and selected inputs before reading them; do not fall back to
+the planning checkout. Read the selected input in full and resolve its
+repository root before changing implementation files.
 If the working tree contains unrelated changes, identify them and ask the user
 to isolate the ticket or supply a different fixed point before editing. Do not
 claim a review covers only this ticket when its diff includes other work.
@@ -107,7 +152,15 @@ existing increments, then continue there. Do not reset it or create another
 branch for each handoff. If its boundary cannot be established, resolve that
 gap before editing.
 
-For new work in a clean working tree, fetch the remote that tracks `main`,
+For a prepared worker launch, verify that `HEAD` matches its agreed starting
+commit. For a new ticket, create or verify its intended branch there and record
+that commit as the review fixed point; a resumed ticket keeps its original
+fixed point and increments. Do not refresh `main` or silently select a newer
+starting revision. A mismatch stops the launch until the coordinator resolves
+it. An already prepared branch can be used before it has implementation commits.
+
+For new work without a prepared launch, in a clean working tree, fetch the
+remote that tracks `main`,
 switch to local `main`, and update it with a fast-forward-only pull from that
 remote. Do not start from a stale local `main`, and do not merge or rebase
 around a failed fast-forward. If
@@ -124,8 +177,8 @@ read `**Work reference:**` (or legacy `**Parent reference:**`) and use it
 unchanged as a branch prefix only when the resulting branch is valid. Otherwise
 choose a short branch-safe rendering separately, without renaming the work
 folder or changing its reference. Validate it with
-`git check-ref-format --branch`. Create it from the updated `main` commit using
-this form:
+`git check-ref-format --branch`. Create it from the agreed starting commit
+(normally the updated `main` commit) using this form:
 
 ```text
 <branch-safe-reference>-<short-ticket-description>
@@ -142,8 +195,8 @@ resulting branch already exists, do not repurpose it or silently choose a
 different name; ask the user whether to continue that branch or choose a new
 description.
 
-For new work, record the updated `main` commit as the fixed point for the later
-independent review; resumed work retains its original fixed point. The
+For new work, record the agreed starting commit as the fixed point for the
+later independent review; resumed work retains its original fixed point. The
 coordinator owns branch creation and selection; a delegated writer works only
 after that boundary exists.
 
@@ -347,9 +400,9 @@ requires a clean cycle.
 Stage only the implementation files for that increment. Never stage process
 inputs from `.sdlc/work/`, `.specifications/`, or `.tickets/`, including with a
 force-add or broad staging command. Inspect the staged paths before committing.
-Do not untrack existing files, edit ignore rules, or maintain planning inputs
-as part of implementation. An unrelated local process folder is not permission
-to load its contents.
+After the coordinator's input setup, the implementation writer must not
+untrack existing files, edit ignore rules, or maintain planning inputs. An
+unrelated local process folder is not permission to load its contents.
 
 Verify that the completed increment was committed before beginning or authorising
 a later step, using the completion gate above. Do not defer all

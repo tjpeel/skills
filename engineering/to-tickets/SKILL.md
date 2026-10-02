@@ -265,3 +265,29 @@ directory of the file containing it. Confirm the specification target exists
 inside the invoking repository and blocker links resolve to the intended
 lower-numbered tickets. A written file with a broken source link is not ready
 for an isolated implementation session.
+
+## Handoff to a worker checkout
+
+Ignored process files do not arrive in a fresh Git worktree or clone. For each
+ready ticket, report its explicit repository-relative input file list alongside
+the ticket path and ready frontier. Include the selected ticket, its approved
+source specification, and only the linked process sources, named dependencies,
+or deferred-boundary tickets needed for that slice. Do not collect an entire
+work folder or follow unrelated links. Tracked code and repository guidance
+come from the worker's checkout, not from this input list.
+
+The launcher or coordinating agent transfers these selected inputs before
+starting implementation in another checkout. Preserve their relative paths,
+including explicitly selected legacy paths; copying a selected input is not
+migration or permission to maintain it. Setup must verify exclusion in the
+destination, reuse only byte-identical existing files, stop on collisions, and
+resolve required links there before launching the worker. Exclusion may exist
+only in Git's local exclude file; never require or change a committed
+`.gitignore` rule, or assume that source-checkout exclusion travelled with a
+clone.
+
+The launch message supplies the destination checkout, agreed starting commit,
+selected ticket or specification slice, and exact process input paths. Keep
+this handoff in the launch message or conversation; do not create another
+maintained document. Ticket decomposition ends with the input list and ready
+frontier; checkout setup and implementation need their own authorised step.

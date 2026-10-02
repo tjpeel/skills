@@ -58,14 +58,26 @@ Check collisions at those targets, not at the whole work folder. Never overwrite
 an unselected artifact, merge an existing ticket set, or migrate other work.
 Implementation and review consume selected inputs without maintaining them.
 
-Writers keep process files untracked using Git's local exclude file, resolved
-with `git rev-parse --git-path info/exclude`; preserve its existing entries and
-leave `.gitignore` unchanged. Never stage or commit process files. Explicitly
+Verify that process files are untracked and ignored. An existing ignore rule
+may satisfy this, but a committed `.gitignore` rule is not required. Writers
+use Git's local exclude file when needed, resolved with
+`git rev-parse --git-path info/exclude`; preserve existing entries and leave
+`.gitignore` unchanged. Never stage or commit process files. Explicitly
 supplied `.specifications/` and `.tickets/` inputs remain supported during the
 transition, but new files use `.sdlc/work/`. Do not search the legacy directories
 or migrate their contents automatically. Durable ADRs and domain context keep
 their established repository conventions and require a separate request or
 applicable repository requirement.
+
+For another checkout, ticket decomposition reports an explicit process input
+list per ready ticket. Before launching a worker, the launcher or coordinator
+copies only those selected inputs at the same relative paths, verifies Git
+exclusion in the destination, and checks required links there. Local excludes
+are not carried by a clone. Reuse byte-identical inputs and stop on differing
+files, tracked targets, or incomplete input sets. Leave unrelated work untouched.
+The launch message identifies the destination checkout, agreed starting commit,
+selected ticket or specification slice, and exact input paths. These are
+session inputs; no additional maintained handoff document is required.
 
 Discovery establishes the domain rules and derives the guard rails from them.
 Each handoff preserves those rules, observable outcomes and relevant boundary

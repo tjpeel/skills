@@ -151,8 +151,12 @@ repository; the reference is an arbitrary folder key. Specifications and local
 tickets are uncommitted inputs to the selected task, not ongoing documentation.
 Skills read only explicitly selected process inputs and directly linked
 relevant sources; they do not discover intent from other work folders or branch
-names. Explicit `.specifications/` and `.tickets/` inputs remain supported for
-now. See the [engineering workflow conventions](engineering/README.md) for
+names. Before a worker starts in another checkout, the launcher or coordinator
+transfers only the selected inputs, preserves their relative paths, and checks
+their links and exclusion in the destination. Local Git exclusion is sufficient;
+a committed `.gitignore` rule is not required. Explicit `.specifications/` and
+`.tickets/` inputs remain supported for now. See the
+[engineering workflow conventions](engineering/README.md) for
 layout, ownership, input boundaries, and local Git exclusion.
 
 Code documents implemented functionality; do not generate additional docs by
