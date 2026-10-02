@@ -41,7 +41,7 @@ constraints, and required output. If the equivalent is unavailable, perform
 that bounded responsibility in the coordinating agent.
 
 - Use `read_low` to map existing behaviour, interfaces, data boundaries,
-  relevant tests, and the highest observable test seams.
+  relevant tests, and existing seams that faithfully observe the behaviour.
 - Use `read_medium` to compare a bounded set of decision records and repository
   evidence, report conflicts, or audit the draft's acceptance criteria and test
   strategy for unsupported claims and missing observable behaviour.
@@ -133,8 +133,14 @@ decisions or blockers in chat. A saved approved specification can be supplied to
 
 ## Design for observable behaviour
 
-Define the highest existing seam at which the proposed behaviour can be
-observed and tested. Prefer existing seams. If one is missing, describe the
+Apply `$engineering-testing` to the proposed verification strategy. Record
+the existing coverage, concrete gaps and independent expected outcomes rather
+than requiring a new test for every criterion. Existing checks or direct
+verification can suffice for mechanical changes; a testable criterion does
+not automatically require a new automated test.
+
+Define the lowest-cost existing public seam that faithfully exercises the
+proposed behaviour. Prefer existing seams. If one is missing, describe the
 smallest new seam needed and why it belongs at that boundary. Do not create
 production code or tests as part of writing the specification. Choose the
 fewest high-level seams that cover the independently observable boundaries,
@@ -238,7 +244,8 @@ not mark it approved while a question affecting scope, required behaviour, a
 contract, or acceptance remains unresolved.
 
 Before seeking approval, trace each required outcome and material boundary or
-failure case to an observable acceptance criterion and credible test seam.
+failure case to an observable acceptance criterion and credible verification
+through an existing or proposed test seam or justified alternative check.
 Check that a fresh session can understand the actors, domain rules, contracts,
 intermediate states and verification from the specification and its linked
 sources. A required behaviour must not depend on an answer retained only in the

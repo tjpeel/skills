@@ -146,6 +146,12 @@ choices, `specification` records intended changes and acceptance criteria,
 repository, and `implement` completes one ready ticket or approved specification
 slice before `code-review` independently checks it against intent and repository
 risk.
+
+The [testing guidance](engineering/testing/SKILL.md) applies across planning,
+implementation and review: identify a concrete coverage gap before adding a
+test, reuse existing checks where sufficient, and avoid tests that restate
+implementation or duplicate protection.
+
 New engineering process files live in `.sdlc/work/<reference>/` in the invoking
 repository; the reference is an arbitrary folder key. Specifications and local
 tickets are uncommitted inputs to the selected task, not ongoing documentation.
@@ -171,5 +177,12 @@ implementation, rather than maintaining a parallel explanation of behaviour.
 - The productivity handoff skill was adapted from the public
   [mattpocock/skills handoff skill](https://github.com/mattpocock/skills/blob/main/skills/productivity/handoff/SKILL.md).
 - The engineering decision-discovery, specification, to-tickets,
-  implementation, and code-review skills were informed by the public
+  implementation, code-review, and testing skills were informed by the public
   [mattpocock/skills](https://github.com/mattpocock/skills) repository.
+- The testing guidance also draws on Google's
+  [Change-Detector Tests Considered Harmful](https://testing.googleblog.com/2015/01/testing-on-toilet-change-detector-tests.html)
+  and the [Unit Testing chapter of Software Engineering at Google](https://abseil.io/resources/swe-book/html/ch12.html)
+  for brittle interaction tests, behaviour-focused assertions and expectations
+  independent of production logic. Duplicate coverage, coverage-only tests,
+  speculative cases and vacuous assertions are practical categories used here
+  to guide test selection, rather than a formal taxonomy from those sources.

@@ -45,7 +45,7 @@ Return a concise, copy-ready title and Markdown description.
 - Explain the problem using ticket facts and evidence from the repository. Clearly mark measurements, assumptions, or unknowns.
 - Describe implementation changes by purpose and outcome, not as a file-by-file diff.
 - Include schema, data, configuration, migration, deployment, compatibility, and rollback implications when they exist. Explicitly say when none were identified.
-- Summarise the testing approach: important scenarios covered by new or changed tests and the behaviour each protects.
+- Summarise the testing approach: important scenarios covered by existing, new or changed tests and the behaviour each protects. If no new tests were needed, state why existing coverage or other verification was sufficient; do not imply that new tests are required for the description.
 - Add a separate verification section with executed commands and their results. If tests have not run, say `Not run` rather than implying they passed.
 - Identify deliberately excluded scope, follow-up work, or unresolved risks.
 

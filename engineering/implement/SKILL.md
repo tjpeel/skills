@@ -324,12 +324,21 @@ context when it is needed to pin the starting state.
 
 ## Build and verify one increment at a time
 
+Apply `$engineering-testing` before adding or changing tests. Identify the
+observable behaviour or credible failure, the gap in existing checks, and an
+independent expected result. Existing tests count even when unchanged. Reuse
+them when sufficient; add a case only for a distinct gap. Mechanical edits
+and behaviour-preserving refactors can need verification without new tests.
+State that decision and its evidence briefly in the handoff. A file, function
+or ticket changing does not itself require a new test.
+
 Use the test seams recorded by the specification or ticket. If the input does
-not name one, identify the smallest existing public boundary that observes the
-required changed behaviour, using the repository's existing test conventions.
-Add or update tests only for behaviour introduced or changed by the ticket; do
-not backfill coverage for unrelated, pre-existing functionality. Do not test
-private details, mock internal collaborators, or assert values computed by the
+not name one, identify the lowest-cost existing public boundary that faithfully
+observes the required changed behaviour, using the repository's existing test
+conventions. Add or update tests only for uncovered behaviour introduced or
+changed by the ticket; do not backfill coverage for unrelated, pre-existing
+functionality. Do not test private details, mock internal collaborators, or
+assert values computed by the
 same logic under test. Mock only genuine system boundaries when the
 repository's existing test style supports it.
 
@@ -344,10 +353,12 @@ Work within the authorised increment. Where a test can express its next
 observable case, make it fail first, implement only enough to make it pass,
 then proceed to the next case within that outcome. Use a pre-existing test
 when it is the clearest failing evidence. Where test-first work would not
-give a clear boundary, complete one small implementation increment and add
-or update its smallest credible regression coverage before beginning the
-next increment. State why test-first was impractical in the implementation
-summary.
+give a clear boundary, complete one small implementation increment and verify
+its outcome before beginning the next increment. Add or update regression
+coverage only when a credible gap exists. If no test seam can reproduce the
+actual failure, use the original reproducer and report the remaining coverage
+gap instead of forcing a shallow test. State why test-first was impractical
+in the implementation summary.
 
 Run the narrowest relevant verification after each meaningful change: the
 affected test or test file, type check or lint command where applicable, and
@@ -362,9 +373,10 @@ behaviour.
 Derive regression cases from the ticket's acceptance criteria and relevant
 domain rules, contracts and guard rails. Use conditions and expected results
 that can distinguish a correct outcome from a plausible wrong implementation.
-Cover material boundary and failure cases, including the effects that must not
-occur and how incomplete work is resolved where relevant. Verify the observable
-outcome and next action, not just an exception or a helper's return value.
+Cover material, uncovered boundary and failure cases, including the effects
+that must not occur and how incomplete work is resolved where relevant. Verify
+the observable outcome and next action, not just an exception or a helper's
+return value.
 
 At a deliberately incomplete boundary, add the short comment requested by the
 ticket when the reason for the limitation would otherwise be unclear. Explain
@@ -372,7 +384,7 @@ the constraint without repeating control flow or implying that the final
 capability exists. Keep it understandable without local planning files. Do not
 add speculative scaffolding for later work.
 
-## Commit logical, tested increments
+## Commit logical, verified increments
 
 Make each commit a coherent, committable step that moves the approved ticket
 forward, with its relevant verification. For changed behaviour, keep the
@@ -445,6 +457,6 @@ Return a concise handoff with:
 Return this handoff in the conversation; do not create a summary file by
 default.
 
-Commit the logical, fully tested increments created during implementation. Do
+Commit the logical, fully verified increments created during implementation. Do
 not push, create a pull request, or update an external tracker unless the user
 explicitly asks.

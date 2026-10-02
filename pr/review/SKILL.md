@@ -13,6 +13,8 @@ repository instructions: this normally includes `AGENTS.md` in Codex and
 `CLAUDE.md` in Claude Code. Keep the review read-only in every platform; do not
 use a platform's PR-comment or approval control unless the user separately
 asks.
+When a source skill is named with `$`, invoke it where supported; otherwise
+read that source skill's `SKILL.md` and apply its guidance directly.
 
 ## Delegation profiles
 
@@ -86,6 +88,13 @@ whether the suite passes. Inspect the required-check evidence for the pinned
 head, and identify stale, partial or unavailable results. Passing tests alone
 do not establish correctness, and a requirements match does not excuse a
 technical defect.
+
+Apply `$engineering-testing` to coverage and test quality. Existing tests count
+even when unchanged; request an addition only for a concrete uncovered failure
+at a boundary that can reproduce it. Do not require tests for every changed
+file, function or layer. Assess tautological, implementation-coupled,
+change-detector and other named anti-patterns by the guarantee they miss or
+concrete maintenance burden they introduce, not as style-only findings.
 
 ## Findings format
 

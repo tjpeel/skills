@@ -129,6 +129,14 @@ ticket. The specification must already settle how affected actors or inputs
 are handled while a capability is incomplete. Return a gap upstream rather
 than treating "out of scope" as a runtime policy.
 
+Apply `$engineering-testing` when specifying that verification. Name the
+required behaviour, relevant existing coverage, any distinct gap and the
+independent expected outcome. Do not add a test task for every ticket,
+criterion, function or layer by default. Preserve the specification's required
+checks; reuse existing coverage or justified alternative verification when
+sufficient. A ticket's test cases must follow its contracts and credible
+failures, not speculative permutations or an invented coverage target.
+
 Identify necessary prefactoring first. Fold it into the first vertical slice by
 default. Create a separate prerequisite only when it can land green, is
 independently verifiable, and creates a necessary seam or materially reduces

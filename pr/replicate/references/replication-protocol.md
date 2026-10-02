@@ -48,9 +48,9 @@ output just because they occur in the source PR. Keep compatibility promises of
 the destination unless the user explicitly changes them.
 
 Use one writer for all destination changes. The implementation handoff should
-identify changed files, mapping rows completed, tests added or adapted, and
-assumptions made. Do not claim equivalence based solely on matching line count
-or passing unrelated tests.
+identify changed files, mapping rows completed, existing coverage reused,
+tests added or adapted for distinct gaps, and assumptions made. Do not claim
+equivalence based solely on matching line count or passing unrelated tests.
 
 Run the narrowest relevant formatter, static analysis, unit/integration tests,
 and build checks documented by the destination. Expand coverage when the source
@@ -75,7 +75,9 @@ ask:
 The validation auditor then checks the mapping report against test intent. It
 should verify that new source test scenarios have destination coverage or a
 recorded incompatibility reason; that checks exercise the right layer; and that
-the reported command results support the claimed outcome. It should distinguish
+the reported command results support the claimed outcome. Existing destination
+tests can supply that coverage without additions. Assess assertions against
+the mapped contract rather than copying weak source tests. Distinguish
 unexecuted tests from passing tests.
 
 Resolve actionable findings with the same implementation owner. Re-run checks

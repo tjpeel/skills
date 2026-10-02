@@ -5,8 +5,15 @@
 | [`decision-discovery`](decision-discovery/SKILL.md) | Leads an evidence-informed conversation that resolves prospective engineering decisions for later specification. |
 | [`specification`](specification/SKILL.md) | Turns settled decisions into a reviewable implementation specification for later ticket decomposition. |
 | [`to-tickets`](to-tickets/SKILL.md) | Turns an approved specification into dependency-ordered local Markdown tickets. |
-| [`implement`](implement/SKILL.md) | Implements one ready ticket in bounded, tested increments, scrutinises adapted reference code, and runs full checks before review. |
+| [`implement`](implement/SKILL.md) | Implements one ready ticket in bounded, verified increments, scrutinises adapted reference code, and runs full checks before review. |
 | [`code-review`](code-review/SKILL.md) | Reviews actual runtime behaviour and the complete local diff, then checks the current delivery slice against approved intent. |
+| [`testing`](testing/SKILL.md) | Selects tests for concrete coverage gaps and rejects tautological, implementation-coupled, change-detector and other weak or redundant tests. |
+
+Use `$engineering-testing` when planning, writing or reviewing verification.
+Existing coverage and verification without new tests are valid outcomes; a
+new case needs a required behaviour or credible failure that current checks
+do not adequately cover. Test count and coverage percentages alone do not
+justify additions.
 
 Code is the documentation of implemented functionality. Do not generate
 additional docs by default during implementation. Read the code, tests and

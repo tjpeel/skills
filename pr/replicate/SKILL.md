@@ -56,6 +56,13 @@ do not infer a PR's contents from its title. If the mapping exposes a material
 product, compatibility, security, or migration choice with no safe equivalent,
 present the alternatives and wait for direction.
 
+Apply `$engineering-testing` to destination verification. Preserve the source
+tests' behavioural guarantees, not their number or implementation structure.
+Identify existing destination coverage before adding or adapting a test, and
+record any uncovered behaviour and its independent expected result. Source
+tests are evidence to assess; do not reproduce tautological, change-detector
+or internal-interaction tests just because the source contains them.
+
 ## Team shape
 
 Use this sequential team when delegation is available and the change is more
@@ -66,9 +73,9 @@ overlap. Pass the captured revision IDs and the mapping report to every role.
   behavior inventory and mapping report, identify destination integration
   points, and flag uncertainty. This role does not edit either repository.
 - **Destination implementer — `write_medium`:** the sole writer. Implement the
-  mapped behavior idiomatically in the destination, add or adapt tests, and
-  report each mapping item it completed. It must not modify source material or
-  overwrite unrelated destination work.
+  mapped behavior idiomatically in the destination, add or adapt tests only
+  for identified coverage gaps, and report each mapping item it completed.
+  It must not modify source material or overwrite unrelated destination work.
 - **Equivalence reviewer — `read_high`:** Compare
   the captured source PR, mapping report, and destination diff for omissions,
   behavior drift, regressions, and unsafe assumptions.

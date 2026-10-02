@@ -1,0 +1,4 @@
+interface:
+  display_name: "Engineering testing"
+  short_description: "Choose necessary tests and reject weak or redundant coverage"
+  default_prompt: "Use $engineering-testing to identify coverage gaps for this change and select the smallest meaningful tests or existing verification."

@@ -152,16 +152,30 @@ constraint with the diff and its verification. Report missing, partial, or
 apparently incorrect behaviour; scope that the source did not ask for; and
 tests that do not actually observe the intended behaviour.
 
-Assess test coverage separately from whether tests pass. Map every new or
-changed observable behaviour to the added or updated test that exercises it at
-the agreed seam. Identify new error paths, branches, integration boundaries,
-and changed executable code with no credible regression coverage. Do not ask
-for tests of private implementation detail or unrelated pre-existing code.
+Apply `$engineering-testing` when assessing coverage and test quality. Map
+required changed behaviour and credible failures to existing, updated or new
+tests at the agreed seam, or to justified alternative verification. An unchanged
+test can supply coverage; the absence of new test files is not a finding.
+Identify material uncovered failures in new error paths, branches and
+integration boundaries. Request a test only when it fills a concrete gap and
+can observe that failure. Do not ask for private implementation tests,
+unrelated coverage, or a case for every changed line or function.
+
+Check new and changed tests for the named anti-patterns in that guidance:
+tautological, implementation-coupled, change-detector, mock-only interaction,
+vacuous, duplicate, coverage-only and speculative tests. Distinguish a
+meaningful output snapshot or boundary-interaction contract from incidental
+structure checks. Report a concrete missed guarantee or maintenance burden,
+not a test style preference. Do not remove coverage merely because two tests
+touch the same code.
 
 Where the repository provides a coverage command or report, inspect coverage
 for the diff or new code as well as any reported overall project coverage.
 Distinguish line, branch, and function coverage when the tooling reports them;
 new code can have good line coverage while important branches remain untested.
+Without an explicit coverage requirement, low coverage alone does not establish
+a missing-test finding; connect it to an uncovered required outcome or credible
+failure.
 Report the measured new-code or diff-coverage volume and the overall figure
 separately. Do not invent a percentage threshold: apply one only when the
 specification or repository standards define it. If no coverage measurement is
