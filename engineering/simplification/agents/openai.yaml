@@ -1,0 +1,4 @@
+interface:
+  display_name: "Engineering simplification"
+  short_description: "Remove unnecessary code while preserving behaviour"
+  default_prompt: "Use $engineering-simplification to simplify this selected area, remove unnecessary code and indirection, and verify that observable behaviour is preserved."

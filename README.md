@@ -8,7 +8,7 @@ skill that matches the task; each group explains its inputs and handoffs.
 
 | Group | Use it to |
 | --- | --- |
-| [Engineering](engineering/README.md#using-the-workflow) | Investigate failures, find refactors, settle decisions, specify work, implement and verify it. |
+| [Engineering](engineering/README.md#using-the-workflow) | Investigate failures, find refactors, simplify code, settle decisions, specify work, implement and verify it. |
 | [Pull requests](pr/README.md#using-the-workflow) | Draft, publish, monitor, review or reproduce PRs, and process Dependabot updates. |
 | [Architecture](architecture/README.md#using-the-workflow) | Recover retrospective ADRs from code and history. |
 | [Productivity](productivity/README.md#using-the-workflow) | Prepare a compact handoff for another session. |
@@ -51,6 +51,12 @@ run `scripts/check-public-content` before committing.
   by pstack's [Prove It Works](https://github.com/cursor/plugins/blob/main/pstack/skills/principle-prove-it-works/SKILL.md),
   [Blast Radius](https://github.com/cursor/plugins/blob/main/pstack/skills/blast-radius/SKILL.md)
   and [Eval playbook](https://github.com/cursor/plugins/blob/main/pstack/skills/poteto-mode/playbooks/eval.md).
+- The engineering simplification skill was informed by pstack's
+  [Refactoring playbook](https://github.com/cursor/plugins/blob/main/pstack/skills/poteto-mode/playbooks/refactoring.md),
+  [Laziness Protocol](https://github.com/cursor/plugins/blob/main/pstack/skills/principle-laziness-protocol/SKILL.md),
+  [Subtract Before You Add](https://github.com/cursor/plugins/blob/main/pstack/skills/principle-subtract-before-you-add/SKILL.md),
+  [Minimize Reader Load](https://github.com/cursor/plugins/blob/main/pstack/skills/principle-minimize-reader-load/SKILL.md)
+  and [Migrate Callers Then Delete Legacy APIs](https://github.com/cursor/plugins/blob/main/pstack/skills/principle-migrate-callers-then-delete-legacy-apis/SKILL.md).
 - The productivity handoff skill was adapted from the public
   [mattpocock/skills handoff skill](https://github.com/mattpocock/skills/blob/main/skills/productivity/handoff/SKILL.md).
 - The engineering decision-discovery, specification, to-tickets,

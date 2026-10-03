@@ -3,6 +3,7 @@
 | Skill | Overview |
 | --- | --- |
 | [`architecture-survey`](architecture-survey/SKILL.md) | Finds and ranks evidence-backed architectural refactoring opportunities before work is selected. |
+| [`simplification`](simplification/SKILL.md) | Removes unnecessary code, indirection and state in a selected area while preserving observable behaviour. |
 | [`investigation`](investigation/SKILL.md) | Traces an observed failure or regression and distinguishes supported causes before a repair is chosen. |
 | [`decision-discovery`](decision-discovery/SKILL.md) | Leads an evidence-informed conversation that resolves prospective engineering decisions for later specification. |
 | [`specification`](specification/SKILL.md) | Turns settled decisions into a reviewable implementation specification for later ticket decomposition. |
@@ -22,6 +23,7 @@ straight to implementation.
 | What you have | Start with | Supply |
 | --- | --- | --- |
 | An existing codebase with no improvement selected | `$engineering-architecture-survey` | A target area, pain point or request for a broader survey. |
+| A selected area to simplify without changing behaviour | `$engineering-simplification` | The subsystem, files or diff, relevant constraints and existing checks. |
 | An observed failure, regression or runtime discrepancy | `$engineering-investigation` | The symptom, selected repositories or environment, and available triggering or comparison evidence. |
 | An outcome with unresolved design choices | `$engineering-decision-discovery` | The proposed change, constraints and selected evidence. |
 | Settled decisions needing an implementation contract | `$engineering-specification` | The decision handoff or current conversation, and a work reference. |
@@ -45,9 +47,26 @@ Rank the candidates by benefit, effort and risk, with source evidence.
 ```
 
 The survey returns a shortlist without modifying code or settling its design.
-Select a candidate before moving into decision discovery. Request a saved
-report only when another session needs it; Markdown is the default, with HTML
-available when requested.
+Select a candidate before implementing it. Use `$engineering-simplification`
+for a bounded change that preserves behaviour; use decision discovery when
+consequential choices remain unresolved. Request a saved report only when
+another session needs it; Markdown is the default, with HTML available when
+requested.
+
+For a selected simplification, go directly to the local change:
+
+```text
+Use $engineering-simplification on the selected command parser and its callers.
+Remove unnecessary forwarding and duplicated validation where the evidence
+supports it. Preserve public behaviour and verify with the existing checks.
+```
+
+Simplification pins the existing contract, checks whether proposed removals
+are safe, then makes and verifies the smallest worthwhile change. It can
+conclude that no change earns its cost. Existing coverage can be sufficient;
+line counts and one-caller wrappers alone do not justify edits. It needs no
+process folder or new specification for a settled local refactor. Follow
+repository commit instructions and request publication separately.
 
 For a runtime problem, start with `$engineering-investigation`. It establishes
 the relevant running artifact, traces the affected path and separates facts
