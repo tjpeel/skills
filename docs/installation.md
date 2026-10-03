@@ -58,9 +58,10 @@ Each package includes `agents/openai.yaml`. The installer generates a
 `SKILL.md` with the installed name, rewrites internal `$source-name`
 references in that manifest and metadata, and sets the metadata display name
 to the installed name. External and built-in skill references remain unchanged.
-Supporting resources are linked to this checkout, so keep it available.
-Reinstall after changing a manifest or metadata; existing installations are
-never refreshed implicitly.
+Reference documents are copied with source symlinks resolved. Other supporting
+resources are linked to this checkout, so keep it available. Reinstall after
+changing a manifest, metadata or reference; existing installations are never
+refreshed implicitly.
 
 ## Install in Claude Code
 
@@ -70,8 +71,9 @@ never refreshed implicitly.
 
 The target defaults to `~/.claude/skills`. Each package is copied under its
 source frontmatter name, with supporting resources and an ownership marker.
-The Codex-only `agents/` metadata is omitted. To install into a project's
-skill directory, supply an absolute target:
+Reference symlinks are resolved into local copies. The Codex-only `agents/`
+metadata is omitted. To install into a project's skill directory, supply an
+absolute target:
 
 ```zsh
 ./scripts/install-claude-skills "$PWD/.claude/skills"
@@ -111,13 +113,22 @@ still needs the repository and service access required by that skill.
 
 ## Delegation
 
-Codex can use the configured profiles from
-[tjpeel/agents](https://github.com/tjpeel/agents). Claude Code can use an
-equivalently bounded configured subagent when available. Profiles define
-effort and access; each handoff defines its task, inputs and output.
-When no equivalent capability is available, the coordinator performs the
-bounded responsibility directly. Installing these skills does not install
-agent profiles or authenticate external services.
+The common instructions live in
+[shared/ownership-and-delegation.md](../shared/ownership-and-delegation.md).
+Source skills link to that file through a local reference; both installers
+materialise it as `references/ownership-and-delegation.md` inside each
+installed skill. Edit the shared source once, then refresh installed skills.
+The installed guide does not require this checkout or another installed skill.
+
+Codex can use configured profiles such as those from
+[tjpeel/agents](https://github.com/tjpeel/agents), whose installer copies
+definitions and can refresh its own legacy links. Check the live spawning tool
+and include symlinked profile files when inspecting the active agent directory.
+Use the declared agent name, which can differ from its installed filename.
+Distinguish a missing definition from a definition that the current session
+cannot spawn. Claude Code can use an equivalently bounded configured subagent.
+The guide defines profile selection and the direct-work fallback. Installing
+these skills does not install profiles or change agent configuration.
 
 For installer tests and catalogue changes, see
 [maintenance](maintenance.md#validate-a-change).

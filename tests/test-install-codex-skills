@@ -72,10 +72,22 @@ for skill_directory in "${skills[@]}"; do
 
   for resource in "$skill_directory"/*; do
     [[ "$(basename -- "$resource")" == "SKILL.md" || "$(basename -- "$resource")" == "agents" ]] && continue
+    if [[ "$(basename -- "$resource")" == "references" ]]; then
+      [[ -d "$destination/references" && ! -L "$destination/references" ]]
+      [[ -z "$(find "$destination/references" -type l -print -quit)" ]]
+      diff -r -- "$resource" "$destination/references"
+      continue
+    fi
     [[ -L "$destination/$(basename -- "$resource")" ]]
     [[ "$(readlink "$destination/$(basename -- "$resource")")" == "$resource" ]]
   done
 done
+
+# The shared guidance must travel with a skill moved away from its source tree.
+mkdir -p "$TEST_DIRECTORY/detached"
+cp -R -- "$TARGET_DIRECTORY/$PREFIX-engineering-investigation" "$TEST_DIRECTORY/detached/skill"
+cmp -- "$REPOSITORY_DIRECTORY/shared/ownership-and-delegation.md" \
+  "$TEST_DIRECTORY/detached/skill/references/ownership-and-delegation.md"
 
 foreign_target="$TARGET_DIRECTORY/$PREFIX-ee-foreign-skill"
 mkdir -p "$foreign_target"

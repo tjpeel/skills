@@ -39,8 +39,19 @@ for skill_directory in "${skills[@]}"; do
   for resource in "$skill_directory"/*; do
     [[ "$(basename -- "$resource")" == "agents" ]] && continue
     [[ -e "$destination/$(basename -- "$resource")" ]]
+    if [[ "$(basename -- "$resource")" == "references" ]]; then
+      [[ -d "$destination/references" && ! -L "$destination/references" ]]
+      [[ -z "$(find "$destination/references" -type l -print -quit)" ]]
+      diff -r -- "$resource" "$destination/references"
+    fi
   done
 done
+
+# Relative source links must become local files in a moved installation.
+mkdir -p "$TEST_DIRECTORY/detached"
+cp -R -- "$TARGET_DIRECTORY/engineering-investigation" "$TEST_DIRECTORY/detached/skill"
+cmp -- "$REPOSITORY_DIRECTORY/shared/ownership-and-delegation.md" \
+  "$TEST_DIRECTORY/detached/skill/references/ownership-and-delegation.md"
 
 foreign_target="$TARGET_DIRECTORY/foreign-skill"
 mkdir -p "$foreign_target"

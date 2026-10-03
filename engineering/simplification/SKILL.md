@@ -128,10 +128,8 @@ case is removing an internal adapter used across several packages, with
 dynamic registration and independent test paths: bounded mapping and a fresh
 contract audit can expose assumptions the writer missed.
 
-Use the least sufficient configured capability. In Codex use the installed
-profiles below; in Claude Code use an equivalently bounded configured
-subagent when available. If unavailable, perform the responsibility directly
-instead of substituting a broader built-in role.
+Read [the ownership and delegation guide](references/ownership-and-delegation.md)
+before selecting profiles or declaring delegation unavailable.
 
 - `read_low` maps specified callers, effects, dependencies and existing checks,
   returning source anchors and unresolved usage without proposing a rewrite.

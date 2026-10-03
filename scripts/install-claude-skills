@@ -122,7 +122,11 @@ install_skill() {
   mkdir -- "$destination"
   for entry in "$skill_directory"/*; do
     [[ "$(basename -- "$entry")" == "agents" ]] && continue
-    cp -R -- "$entry" "$destination/"
+    if [[ "$(basename -- "$entry")" == "references" ]]; then
+      cp -RL -- "$entry" "$destination/"
+    else
+      cp -R -- "$entry" "$destination/"
+    fi
   done
   printf '%s\n' "$source_name" > "$destination/.personal-skills-source"
 }

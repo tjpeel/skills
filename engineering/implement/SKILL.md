@@ -228,15 +228,11 @@ small follow-up recommendation when you find work outside that boundary.
 
 ## Delegation profiles
 
-For a small, familiar change, work directly. When independent evidence would
-materially reduce risk, use the least sufficient delegated capability available
-in the current platform. In Codex, use the installed custom profiles
-`read_low`, `read_medium`, `read_high`, or `write_medium`; do not substitute a
-Codex built-in role. In Claude Code, use an equivalently bounded subagent only
-when subagents are available. A profile or subagent is an effort and access
-boundary, not a task role: give every handoff its precise task, input paths,
-constraints, and required output. If the equivalent is unavailable, perform
-that bounded responsibility in the coordinating agent.
+For a small, familiar change, work directly. Use independent evidence when it
+would materially reduce risk.
+
+Read [the ownership and delegation guide](references/ownership-and-delegation.md)
+before selecting profiles or declaring delegation unavailable.
 
 - Use `read_low` to map the affected behaviour, module boundary, conventions,
   existing tests, and the commands that exercise the agreed test seam.

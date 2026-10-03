@@ -75,15 +75,11 @@ write new files in those directories; new ticket sets use `.sdlc/work/`.
 
 ## Delegation profiles
 
-For a small, clear specification, work directly. When independent mapping or
-an audit would materially improve a non-trivial decomposition, use the least
-sufficient delegated capability available in the current platform. In Codex,
-use the installed custom profiles `read_low`, `read_medium`, `read_high`, or
-`write_medium`; do not substitute a Codex built-in role. In Claude Code, use an
-equivalently bounded subagent only when subagents are available. A profile or
-subagent is an effort and access boundary, not a task role: give every handoff
-its precise task, inputs, constraints, and required output. If the equivalent
-is unavailable, perform that bounded responsibility in the coordinating agent.
+For a small, clear specification, work directly. Delegate when independent
+mapping or an audit would materially improve a non-trivial decomposition.
+
+Read [the ownership and delegation guide](references/ownership-and-delegation.md)
+before selecting profiles or declaring delegation unavailable.
 
 - Use `read_low` to map unfamiliar current behaviour, domain vocabulary,
   decisions, and test seams needed to make the tickets credible.

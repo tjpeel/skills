@@ -32,16 +32,10 @@ before investigating.
 
 ## Delegation and ownership
 
-Keep all external writes with the coordinating agent. When delegation is available, use `read_low` for the inventory: PR identity, dependency diff, check conclusion, and an impact ranking with uncertainty. Use `read_high` only when the leading candidate's dependency impact needs code/test interpretation; it must return an evidence-backed risk assessment. Both profiles are read-only and must not approve, merge, comment, or alter GitHub state. The coordinator ranks the queue, processes at most one green PR at a time, and monitors main before reassessing the queue. If delegation is unavailable, the coordinator performs those read-only steps itself.
+Read [the ownership and delegation guide](references/ownership-and-delegation.md)
+before selecting profiles or declaring delegation unavailable.
 
-Select the least sufficient delegated capability available in the current
-platform. In Codex, use the installed custom profiles `read_low`,
-`read_medium`, `read_high`, `read_exceptional`, or `write_medium`; do not
-substitute a Codex built-in role. In Claude Code, use an equivalently bounded
-subagent only when subagents are available. A profile or subagent is an effort
-and access boundary, not a task role: include the precise task, inputs,
-constraints, and output shape in every handoff. If the equivalent is
-unavailable, perform that bounded responsibility in the coordinating agent.
+Keep all external writes with the coordinating agent. When delegation is available, use `read_low` for the inventory: PR identity, dependency diff, check conclusion, and an impact ranking with uncertainty. Use `read_high` only when the leading candidate's dependency impact needs code/test interpretation; it must return an evidence-backed risk assessment. Both profiles are read-only and must not approve, merge, comment, or alter GitHub state. The coordinator ranks the queue, processes at most one green PR at a time, and monitors main before reassessing the queue. If delegation is unavailable, the coordinator performs those read-only steps itself.
 
 ## Completion standard
 

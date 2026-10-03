@@ -110,13 +110,13 @@ steady-state result to them.
 
 Perform a small check directly. Reuse the invoking workflow's mapper or
 reviewer rather than spawning another agent to repeat its work. For a
-non-trivial evidence audit, Codex can use the installed `read_medium` profile
-to check criterion-to-result mapping, artifact identity, skipped checks and
-unproven assumptions. Use `read_high` only when material security, data-loss,
-migration or concurrency risk needs independent judgement. In Claude Code,
-use an equivalently bounded configured subagent when available. If equivalent
-delegation is unavailable, perform the audit directly and disclose that it
-was not independent.
+non-trivial evidence audit, use `read_medium` to check criterion-to-result
+mapping, artifact identity, skipped checks and unproven assumptions. Use
+`read_high` only when material security, data-loss, migration or concurrency
+risk needs independent judgement.
+
+Read [the ownership and delegation guide](references/ownership-and-delegation.md)
+before selecting profiles or declaring delegation unavailable.
 
 Give an auditor the selected sources, revision and diff boundary, raw results,
 commands and required outcomes. It returns evidence gaps and contradictions;

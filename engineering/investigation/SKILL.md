@@ -77,9 +77,10 @@ routine repair whose intent is already settled.
 A bounded local failure can be investigated directly. A representative
 non-trivial case is a regression spanning a caller, proxy, downstream service
 and performance harness: independent path mapping and comparability checks
-can reduce shared assumptions. In Codex, use the least sufficient installed
-profile; in Claude Code, use an equivalently bounded configured subagent when
-available. If unavailable, perform the responsibility directly.
+can reduce shared assumptions.
+
+Read [the ownership and delegation guide](references/ownership-and-delegation.md)
+before selecting profiles or declaring delegation unavailable.
 
 - `read_low` maps one selected path, configuration boundary or evidence source.
   It returns source anchors and observations, without attributing cause.

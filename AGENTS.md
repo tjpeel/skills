@@ -21,26 +21,17 @@ check, not a blanket requirement to delegate: a small, direct workflow should
 remain in the coordinating agent.
 
 Where a skill needs delegation, document its platform-neutral bounded
-responsibilities in `SKILL.md`. Use the least sufficient reusable capability
-available in the current environment; profiles set effort and access, while the
-handoff supplies the task, inputs, constraints, and output shape. In Codex,
-use the installed profile names below from `~/.codex/agents/`. In Claude Code,
-use an equivalently bounded configured subagent only when one is available:
+responsibilities and permitted write scope in `SKILL.md`. Keep common profile
+selection, discovery, ownership and fallback rules in
+[shared/ownership-and-delegation.md](shared/ownership-and-delegation.md).
+Read that guide before choosing a profile or declaring one unavailable.
 
-- `read_low` for inventories, repository mapping, and quick evidence checks;
-- `read_medium` for bounded analysis, drafting, and evidence or acceptance
-  audits;
-- `read_high` for material risk analysis, complex planning, or independent
-  review;
-- `read_exceptional` only for a small, evidence-complete synthesis where its
-  higher cost is justified; and
-- `write_medium` for one scoped local artifact change, with a single writer.
-
-Do not use a profile or subagent merely to restate the coordinator's work. Keep
-user questions, decisions, and external writes with the coordinator unless the
-skill explicitly authorises a bounded local writer. If an equivalent capability
-is unavailable, perform that bounded responsibility directly instead of using a
-broader built-in role as a substitute.
+Each delegating skill must route to its local
+`references/ownership-and-delegation.md` before delegation. In source packages,
+that file is a relative symlink to the shared guide. Both installers copy
+references with symlinks resolved, so installed skills contain the guide and
+do not depend on a catalogue-wide file at runtime. Keep task-specific handoffs
+in the skill; do not duplicate the shared rules there.
 
 ## Catalogue boundaries
 

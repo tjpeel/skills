@@ -1,0 +1,78 @@
+# Ownership and delegation
+
+Handle small, clear tasks directly. Delegate when a bounded independent task
+would improve the evidence or save time. The invoking skill defines each
+delegate's responsibility and write scope; this reference defines how to
+discover and select the capability.
+
+## Select the capability
+
+Use the least sufficient configured profile available in the current session:
+
+| Profile | Responsibility |
+| --- | --- |
+| `read_low` | Inventories, repository mapping and quick evidence checks. |
+| `read_medium` | Bounded analysis, drafting and evidence or acceptance audits. |
+| `read_high` | Material risk analysis, complex planning or independent review. |
+| `read_exceptional` | A small, evidence-complete synthesis that justifies exceptional effort. |
+| `write_medium` | One scoped local change as the sole writer, when the invoking skill permits it. |
+
+A profile sets effort and access, not the task. Preserve its configured model,
+reasoning and access boundaries. Finding a writer profile does not authorise a
+write or expand the invoking skill's scope.
+
+A coordinator running at Ultra or max does not make every handoff exceptional.
+Use the profile's explicit effort for its bounded task. Raise effort only for
+a selected task whose evidence or failed lower-effort attempt justifies it.
+
+## Discover Codex profiles before falling back
+
+Profiles are custom agents, not skills. Their absence from the skill catalogue
+does not establish that they are unavailable.
+
+1. Check the current agent-spawning tool and its supported agent types. Select
+   the profile by its declared `name`, using the tool's `agent_type` argument
+   when that is the exposed interface. Do not treat an installed filename or
+   prefix as the agent name.
+2. If availability is unclear, inspect the active user agent directory
+   (`${CODEX_HOME:-$HOME/.codex}/agents`) and the selected repository's
+   `.codex/agents`. Include symlinked TOML files: plain `rg --files` omits them.
+   List top-level `*.toml` paths without a regular-file-only filter, then read
+   the relevant file through its link and check its `name`, description and
+   access settings. Do not search unrelated repositories or archived profiles.
+   If the active configuration registers agents through `config_file`, follow
+   the relevant registration instead. Read only the agent settings needed.
+
+   For example, this lists user definitions including symlinked files:
+
+   ```sh
+   find "${CODEX_HOME:-$HOME/.codex}/agents" -maxdepth 1 -name '*.toml' -print
+   ```
+
+3. When the tool advertises the profile, attempt the actual bounded handoff.
+   If spawning rejects it, distinguish that runtime rejection from a missing
+   or unreadable profile file. A readable definition does not prove that the
+   current session can spawn it. Do not keep retrying an unchanged request,
+   guess filename aliases, or edit agent configuration as part of this skill.
+
+In Claude Code, check the available configured subagents and use an equivalent
+effort and access boundary. Do not infer availability from the skill list.
+In another environment, use an equivalent explicitly supported capability.
+
+If no equivalent can be spawned, perform the bounded responsibility in the
+coordinator instead of substituting a broader built-in role. Briefly report
+the observed limitation, including a runtime rejection when one occurred.
+Disclose when an audit or review could not be independent.
+
+## Keep ownership explicit
+
+Give each delegate its question, selected inputs, constraints, permitted paths
+and required evidence or output. Supply a small task packet rather than the
+entire conversation when the tool supports that choice. Reuse relevant work;
+do not delegate merely to repeat the coordinator's investigation.
+
+Keep user questions, scope decisions, commits and external writes with the
+coordinator. Read-only delegates return evidence. A permitted local writer
+owns only its assigned paths, preserves other people's edits and returns its
+diff and check results. Do not run competing writers in one working tree.
+Inspect the actual artifacts and results before accepting a completion claim.

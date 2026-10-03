@@ -187,6 +187,8 @@ install_skill() {
     [[ "$(basename -- "$entry")" == "SKILL.md" ]] && continue
     if [[ "$(basename -- "$entry")" == "agents" ]]; then
       install_agents_metadata "$skill_directory" "$link_name" "$destination"
+    elif [[ "$(basename -- "$entry")" == "references" ]]; then
+      cp -RL -- "$entry" "$destination/"
     else
       ln -s -- "$entry" "$destination/$(basename -- "$entry")"
     fi

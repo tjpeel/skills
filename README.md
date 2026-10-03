@@ -49,3 +49,7 @@ Inspired by these public repositories:
 
 - [cursor/plugins](https://github.com/cursor/plugins)
 - [mattpocock/skills](https://github.com/mattpocock/skills)
+
+Skill packaging and profile discovery also draw on OpenAI's
+[skill documentation](https://learn.chatgpt.com/docs/build-skills) and
+[custom agent documentation](https://learn.chatgpt.com/docs/agent-configuration/subagents).

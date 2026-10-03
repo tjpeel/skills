@@ -96,14 +96,15 @@ requested terminal state; it need not cause speculative code changes.
 
 ## Ownership and evidence
 
-Routine monitoring is a direct task. For a non-trivial failure, use Codex's
-installed `read_medium` profile for a bounded log-to-result audit, or an
-equivalently bounded configured subagent in Claude Code. Use `read_high`
-only when a material risk in the proposed repair needs independent judgement.
-If unavailable, perform that bounded work directly. Give auditors the head,
-raw run results, required outcomes and exact question; they do not repair,
-publish or approve the PR. The coordinator owns external writes and the final
-delivery assessment.
+Read [the ownership and delegation guide](references/ownership-and-delegation.md)
+before selecting profiles or declaring delegation unavailable.
+
+Routine monitoring is a direct task. For a non-trivial failure, use
+`read_medium` for a bounded log-to-result audit. Use `read_high` only when a
+material risk in the proposed repair needs independent judgement.
+Give auditors the head, raw run results, required outcomes and exact question;
+they do not repair, publish or approve the PR. The coordinator owns external
+writes and the final delivery assessment.
 
 Return the PR URL, current published SHA, requested-check conclusions and
 supporting run links. Distinguish local verification, published repairs and

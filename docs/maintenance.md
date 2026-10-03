@@ -26,6 +26,17 @@ configured capability. Keep user decisions and external writes with the
 coordinator unless the skill explicitly allows a bounded local writer. A
 small direct workflow does not need an agent team.
 
+Maintain common profile discovery and ownership rules in
+[shared/ownership-and-delegation.md](../shared/ownership-and-delegation.md).
+For a delegating skill at a two-level package path, link
+`references/ownership-and-delegation.md` to
+`../../../shared/ownership-and-delegation.md` and route to that local reference
+from `SKILL.md` before delegation. Adjust the relative target for deeper
+packages. Keep the skill's bounded responsibilities and write permissions in
+its manifest. Both installers resolve reference symlinks into ordinary files;
+refresh installed skills after changing the shared guide. When distributing a
+source package independently, resolve its reference symlinks into local files.
+
 ## Validate a change
 
 Read the edited instructions as a user would follow them. Check that group
@@ -42,8 +53,9 @@ git diff --check
 scripts/check-public-content
 ```
 
-The suites cover discovery, package names, resources, installation conflicts
-and refresh/removal. Packaging checks do not prove an agent follows a workflow.
+The suites cover discovery, package names, resources, shared reference copies,
+installation conflicts and refresh/removal. Packaging checks do not prove an
+agent follows a workflow.
 For material changes to agent behaviour, use relevant
 [evaluation cases](../engineering/verification/references/evaluation-cases.md)
 when they add evidence, retaining the actual commands and outputs. Label a

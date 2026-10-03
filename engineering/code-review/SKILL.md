@@ -96,15 +96,12 @@ for a substitute. This review never changes process files or ignore rules.
 
 ## Delegation profiles
 
-For a small, obvious diff, work directly. For a non-trivial diff, use the
-least sufficient delegated capability available in the current platform. In
-Codex, use the installed custom profiles `read_low`, `read_medium`, or
-`read_high`; do not substitute a Codex built-in role. In Claude Code, use an
-equivalently bounded read-only subagent only when subagents are available. A
-profile or subagent is an effort and access boundary, not a task role: give
-every handoff the fixed point, exact diff commands, source paths, constraints,
-and required output. If the equivalent is unavailable, perform that bounded
-responsibility in the coordinating agent.
+For a small, obvious diff, work directly.
+
+Read [the ownership and delegation guide](references/ownership-and-delegation.md)
+before selecting profiles or declaring delegation unavailable.
+Give every handoff the fixed point, exact diff commands, source paths,
+constraints and required output.
 
 - Use `read_low` as a locator. It inventories changed behaviour and tests,
   verifies the selected specification and ticket links, locates standards

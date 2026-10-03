@@ -1,6 +1,6 @@
 # Evidence dossier
 
-Use one dossier per candidate decision before Astra is invoked. A dossier is an investigation record, not a draft ADR.
+Use one dossier per candidate decision before exceptional synthesis. A dossier is an investigation record, not a draft ADR.
 Keep it in the investigation or delegated handoff unless a saved artifact is
 requested or required. It establishes missing rationale or constraints; it
 does not require repository documentation for every code seam.

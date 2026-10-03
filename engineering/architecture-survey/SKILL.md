@@ -60,11 +60,10 @@ test suite or exhaustive history reconstruction.
 
 For a small area with a clear behaviour path, work directly. A survey spanning
 several packages, shared callers and independent behaviours can benefit from
-bounded mapping and candidate analysis. Use the least sufficient delegated
-capability available. In Codex, use the installed custom profiles `read_low`,
-`read_medium` or `read_high`; do not substitute a built-in role. In Claude
-Code, use an equivalently bounded read-only subagent only when available. If
-the equivalent is unavailable, perform that responsibility directly.
+bounded mapping and candidate analysis.
+
+Read [the ownership and delegation guide](references/ownership-and-delegation.md)
+before selecting profiles or declaring delegation unavailable.
 
 - Use `read_low` to map a specified area, recent changes, callers, contracts
   and tests. It returns source anchors and observed friction, not a redesign.

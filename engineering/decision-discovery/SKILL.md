@@ -28,16 +28,11 @@ skill with `$`, invoke it where supported; otherwise read that source skill's
 
 ## Delegation profiles
 
-For a small decision with a clear local boundary, work directly. When the
-evidence spans enough code, history, or independent concerns for delegation to
-help, use the least sufficient delegated capability available in the current
-platform. In Codex, use the installed custom profiles `read_low`,
-`read_medium`, `read_high`, or `write_medium`; do not substitute a Codex
-built-in role. In Claude Code, use an equivalently bounded subagent only when
-subagents are available. A profile or subagent is an effort and access
-boundary, not a task role: give every handoff its precise task, inputs,
-constraints, and required output. If the equivalent is unavailable, perform
-that bounded responsibility in the coordinating agent.
+For a small decision with a clear local boundary, work directly. Delegate
+when the evidence spans enough code, history or independent concerns to help.
+
+Read [the ownership and delegation guide](references/ownership-and-delegation.md)
+before selecting profiles or declaring delegation unavailable.
 
 - Use `read_low` to map the affected code, existing terminology, accepted
   records, and observable constraints before design questions are posed.
