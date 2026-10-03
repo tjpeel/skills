@@ -60,17 +60,61 @@ An unsigned commit does not authorise rewriting history or force pushing.
 
 ## Branch naming
 
-Always create ticket branches as `<TICKET>-<short-kebab-description>`, for
-example `MO-464-move-proxy-into-service`. Never use a `codex/` prefix or any
-other generic prefix. If the ticket key is unavailable, request it before
-creating the branch.
+Use the confirmed ticket key or selected work reference for the work. Resolve
+it from the current request or explicitly selected ticket, specification or
+launch context. Local engineering tickets use `**Work reference:**` (or legacy
+`**Parent reference:**`). A work reference is an opaque folder key, not a
+tracker identifier: any non-empty single folder name is valid except `.` or
+`..`, path separators, or control characters. Preserve it exactly, with no
+required tracker format or case conversion.
+Check that it agrees with the selected `.sdlc/work/<reference>/` folder and
+launch context when supplied. Do not scan process folders for a reference or
+derive one from a local ticket sequence number, filename, branch or PR number.
+If the reference is missing, conflicts with the selected inputs, or several
+references are offered without selecting one for naming, resolve that gap
+before creating a branch or publishing PR metadata.
+
+For a new branch, follow the engineering naming form:
+
+```text
+<branch-safe-reference>-<short-ticket-description>
+```
+
+Use the ticket key or work reference unchanged as the prefix when the resulting
+branch is valid; otherwise choose a short branch-safe rendering separately.
+Validate the full name with `git check-ref-format --branch`. Derive the short,
+lowercase description from the ticket's outcome, using letters, numbers and
+hyphens. For example, work reference `read cache` and outcome “Add read path”
+use branch `read-cache-add-read-path`. Preserve the exact work reference in
+process paths and ticket metadata. Never use a `codex/` or other generic
+prefix. Treat references and branch names as literal data in shell operations.
+
+Verify an already prepared branch against the selected launch context and use
+its recorded name; do not rename it to match a new rendering. If a proposed
+branch already exists, verify it is the selected branch to resume or ask for
+a new description rather than repurposing it.
 
 ## PR identity and description wording
 
-Every proposed or created PR title must begin with its ticket key, using the
-format `<TICKET>: <Concise description>`, for example
-`MO-464: Move proxy into service`. Confirm the ticket key before creating a PR
-or changing its title.
+Every proposed or created PR title must begin with the exact confirmed ticket
+key or selected work reference, using `<reference>: <Concise description>`.
+For example, a tracker ticket uses `EX-123: Add read path`; work reference
+`read cache` uses `read cache: Add read path`, even when its branch prefix is
+`read-cache`. If the exact reference cannot be represented in a title, report
+the issue rather than trimming, truncating or replacing it.
+
+Carry the same exact reference in the description's existing equivalent field,
+or add `Ticket: <ticket-key>` or `Work reference: <reference>`. When a ticket
+key is selected for the title and an associated work reference is also
+supplied, retain both in the body. Each PR in a selected ticket stream keeps
+the reference; its outcome description distinguishes the slice. Do not expose
+private process paths or present local ticket sequence numbers as tracker keys.
+
+For an existing PR, check its title and body against the selected reference
+before editing. Apply these rules to the requested fields only. If another
+field needs correction to carry the reference consistently, prepare that
+correction and obtain authority before changing that field; do not silently
+expand the metadata edit.
 
 When a generated PR description contains bullets, start the text of every
 bullet (including nested and task-list bullets) with a capital letter. Rewrite
@@ -114,9 +158,10 @@ restacking and publication; a repaired local branch does not update a remote
 child by itself. Keep this branch state in the current handoff rather than
 editing local tickets to track heads.
 
-Use the ticket-formatted branch and title above, plus the repository's required
-PR-description structure. Write the body to a temporary Markdown file to
-preserve formatting, then create a draft unless the user explicitly requests a
+Use the confirmed ticket key or selected work reference and the branch and PR
+metadata rules above, plus the repository's required PR-description structure.
+Write the body to a temporary Markdown file to preserve formatting, then
+create a draft unless the user explicitly requests a
 ready-for-review PR:
 
 ```bash

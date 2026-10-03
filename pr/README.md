@@ -17,7 +17,7 @@ monitoring have different authority from publishing or merging.
 | What you have | Start with | Supply |
 | --- | --- | --- |
 | A local change needing a title and description | `$pr-draft` | The branch and base, available check results, and ticket context if selected. |
-| A branch to push, PR to create, or fields to edit | `$pr-manage` | The exact action, repository, branch, base and approved fields; the ticket key when required. |
+| A branch to push, PR to create, or fields to edit | `$pr-manage` | The exact action, repository, branch, base and approved fields; the confirmed ticket key or selected work reference. |
 | A published PR whose checks need following | `$pr-monitor` | The PR identity, requested outcomes and observation window; explicit repair/publishing scope if included. |
 | A colleague's PR needing a correctness review | `$pr-review` | The PR or branch and base, stated intent, check evidence and any selected local inputs. |
 | A source PR to reproduce in another repository | `$pr-replicate` | The source PR URL, destination checkout and alignment constraints. |
@@ -44,7 +44,8 @@ publication steps explicitly:
 
 ```text
 Use $pr-manage to push the current branch and create a draft PR against
-<base-branch>, using the approved title and description. Then use
+<base-branch> for work reference <reference>, using the approved title and
+description. Then use
 $pr-monitor to follow <requested-checks> for the published head.
 ```
 
@@ -52,9 +53,10 @@ PR management runs repository-required checks and preflight when present,
 verifies the target and performs only the requested push or field writes.
 The handoff gives the PR URL and published revision. For an existing PR,
 name only the fields to change; a branch push updates its content without
-authorising metadata edits. Ticket naming requirements come from the skill
-and applicable repository instructions; do not turn local ticket sequence
-numbers into external tracker identities.
+authorising metadata edits. PR titles and descriptions retain the confirmed
+ticket key or exact selected work reference; a branch may use a Git-safe
+rendering. Follow applicable repository naming instructions and do not turn
+local ticket sequence numbers into external tracker identities.
 
 Monitoring binds check results to the current remote SHA and waits for the
 requested terminal outcomes. A local pass or successful scanner step does
