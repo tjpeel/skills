@@ -10,9 +10,9 @@ Installation and usage are covered in the
 Put each source package at a nested path ending in `SKILL.md`, such as
 `pr/review/SKILL.md`. Every directory in the path contributes to the source
 name. Keep frontmatter names and `agents/openai.yaml` metadata prefix-free;
-the Codex installer derives installed names and display names from the prefix
-and nested path. Internal references use `$source-name`; leave external and
-built-in references unchanged.
+the shared installer derives installed names from the prefix and nested path
+for both providers, and sets Codex display names. Internal references use
+`$source-name`; leave external and built-in references unchanged.
 
 Keep the workflow self-contained. State its inputs, outputs, permissions and
 capability fallbacks without requiring another catalogue's setup, tracker
@@ -33,7 +33,7 @@ For a delegating skill at a two-level package path, link
 `../../../shared/ownership-and-delegation.md` and route to that local reference
 from `SKILL.md` before delegation. Adjust the relative target for deeper
 packages. Keep the skill's bounded responsibilities and write permissions in
-its manifest. Both installers resolve reference symlinks into ordinary files;
+its manifest. The installer resolves supporting symlinks into ordinary files;
 refresh installed skills after changing the shared guide. When distributing a
 source package independently, resolve its reference symlinks into local files.
 
@@ -44,18 +44,17 @@ examples agree with the actual skill, source references and relative links
 resolve, and handoffs preserve inputs and authority. Inspect the full diff,
 including new resources and metadata.
 
-Run the installer suites in their temporary directories:
+Run the installer suite in its temporary directories:
 
 ```zsh
-tests/test-install-codex-skills
-tests/test-install-claude-skills
+tests/test-install-skills
 git diff --check
 scripts/check-public-content
 ```
 
-The suites cover discovery, package names, resources, shared reference copies,
-installation conflicts and refresh/removal. Packaging checks do not prove an
-agent follows a workflow.
+The suite covers both providers, discovery, package names, reference rewriting,
+resource copies, ownership, conflicts, refresh/removal and forced legacy cleanup.
+Packaging checks do not prove an agent follows a workflow.
 For material changes to agent behaviour, use relevant
 [evaluation cases](../engineering/verification/references/evaluation-cases.md)
 when they add evidence, retaining the actual commands and outputs. Label a

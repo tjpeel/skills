@@ -1,0 +1,238 @@
+#!/usr/bin/env bash
+# End-to-end checks for both providers, ownership and legacy removal.
+
+set -euo pipefail
+SCRIPT_DIRECTORY="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)"
+REPOSITORY_DIRECTORY="$(CDPATH= cd -- "$SCRIPT_DIRECTORY/.." && pwd -P)"
+INSTALLER="$REPOSITORY_DIRECTORY/scripts/install-skills"
+UNINSTALLER="$REPOSITORY_DIRECTORY/scripts/uninstall-skills"
+TEST_DIRECTORY="$(mktemp -d "${TMPDIR:-/tmp}/skills-test.XXXXXX")"
+trap 'rm -rf -- "$TEST_DIRECTORY"' EXIT
+PREFIX=test
+
+fail() { echo "$1" >&2; exit 1; }
+expect_failure() {
+  if "$@" > "$TEST_DIRECTORY/output" 2>&1; then
+    fail "Expected failure: $*"
+  fi
+}
+
+skills=()
+while IFS= read -r -d '' manifest; do
+  skills+=("${manifest%/SKILL.md}")
+done < <(find "$REPOSITORY_DIRECTORY" -mindepth 3 -type f -name SKILL.md -print0 | LC_ALL=C sort -z)
+[[ ${#skills[@]} -gt 0 ]]
+
+for provider in codex claude; do
+  target="$TEST_DIRECTORY/$provider skills"
+  expect_failure "$INSTALLER" --provider "$provider" --prefix "$PREFIX" --check "$target"
+  [[ ! -e "$target" ]]
+  "$INSTALLER" --provider "$provider" --prefix "$PREFIX" -- "$target" >/dev/null
+  "$INSTALLER" --provider "$provider" --prefix "$PREFIX" --check "$target" >/dev/null
+  "$UNINSTALLER" --provider "$provider" --prefix "$PREFIX" --check "$target" >/dev/null
+
+  for skill_directory in "${skills[@]}"; do
+    relative_path="${skill_directory#"$REPOSITORY_DIRECTORY"/}"
+    source_name="${relative_path//\//-}"
+    installed_name="$PREFIX-$source_name"
+    destination="$target/$installed_name"
+    [[ "$(sed -n 's/^name: *//p' "$skill_directory/SKILL.md" | head -n 1)" == "$source_name" ]]
+    [[ -d "$destination" && ! -L "$destination" ]]
+    rg -q "^name: $installed_name$" "$destination/SKILL.md"
+    rg -q "^provider: $provider$" "$destination/.personal-skills-source"
+    rg -q "^package: $relative_path$" "$destination/.personal-skills-source"
+    [[ -z "$(find "$destination" -type l -print -quit)" ]]
+    if [[ "$provider" == codex ]]; then
+      rg -q "display_name: \"$installed_name\"" "$destination/agents/openai.yaml"
+      rg -Fq "\$$installed_name" "$destination/agents/openai.yaml"
+    else
+      [[ ! -e "$destination/agents" ]]
+    fi
+    while IFS= read -r -d '' resource; do
+      case "$(basename -- "$resource")" in SKILL.md|agents) continue ;; esac
+      diff -r -- "$resource" "$destination/$(basename -- "$resource")"
+    done < <(find "$skill_directory" -mindepth 1 -maxdepth 1 -print0)
+  done
+
+  # Copies remain usable after moving away from the checkout.
+  mkdir -p "$TEST_DIRECTORY/detached-$provider"
+  cp -R -- "$target/test-engineering-investigation" "$TEST_DIRECTORY/detached-$provider/skill"
+  cmp -- "$REPOSITORY_DIRECTORY/shared/ownership-and-delegation.md" \
+    "$TEST_DIRECTORY/detached-$provider/skill/references/ownership-and-delegation.md"
+
+  # A second install must preserve edits rather than silently refresh them.
+  printf '\nLocal edit.\n' >> "$target/test-pr-manage/SKILL.md"
+  cp -- "$target/test-pr-manage/SKILL.md" "$TEST_DIRECTORY/preserved-$provider"
+  "$INSTALLER" --provider "$provider" --prefix test "$target" >/dev/null
+  cmp -- "$target/test-pr-manage/SKILL.md" "$TEST_DIRECTORY/preserved-$provider"
+
+  mkdir -p "$target/test-foreign-skill" "$target/other-pr-manage"
+  "$UNINSTALLER" --provider "$provider" --prefix test "$target" >/dev/null
+  for skill_directory in "${skills[@]}"; do
+    relative_path="${skill_directory#"$REPOSITORY_DIRECTORY"/}"
+    [[ ! -e "$target/test-${relative_path//\//-}" ]]
+  done
+  [[ -d "$target/test-foreign-skill" && -d "$target/other-pr-manage" ]]
+  # Missing packages do not prevent repeated removal.
+  "$UNINSTALLER" --provider "$provider" --prefix test "$target" >/dev/null
+  "$INSTALLER" --provider "$provider" --prefix test "$target" >/dev/null
+
+  # Missing or mismatched markers and linked paths are conflicts for both.
+  rm -- "$target/test-pr-manage/.personal-skills-source"
+  expect_failure "$INSTALLER" --provider "$provider" --prefix test "$target"
+  expect_failure "$UNINSTALLER" --provider "$provider" --prefix test "$target"
+  [[ -f "$target/test-pr-manage/SKILL.md" ]]
+  printf '%s\n' 'not owned' > "$target/test-pr-manage/.personal-skills-source"
+  expect_failure "$UNINSTALLER" --provider "$provider" --prefix test "$target"
+  [[ -f "$target/test-pr-manage/SKILL.md" ]]
+  rm -- "$target/test-pr-manage/.personal-skills-source"
+  ln -s "$TEST_DIRECTORY/preserved-$provider" "$target/test-pr-manage/.personal-skills-source"
+  expect_failure "$UNINSTALLER" --provider "$provider" --prefix test "$target"
+  [[ -L "$target/test-pr-manage/.personal-skills-source" ]]
+
+  # Force is explicit and still targets only exact current catalogue names.
+  "$UNINSTALLER" --provider "$provider" --prefix test --force --check "$target" > "$TEST_DIRECTORY/force-check" 2>&1 || true
+  rg -q '^installed  test-pr-manage$' "$TEST_DIRECTORY/force-check"
+  [[ -f "$target/test-pr-manage/SKILL.md" ]]
+  "$UNINSTALLER" --provider "$provider" --prefix test --force "$target" >/dev/null
+  [[ ! -e "$target/test-pr-manage" && -d "$target/test-foreign-skill" ]]
+
+  # Force unlinks a package symlink without following it.
+  mkdir -p "$TEST_DIRECTORY/foreign-$provider"
+  printf '%s\n' preserved > "$TEST_DIRECTORY/foreign-$provider/keep"
+  ln -s "$TEST_DIRECTORY/foreign-$provider" "$target/test-pr-manage"
+  expect_failure "$INSTALLER" --provider "$provider" --prefix test --check "$target"
+  expect_failure "$UNINSTALLER" --provider "$provider" --prefix test "$target"
+  [[ -L "$target/test-pr-manage" ]]
+  "$UNINSTALLER" --provider "$provider" --prefix test --force "$target" >/dev/null
+  [[ -f "$TEST_DIRECTORY/foreign-$provider/keep" && ! -L "$target/test-pr-manage" ]]
+  ln -s "$TEST_DIRECTORY/absent" "$target/test-pr-manage"
+  expect_failure "$INSTALLER" --provider "$provider" --prefix test "$target"
+  "$UNINSTALLER" --provider "$provider" --prefix test --force "$target" >/dev/null
+  [[ ! -L "$target/test-pr-manage" ]]
+done
+
+# Exercise the name map independently of this catalogue's naming convention.
+fixture="$TEST_DIRECTORY/fixture"
+mkdir -p "$fixture/scripts" "$fixture/a/alpha/agents" "$fixture/a/alpha/references" \
+  "$fixture/a/alpha/assets" "$fixture/b/beta/agents" "$fixture/shared"
+cp -- "$INSTALLER" "$UNINSTALLER" "$fixture/scripts/"
+cp -R -- "$REPOSITORY_DIRECTORY/scripts/lib" "$fixture/scripts/"
+cat > "$fixture/a/alpha/SKILL.md" <<'EOF'
+---
+name: alpha
+description: First fixture skill.
+---
+Use $alpha, $sample-a-alpha, $alpha-extra, $alpha_suffix, $external and $imagegen.
+$alpha
+EOF
+cat > "$fixture/b/beta/SKILL.md" <<'EOF'
+---
+name: sample-a-alpha
+description: Second fixture skill.
+---
+Use $alpha and $sample-a-alpha.
+EOF
+for package in a/alpha b/beta; do
+  cat > "$fixture/$package/agents/openai.yaml" <<'EOF'
+interface:
+  display_name: "Source title"
+  default_prompt: "Use $alpha and $sample-a-alpha, plus $external."
+policy:
+  allow_implicit_invocation: false
+EOF
+done
+printf '%s\n' 'Shared reference.' > "$fixture/shared/guide.md"
+ln -s ../../../shared/guide.md "$fixture/a/alpha/references/guide.md"
+ln -s ../../../shared/guide.md "$fixture/a/alpha/assets/guide.md"
+printf '%s\n' 'Hidden resource.' > "$fixture/a/alpha/.guide"
+for provider in codex claude; do
+  target="$TEST_DIRECTORY/fixture-$provider"
+  "$fixture/scripts/install-skills" --provider "$provider" --prefix sample "$target" >/dev/null
+  rg -Fq 'Use $sample-a-alpha, $sample-b-beta, $alpha-extra, $alpha_suffix, $external and $imagegen.' "$target/sample-a-alpha/SKILL.md"
+  rg -Fqx '$sample-a-alpha' "$target/sample-a-alpha/SKILL.md"
+  [[ -f "$target/sample-a-alpha/.guide" && -z "$(find "$target" -type l -print -quit)" ]]
+  cmp -- "$fixture/shared/guide.md" "$target/sample-a-alpha/references/guide.md"
+  cmp -- "$fixture/shared/guide.md" "$target/sample-a-alpha/assets/guide.md"
+  if [[ "$provider" == codex ]]; then
+    rg -Fq 'Use $sample-a-alpha and $sample-b-beta, plus $external.' "$target/sample-a-alpha/agents/openai.yaml"
+    rg -Fq 'allow_implicit_invocation: false' "$target/sample-a-alpha/agents/openai.yaml"
+  fi
+  # Ownership also records provider, so pointing the other provider here fails.
+  if [[ "$provider" == codex ]]; then other=claude; else other=codex; fi
+  expect_failure "$fixture/scripts/uninstall-skills" --provider "$other" --prefix sample "$target"
+  [[ -f "$target/sample-a-alpha/SKILL.md" ]]
+done
+
+# Old Claude installs used the source name and a single-line source marker.
+legacy_target="$TEST_DIRECTORY/legacy-claude"
+mkdir -p "$legacy_target/alpha" "$legacy_target/sample-a-alpha" "$legacy_target/unrelated"
+cp -- "$fixture/a/alpha/SKILL.md" "$legacy_target/alpha/"
+printf '%s\n' alpha > "$legacy_target/alpha/.personal-skills-source"
+cp -- "$fixture/b/beta/SKILL.md" "$legacy_target/sample-a-alpha/"
+expect_failure "$fixture/scripts/uninstall-skills" --provider claude --legacy-unprefixed "$legacy_target"
+[[ ! -e "$legacy_target/alpha" && -f "$legacy_target/sample-a-alpha/SKILL.md" ]]
+"$fixture/scripts/uninstall-skills" --provider claude --legacy-unprefixed --force "$legacy_target" >/dev/null
+[[ ! -e "$legacy_target/sample-a-alpha" && -d "$legacy_target/unrelated" ]]
+
+# Invalid arguments must fail before creating a target.
+invalid_target="$TEST_DIRECTORY/invalid"
+expect_failure "$INSTALLER" --prefix test "$invalid_target"
+expect_failure "$INSTALLER" --provider invalid --prefix test "$invalid_target"
+expect_failure "$INSTALLER" --provider codex "$invalid_target"
+expect_failure "$INSTALLER" --provider codex --prefix '../bad' "$invalid_target"
+expect_failure "$INSTALLER" --provider codex --prefix '' "$invalid_target"
+expect_failure "$INSTALLER" --provider codex --prefix test relative
+expect_failure "$INSTALLER" --provider codex --prefix test --check --install "$invalid_target"
+expect_failure "$INSTALLER" --provider codex --prefix test --uninstall "$invalid_target"
+expect_failure "$INSTALLER" --provider codex --prefix test --force "$invalid_target"
+expect_failure "$INSTALLER" --provider codex --prefix test --legacy-unprefixed "$invalid_target"
+expect_failure "$INSTALLER" --provider codex --provider claude --prefix test "$invalid_target"
+expect_failure "$INSTALLER" --provider codex --prefix test -- "$invalid_target" extra
+expect_failure "$UNINSTALLER" --provider codex --legacy-unprefixed "$invalid_target"
+expect_failure "$UNINSTALLER" --provider claude --legacy-unprefixed --prefix test "$invalid_target"
+[[ ! -e "$invalid_target" ]]
+
+# Check default and literal-tilde parsing without writing to the user's home.
+parsed_target() {
+  (
+    ACTION=install
+    source "$REPOSITORY_DIRECTORY/scripts/lib/skills.sh"
+    resolve_target() { :; }
+    parse_arguments "$@"
+    printf '%s\n' "$TARGET_DIRECTORY"
+  )
+}
+for provider in codex claude; do
+  [[ "$(parsed_target --provider "$provider" --prefix sample)" == "$HOME/.$provider/skills" ]]
+done
+[[ "$(parsed_target --provider codex --prefix sample '~/custom skills')" == "$HOME/custom skills" ]]
+
+# Targets inside the repository must not become source packages on a later run.
+for in_repo_target in "$fixture/.claude/skills" "$fixture/local-skills"; do
+  "$fixture/scripts/install-skills" --provider claude --prefix sample "$in_repo_target" >/dev/null
+  "$fixture/scripts/install-skills" --provider claude --prefix sample --check "$in_repo_target" >/dev/null
+  "$fixture/scripts/uninstall-skills" --provider claude --prefix sample "$in_repo_target" >/dev/null
+done
+# Source containment checks resolve both parent components and symlink aliases.
+expect_failure "$fixture/scripts/install-skills" --provider codex --prefix sample "$fixture/a/alpha"
+expect_failure "$fixture/scripts/install-skills" --provider codex --prefix sample "$fixture/a/alpha/assets/../generated"
+ln -s "$fixture/a/alpha" "$TEST_DIRECTORY/source-alias"
+expect_failure "$fixture/scripts/install-skills" --provider codex --prefix sample "$TEST_DIRECTORY/source-alias/generated"
+expect_failure "$fixture/scripts/install-skills" --provider codex --prefix sample "$TEST_DIRECTORY/missing/../source-alias/generated"
+expect_failure "$fixture/scripts/install-skills" --provider codex --prefix sample "$fixture/a"
+[[ ! -e "$fixture/a/alpha/generated" && ! -e "$fixture/a/sample-a-alpha" ]]
+
+# Source and flattened-name collisions are rejected before any writes.
+cp -- "$fixture/a/alpha/SKILL.md" "$TEST_DIRECTORY/alpha-original"
+sed 's/^name: alpha$/name: sample-a-alpha/' "$TEST_DIRECTORY/alpha-original" > "$fixture/a/alpha/SKILL.md"
+expect_failure "$fixture/scripts/install-skills" --provider codex --prefix sample "$invalid_target"
+[[ ! -e "$invalid_target" ]]
+cp -- "$TEST_DIRECTORY/alpha-original" "$fixture/a/alpha/SKILL.md"
+mkdir -p "$fixture/a/b-c" "$fixture/a-b/c"
+printf '%s\n' '---' 'name: collision-one' 'description: Fixture.' '---' > "$fixture/a/b-c/SKILL.md"
+printf '%s\n' '---' 'name: collision-two' 'description: Fixture.' '---' > "$fixture/a-b/c/SKILL.md"
+expect_failure "$fixture/scripts/install-skills" --provider claude --prefix sample "$invalid_target"
+[[ ! -e "$invalid_target" ]]
+
+echo 'Skill install and uninstall checks passed for Codex and Claude.'

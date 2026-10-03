@@ -33,10 +33,11 @@ straight to implementation.
 | A test plan or suite needing a coverage assessment | `$engineering-testing` | Required behaviour, credible failures and the relevant existing checks. |
 | A completion claim needing evidence | `$engineering-verification` | The selected artifact, required outcomes and available check results. |
 
-The prompts below use source skill names. In Codex, use the installed names
-derived from your chosen prefix; see [how to invoke a skill](../docs/installation.md#invoke-a-skill).
-In Claude Code, use the source names. If a skill is not loaded, ask the agent
-to read its selected `SKILL.md` and apply the workflow directly.
+The prompts below use source skill names. In either provider, use installed
+names derived from your chosen prefix; see
+[how to invoke a skill](../docs/installation.md#invoke-a-skill). If a skill is
+not loaded, ask the agent to read its selected `SKILL.md` and apply the workflow
+directly.
 
 For maintenance discovery, start with a survey:
 

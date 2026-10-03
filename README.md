@@ -16,17 +16,20 @@ skill that matches the task; each group explains its inputs and handoffs.
 
 ## Install
 
-Run from this repository. Choose the command for your platform:
+Run from this repository and select the provider:
 
 ```zsh
 # Codex
-./scripts/install-codex-skills --prefix tjpeel
+./scripts/install-skills --provider codex --prefix tjpeel
 
 # Claude Code
-./scripts/install-claude-skills
+./scripts/install-skills --provider claude --prefix tjpeel
 ```
 
-The installers add missing packages and leave existing paths untouched.
+Both providers use the same prefix and packaging rules. The installer adds
+missing packages and leaves existing paths untouched. Remove packages with
+`./scripts/uninstall-skills --provider codex --prefix tjpeel`, substituting
+`claude` for Claude Code.
 See [installation and refresh](docs/installation.md) for names, custom
 targets, conflict checks and updating an installed catalogue.
 

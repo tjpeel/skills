@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Remove owned skill packages for the selected provider.
+
+set -euo pipefail
+ACTION=uninstall
+SCRIPT_DIRECTORY="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)"
+source "$SCRIPT_DIRECTORY/lib/skills.sh"
+skills_main "$@"

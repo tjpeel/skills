@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Install skill packages for the selected provider.
+
+set -euo pipefail
+ACTION=install
+SCRIPT_DIRECTORY="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)"
+source "$SCRIPT_DIRECTORY/lib/skills.sh"
+skills_main "$@"

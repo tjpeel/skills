@@ -11,8 +11,8 @@ format or voice to preserve. The surrounding document and the author's
 stated style guide the edit. Facts, quotations, identifiers and certainty
 stay intact unless the request says otherwise.
 
-Prompts use source names. In Codex, use the prefixed installed name; in
-Claude Code, use the source name. See [invocation guidance](../docs/installation.md#invoke-a-skill)
+Prompts use source names. In either provider, use the prefixed installed name.
+See [invocation guidance](../docs/installation.md#invoke-a-skill)
 or ask the agent to read the selected `SKILL.md` directly.
 
 ```text

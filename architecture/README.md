@@ -12,8 +12,8 @@ anchor, available Git and PR history, and the requested output scope. Use the
 repository's ADR location and format, or select a destination when there is
 no established convention.
 
-Prompts use source names. In Codex, use the prefixed installed name; in
-Claude Code, use the source name. See [invocation guidance](../docs/installation.md#invoke-a-skill)
+Prompts use source names. In either provider, use the prefixed installed name.
+See [invocation guidance](../docs/installation.md#invoke-a-skill)
 or ask the agent to read the selected `SKILL.md` directly.
 
 For a bounded decision seam:

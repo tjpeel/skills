@@ -28,7 +28,7 @@ Read that guide before choosing a profile or declaring one unavailable.
 
 Each delegating skill must route to its local
 `references/ownership-and-delegation.md` before delegation. In source packages,
-that file is a relative symlink to the shared guide. Both installers copy
+that file is a relative symlink to the shared guide. The shared installer copies
 references with symlinks resolved, so installed skills contain the guide and
 do not depend on a catalogue-wide file at runtime. Keep task-specific handoffs
 in the skill; do not duplicate the shared rules there.

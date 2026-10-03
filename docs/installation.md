@@ -1,111 +1,121 @@
 # Installation and refresh
 
-Run the commands below from the repository root. The installers discover each
-nested package ending in `SKILL.md`; choose an absolute target directory or
-use the platform default. See the [workflow catalogue](../README.md#choose-a-workflow)
-to select a skill after installation.
+Run these commands from the repository root. One installer and one uninstaller
+serve both providers; `--provider` selects the default target and metadata.
+See the [workflow catalogue](../README.md#choose-a-workflow) to select a skill.
 
-## Install in Codex
-
-```zsh
-./scripts/install-codex-skills --prefix tjpeel
-```
-
-The target defaults to `~/.codex/skills`. `--prefix` is required: start it with
-a lowercase letter or digit, then use lowercase letters, digits and hyphens.
-To supply a target explicitly:
+## Install
 
 ```zsh
-./scripts/install-codex-skills --prefix tjpeel ~/.codex/skills
+./scripts/install-skills --provider codex --prefix tjpeel
+./scripts/install-skills --provider claude --prefix tjpeel
 ```
 
-The installer combines the prefix with every directory in the package path.
-For example, `pr/review/SKILL.md` becomes
-`~/.codex/skills/tjpeel-pr-review/`, with manifest name `tjpeel-pr-review`.
+The defaults are `~/.codex/skills` and `~/.claude/skills`. Both providers require
+`--prefix`: start it with a lowercase letter or digit, then use lowercase
+letters, digits and hyphens. The installer combines it with every directory
+in the package path. For example, `pr/review/SKILL.md` becomes
+`tjpeel-pr-review/`, with manifest name `tjpeel-pr-review`. Installed names must
+fit within 64 characters.
+
+To supply an absolute target, including a project's skill directory:
+
+```zsh
+./scripts/install-skills --provider claude --prefix tjpeel -- "$PWD/.claude/skills"
+```
+
+Literal `~` and `~/` targets resolve against the current user's home directory.
+A target cannot be inside a source skill package or contain source packages.
 Restart Codex after installation so it reloads the catalogue.
 
 ### Check current state
 
 ```zsh
-./scripts/install-codex-skills --prefix tjpeel --check
+./scripts/install-skills --provider codex --prefix tjpeel --check
+./scripts/install-skills --provider claude --prefix tjpeel --check
 ```
 
-`--check` exits non-zero for missing or conflicting packages. Default
-`--install` mode adds only missing packages. It never replaces, removes or
-moves an existing path; resolve conflicts before running it again. Old
-`personal--*` installations remain in place.
+`--check` reports installed, missing and conflicting packages without changing
+files, and exits non-zero for missing packages or conflicts. Default install
+mode adds only missing packages. It leaves every existing path untouched;
+resolve conflicts before running it again. Existing owned packages are not
+refreshed implicitly.
 
-### Refresh or remove
+### What gets installed
+
+Both providers receive a generated `SKILL.md` with the installed name.
+Internal `$source-name` references in that manifest are rewritten using the
+complete catalogue map. External and built-in skill references stay unchanged.
+Supporting resources are copied, including hidden files, with symlinks resolved
+into local copies. Installed packages do not depend on this checkout.
+
+Codex also receives `agents/` metadata with internal references rewritten and
+the `openai.yaml` display name set to the installed name. Claude omits `agents/`.
+Each package has a `.personal-skills-source` ownership marker recording its
+provider, prefix, source name, package path and installed name. Both providers
+use the same ownership checks for installation and removal.
+
+## Refresh or remove
 
 Uninstall the current package names, then install the revised catalogue:
 
 ```zsh
-./scripts/uninstall-codex-skills --prefix tjpeel
-./scripts/install-codex-skills --prefix tjpeel
+./scripts/uninstall-skills --provider codex --prefix tjpeel
+./scripts/install-skills --provider codex --prefix tjpeel
 ```
 
-Use the same prefix and target for both commands. The uninstaller removes
-only names derived from this repository's current package paths for that
-prefix. It does not glob-match other catalogues. Run it before renaming or
-removing a source package, while the old path is still present; otherwise
-the obsolete installed name will need separate removal. Run only the
-uninstaller when removal is the goal. Its `--check` mode reports installed
-and missing names without removing them.
+Use `--provider claude` for Claude, and the same prefix and target for both
+commands. Run only the uninstaller when removal is the goal. Normal uninstall
+removes only packages with matching manifest names and ownership markers;
+conflicting files, directories and symlinks are preserved and reported.
+Missing packages do not prevent removal. Its `--check` mode reports the same
+state without removing anything.
 
-### What gets installed
+Only exact names derived from this repository's current package paths are
+selected. Run uninstall before renaming or removing a source package; otherwise
+the obsolete installed name will need separate removal.
 
-Each package includes `agents/openai.yaml`. The installer generates a
-`SKILL.md` with the installed name, rewrites internal `$source-name`
-references in that manifest and metadata, and sets the metadata display name
-to the installed name. External and built-in skill references remain unchanged.
-Reference documents are copied with source symlinks resolved. Other supporting
-resources are linked to this checkout, so keep it available. Reinstall after
-changing a manifest, metadata or reference; existing installations are never
-refreshed implicitly.
+### Remove installations made by the old scripts
 
-## Install in Claude Code
+The old provider-specific scripts have been replaced. Old Codex packages have
+no ownership marker; old Claude packages use unprefixed source names. To clear
+them before reinstalling, `--force` removes the exact selected catalogue names
+even when ownership does not match. It can also remove conflicting content at
+those names. Preview with `--check` first; missing names make that check exit
+non-zero. Other names and prefixes are left alone. A package symlink is removed
+without following it.
+
+From each provider's global skills folder, replace `/absolute/path/to/skills`
+with the path to this checkout. For Codex, supply the prefix used originally:
 
 ```zsh
-./scripts/install-claude-skills
+cd ~/.codex/skills
+/absolute/path/to/skills/scripts/uninstall-skills --provider codex --prefix tjpeel --force --check "$PWD"
+/absolute/path/to/skills/scripts/uninstall-skills --provider codex --prefix tjpeel --force "$PWD"
+/absolute/path/to/skills/scripts/install-skills --provider codex --prefix tjpeel "$PWD"
 ```
 
-The target defaults to `~/.claude/skills`. Each package is copied under its
-source frontmatter name, with supporting resources and an ownership marker.
-Reference symlinks are resolved into local copies. The Codex-only `agents/`
-metadata is omitted. To install into a project's skill directory, supply an
-absolute target:
+For old unprefixed Claude packages, use `--legacy-unprefixed` without a prefix
+for removal, then supply the chosen prefix when installing:
 
 ```zsh
-./scripts/install-claude-skills "$PWD/.claude/skills"
+cd ~/.claude/skills
+/absolute/path/to/skills/scripts/uninstall-skills --provider claude --legacy-unprefixed --force --check "$PWD"
+/absolute/path/to/skills/scripts/uninstall-skills --provider claude --legacy-unprefixed --force "$PWD"
+/absolute/path/to/skills/scripts/install-skills --provider claude --prefix tjpeel "$PWD"
 ```
 
-### Check, refresh or remove
-
-```zsh
-./scripts/install-claude-skills --check
-```
-
-The installer adds missing packages and leaves existing paths untouched.
-`--check` exits non-zero for missing or conflicting packages. Refresh with
-the separate uninstaller and installer, using the same target:
-
-```zsh
-./scripts/uninstall-claude-skills
-./scripts/install-claude-skills
-```
-
-The uninstaller removes only current source names with matching ownership
-markers. Run it before renaming or removing a source package. Its `--check`
-mode reports installed and missing packages without removing them.
+Omit `--force` from legacy Claude removal to require the old source-name marker.
+The same current-package-path limitation applies to forced removal: obsolete
+names, including old `personal--*` directories, need separate removal.
 
 ## Invoke a skill
 
 Group guides and example prompts use source names, such as `$pr-review`.
-In Codex, substitute the installed name derived from the chosen prefix:
-with `--prefix tjpeel`, invoke `$tjpeel-pr-review`. In Claude Code, invoke
-`$pr-review` unchanged. Internal references in installed Codex manifests and
-metadata are rewritten automatically; the repository's Markdown guides are
-not rewritten.
+For either provider, substitute the installed name derived from your prefix:
+with `--prefix tjpeel`, invoke `$tjpeel-pr-review`. Internal references in
+installed manifests and Codex metadata are rewritten automatically; repository
+Markdown guides are not rewritten.
 
 If a skill is not loaded or the platform lacks direct invocation, ask the
 agent to read the selected `SKILL.md` and apply its workflow. The environment
@@ -115,8 +125,8 @@ still needs the repository and service access required by that skill.
 
 The common instructions live in
 [shared/ownership-and-delegation.md](../shared/ownership-and-delegation.md).
-Source skills link to that file through a local reference; both installers
-materialise it as `references/ownership-and-delegation.md` inside each
+Source skills link to that file through a local reference; the installer
+materialises it as `references/ownership-and-delegation.md` inside each
 installed skill. Edit the shared source once, then refresh installed skills.
 The installed guide does not require this checkout or another installed skill.
 

@@ -23,8 +23,8 @@ monitoring have different authority from publishing or merging.
 | A source PR to reproduce in another repository | `$pr-replicate` | The source PR URL, destination checkout and alignment constraints. |
 | A Dependabot queue to process | `$pr-dependabot-approve-merge` | The repository URL; explicitly request report-only mode to prevent approvals and merges. |
 
-Prompts use source names. In Codex, use the prefixed installed name; in
-Claude Code, use the source name. See [invocation guidance](../docs/installation.md#invoke-a-skill)
+Prompts use source names. In either provider, use the prefixed installed name.
+See [invocation guidance](../docs/installation.md#invoke-a-skill)
 or ask the agent to read the selected `SKILL.md` directly.
 
 ### Draft, publish and monitor
