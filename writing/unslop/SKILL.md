@@ -73,10 +73,3 @@ certainty level, technical term, quotation, or instruction.
 When returning an edited passage, provide the clean revision by default. Add a
 short explanation of the main changes only if the user asks for one or if an
 ambiguity required a conservative choice.
-
-## References
-
-- [Repository README](../../README.md) explains how this skill is installed and
-  maintained with the rest of the catalogue.
-- This independently written skill was informed by the public
-  [Cursor plugins repository](https://github.com/cursor/plugins).

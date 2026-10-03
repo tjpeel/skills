@@ -42,8 +42,3 @@ tailor the handoff to that work.
 
 Preparing one concise continuation document is a direct task; delegation does
 not materially improve it. Do the synthesis in the coordinating agent.
-
-## Source
-
-Adapted from the public
-[mattpocock/skills handoff skill](https://github.com/mattpocock/skills/blob/main/skills/productivity/handoff/SKILL.md).

@@ -45,31 +45,7 @@ run `scripts/check-public-content` before committing.
 
 ## References
 
-- The public [Cursor plugins repository](https://github.com/cursor/plugins) is
-  a source of inspiration for selected skills in this catalogue.
-- The engineering verification skill and its evaluation cases were informed
-  by pstack's [Prove It Works](https://github.com/cursor/plugins/blob/main/pstack/skills/principle-prove-it-works/SKILL.md),
-  [Blast Radius](https://github.com/cursor/plugins/blob/main/pstack/skills/blast-radius/SKILL.md)
-  and [Eval playbook](https://github.com/cursor/plugins/blob/main/pstack/skills/poteto-mode/playbooks/eval.md).
-- The engineering simplification skill was informed by pstack's
-  [Refactoring playbook](https://github.com/cursor/plugins/blob/main/pstack/skills/poteto-mode/playbooks/refactoring.md),
-  [Laziness Protocol](https://github.com/cursor/plugins/blob/main/pstack/skills/principle-laziness-protocol/SKILL.md),
-  [Subtract Before You Add](https://github.com/cursor/plugins/blob/main/pstack/skills/principle-subtract-before-you-add/SKILL.md),
-  [Minimize Reader Load](https://github.com/cursor/plugins/blob/main/pstack/skills/principle-minimize-reader-load/SKILL.md)
-  and [Migrate Callers Then Delete Legacy APIs](https://github.com/cursor/plugins/blob/main/pstack/skills/principle-migrate-callers-then-delete-legacy-apis/SKILL.md).
-- The productivity handoff skill was adapted from the public
-  [mattpocock/skills handoff skill](https://github.com/mattpocock/skills/blob/main/skills/productivity/handoff/SKILL.md).
-- The engineering decision-discovery, specification, to-tickets,
-  implementation, code-review, and testing skills were informed by the public
-  [mattpocock/skills](https://github.com/mattpocock/skills) repository.
-- The engineering architecture survey was informed by its
-  [improve-codebase-architecture](https://github.com/mattpocock/skills/blob/main/skills/engineering/improve-codebase-architecture/SKILL.md)
-  and [codebase-design](https://github.com/mattpocock/skills/blob/main/skills/engineering/codebase-design/SKILL.md)
-  skills.
-- The testing guidance also draws on Google's
-  [Change-Detector Tests Considered Harmful](https://testing.googleblog.com/2015/01/testing-on-toilet-change-detector-tests.html)
-  and the [Unit Testing chapter of Software Engineering at Google](https://abseil.io/resources/swe-book/html/ch12.html)
-  for brittle interaction tests, behaviour-focused assertions and expectations
-  independent of production logic. Duplicate coverage, coverage-only tests,
-  speculative cases and vacuous assertions are practical categories used here
-  to guide test selection, rather than a formal taxonomy from those sources.
+Inspired by these public repositories:
+
+- [cursor/plugins](https://github.com/cursor/plugins)
+- [mattpocock/skills](https://github.com/mattpocock/skills)
