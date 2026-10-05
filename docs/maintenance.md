@@ -48,6 +48,7 @@ Run the installer suite in its temporary directories:
 
 ```zsh
 tests/test-install-skills
+tests/test-check-public-content
 git diff --check
 scripts/check-public-content
 ```
@@ -55,6 +56,8 @@ scripts/check-public-content
 The suite covers both providers, discovery, package names, reference rewriting,
 resource copies, ownership, conflicts, refresh/removal and forced legacy cleanup.
 Packaging checks do not prove an agent follows a workflow.
+Both test suites run without ripgrep on `PATH`. The public-content checks cover
+credential detection, hidden and binary files, exclusions and scan failures.
 For material changes to agent behaviour, use relevant
 [evaluation cases](../engineering/verification/references/evaluation-cases.md)
 when they add evidence, retaining the actual commands and outputs. Label a

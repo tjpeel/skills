@@ -1,0 +1,92 @@
+#!/usr/bin/env bash
+# Check credential detection and scan failures without ripgrep.
+
+set -euo pipefail
+SCRIPT_DIRECTORY="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)"
+REPOSITORY_DIRECTORY="$(CDPATH= cd -- "$SCRIPT_DIRECTORY/.." && pwd -P)"
+TEST_DIRECTORY="$(mktemp -d "${TMPDIR:-/tmp}/public-content-test.XXXXXX")"
+trap 'rm -rf -- "$TEST_DIRECTORY"' EXIT
+
+standard_tool_directory="$TEST_DIRECTORY/bin"
+mkdir -p "$standard_tool_directory"
+for tool in bash chmod cp dirname env find grep ln mkdir mktemp rm; do
+  ln -s -- "$(command -v "$tool")" "$standard_tool_directory/$tool"
+done
+export PATH="$standard_tool_directory"
+assertion_grep="$standard_tool_directory/grep"
+
+fail() { echo "$1" >&2; exit 1; }
+expect_status() {
+  local expected="$1" actual
+  shift
+  if "$@" > "$TEST_DIRECTORY/output" 2>&1; then actual=0; else actual=$?; fi
+  [[ "$actual" -eq "$expected" ]] || fail "Expected status $expected, got $actual: $*"
+}
+assert_scan_failed() {
+  if "$assertion_grep" -q '^No common credential formats found\.' "$TEST_DIRECTORY/output"; then
+    fail 'An incomplete scan must not report success.'
+  fi
+}
+
+fixture="$TEST_DIRECTORY/catalogue with spaces"
+mkdir -p "$fixture/scripts" "$fixture/.git" "$fixture/.hidden"
+cp -- "$REPOSITORY_DIRECTORY/scripts/check-public-content" "$fixture/scripts/"
+checker="$fixture/scripts/check-public-content"
+printf '%s\n' 'Public fixture content.' > "$fixture/README.md"
+# Build synthetic credentials at runtime so the test source remains publishable.
+test_token="$(printf 'gh%s_%020d' p 0)"
+printf '%s\n' "$test_token" > "$fixture/.git/ignored"
+printf '\n# %s\n' "$test_token" >> "$checker"
+expect_status 0 "$checker"
+"$assertion_grep" -q '^No common credential formats found\.' "$TEST_DIRECTORY/output"
+
+for kind in ghp gho ghu ghs ghr GHP github_pat sk xoxb xoxa xoxp xoxr xoxs AKIA; do
+  case "$kind" in
+    sk|xox*) credential="$(printf '%s-%020d' "$kind" 0)" ;;
+    AKIA) credential="$(printf '%s%016d' "$kind" 0)" ;;
+    *) credential="$(printf '%s_%020d' "$kind" 0)" ;;
+  esac
+  printf '%s\n' "$credential" > "$fixture/credential"
+  expect_status 1 "$checker"
+  "$assertion_grep" -q '^Potential sensitive content found\.' "$TEST_DIRECTORY/output"
+done
+printf '%sBEGIN %s PRIVATE KEY%s\n' '-----' RSA '-----' > "$fixture/credential"
+expect_status 1 "$checker"
+rm -- "$fixture/credential"
+
+# Hidden files, binary content and spaces in filenames remain in scope.
+printf '\0%s\n' "$test_token" > "$fixture/.hidden/credential with spaces"
+expect_status 1 "$checker"
+rm -- "$fixture/.hidden/credential with spaces"
+
+# Short strings and tokens embedded in longer words are not credentials.
+printf 'gh%s_%019d\nx%s\n_%s\n' p 0 "$test_token" "$test_token" > "$fixture/ordinary"
+printf '%s%016dx\n' AKIA 0 >> "$fixture/ordinary"
+expect_status 0 "$checker"
+
+# Missing scanner utilities must fail rather than silently bypass the gate.
+missing_tool_directory="$TEST_DIRECTORY/missing-tool-bin"
+mkdir -p "$missing_tool_directory"
+for tool in bash dirname find mktemp rm; do
+  ln -s -- "$standard_tool_directory/$tool" "$missing_tool_directory/$tool"
+done
+expect_status 2 env PATH="$missing_tool_directory" "$checker"
+assert_scan_failed
+"$assertion_grep" -q '^Unable to scan repository file:' "$TEST_DIRECTORY/output"
+
+# Traversal and scanner errors must also propagate, including partial output.
+failing_tool_directory="$TEST_DIRECTORY/failing-tool-bin"
+mkdir -p "$failing_tool_directory"
+printf '#!/usr/bin/env bash\nprintf "incomplete file list\\n"\nexit 2\n' > "$failing_tool_directory/find"
+chmod +x "$failing_tool_directory/find"
+expect_status 2 env PATH="$failing_tool_directory:$standard_tool_directory" "$checker"
+assert_scan_failed
+"$assertion_grep" -q '^Unable to list repository files' "$TEST_DIRECTORY/output"
+rm -- "$failing_tool_directory/find"
+printf '#!/usr/bin/env bash\nexit 2\n' > "$failing_tool_directory/grep"
+chmod +x "$failing_tool_directory/grep"
+expect_status 2 env PATH="$failing_tool_directory:$standard_tool_directory" "$checker"
+assert_scan_failed
+"$assertion_grep" -q '^Unable to scan repository file:' "$TEST_DIRECTORY/output"
+
+echo 'Public-content detection and failure checks passed without ripgrep.'

@@ -7,12 +7,33 @@ set -euo pipefail
 SCRIPT_DIRECTORY="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)"
 REPOSITORY_DIRECTORY="$(CDPATH= cd -- "$SCRIPT_DIRECTORY/.." && pwd -P)"
 
-if rg --hidden --line-number --ignore-case --text \
-  --glob '!.git/**' \
-  --glob '!scripts/check-public-content' \
-  -e '-----BEGIN [A-Z ]*PRIVATE KEY-----' \
-  -e '\b(gh[pousr]_[A-Za-z0-9_]{20,}|github_pat_[A-Za-z0-9_]{20,}|sk-[A-Za-z0-9]{20,}|xox[baprs]-[A-Za-z0-9-]{20,}|AKIA[0-9A-Z]{16})\b' \
-  "$REPOSITORY_DIRECTORY"; then
+scan_file_list="$(mktemp "${TMPDIR:-/tmp}/public-content-files.XXXXXX")"
+trap 'rm -f -- "$scan_file_list"' EXIT
+
+if ! find "$REPOSITORY_DIRECTORY" \
+  -path "$REPOSITORY_DIRECTORY/.git" -prune -o \
+  -type f ! -path "$SCRIPT_DIRECTORY/check-public-content" -print0 > "$scan_file_list"; then
+  echo 'Unable to list repository files for the public-content scan.' >&2
+  exit 2
+fi
+
+status=0
+while IFS= read -r -d '' scan_file; do
+  if grep -EinaH \
+    -e '-----BEGIN [A-Z ]*PRIVATE KEY-----' \
+    -e '(^|[^[:alnum:]_])(gh[pousr]_[A-Za-z0-9_]{20,}|github_pat_[A-Za-z0-9_]{20,}|sk-[A-Za-z0-9]{20,}|xox[baprs]-[A-Za-z0-9-]{20,}|AKIA[0-9A-Z]{16})([^[:alnum:]_]|$)' \
+    "$scan_file"; then
+    status=1
+  else
+    scan_status=$?
+    if [[ "$scan_status" -ne 1 ]]; then
+      echo "Unable to scan repository file: $scan_file" >&2
+      exit 2
+    fi
+  fi
+done < "$scan_file_list"
+
+if [[ "$status" -eq 1 ]]; then
   echo 'Potential sensitive content found. Remove it before committing.' >&2
   exit 1
 fi

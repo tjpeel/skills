@@ -4,6 +4,9 @@ Run these commands from the repository root. One installer and one uninstaller
 serve both providers; `--provider` selects the default target and metadata.
 See the [workflow catalogue](../README.md#choose-a-workflow) to select a skill.
 
+Installation and removal use Bash and standard command-line utilities;
+ripgrep (`rg`) is not required.
+
 ## Install
 
 ```zsh

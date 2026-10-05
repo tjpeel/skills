@@ -10,6 +10,14 @@ TEST_DIRECTORY="$(mktemp -d "${TMPDIR:-/tmp}/skills-test.XXXXXX")"
 trap 'rm -rf -- "$TEST_DIRECTORY"' EXIT
 PREFIX=test
 
+# Exercise both providers with standard utilities and no ripgrep on PATH.
+standard_tool_directory="$TEST_DIRECTORY/bin"
+mkdir -p "$standard_tool_directory"
+for tool in awk bash basename cat cmp cp diff dirname find grep head ln mkdir mktemp rm sed sort; do
+  ln -s -- "$(command -v "$tool")" "$standard_tool_directory/$tool"
+done
+export PATH="$standard_tool_directory"
+
 fail() { echo "$1" >&2; exit 1; }
 expect_failure() {
   if "$@" > "$TEST_DIRECTORY/output" 2>&1; then
@@ -38,13 +46,13 @@ for provider in codex claude; do
     destination="$target/$installed_name"
     [[ "$(sed -n 's/^name: *//p' "$skill_directory/SKILL.md" | head -n 1)" == "$source_name" ]]
     [[ -d "$destination" && ! -L "$destination" ]]
-    rg -q "^name: $installed_name$" "$destination/SKILL.md"
-    rg -q "^provider: $provider$" "$destination/.personal-skills-source"
-    rg -q "^package: $relative_path$" "$destination/.personal-skills-source"
+    grep -q "^name: $installed_name$" "$destination/SKILL.md"
+    grep -q "^provider: $provider$" "$destination/.personal-skills-source"
+    grep -q "^package: $relative_path$" "$destination/.personal-skills-source"
     [[ -z "$(find "$destination" -type l -print -quit)" ]]
     if [[ "$provider" == codex ]]; then
-      rg -q "display_name: \"$installed_name\"" "$destination/agents/openai.yaml"
-      rg -Fq "\$$installed_name" "$destination/agents/openai.yaml"
+      grep -q "display_name: \"$installed_name\"" "$destination/agents/openai.yaml"
+      grep -Fq "\$$installed_name" "$destination/agents/openai.yaml"
     else
       [[ ! -e "$destination/agents" ]]
     fi
@@ -92,7 +100,7 @@ for provider in codex claude; do
 
   # Force is explicit and still targets only exact current catalogue names.
   "$UNINSTALLER" --provider "$provider" --prefix test --force --check "$target" > "$TEST_DIRECTORY/force-check" 2>&1 || true
-  rg -q '^installed  test-pr-manage$' "$TEST_DIRECTORY/force-check"
+  grep -q '^installed  test-pr-manage$' "$TEST_DIRECTORY/force-check"
   [[ -f "$target/test-pr-manage/SKILL.md" ]]
   "$UNINSTALLER" --provider "$provider" --prefix test --force "$target" >/dev/null
   [[ ! -e "$target/test-pr-manage" && -d "$target/test-foreign-skill" ]]
@@ -149,14 +157,14 @@ printf '%s\n' 'Hidden resource.' > "$fixture/a/alpha/.guide"
 for provider in codex claude; do
   target="$TEST_DIRECTORY/fixture-$provider"
   "$fixture/scripts/install-skills" --provider "$provider" --prefix sample "$target" >/dev/null
-  rg -Fq 'Use $sample-a-alpha, $sample-b-beta, $alpha-extra, $alpha_suffix, $external and $imagegen.' "$target/sample-a-alpha/SKILL.md"
-  rg -Fqx '$sample-a-alpha' "$target/sample-a-alpha/SKILL.md"
+  grep -Fq 'Use $sample-a-alpha, $sample-b-beta, $alpha-extra, $alpha_suffix, $external and $imagegen.' "$target/sample-a-alpha/SKILL.md"
+  grep -Fqx '$sample-a-alpha' "$target/sample-a-alpha/SKILL.md"
   [[ -f "$target/sample-a-alpha/.guide" && -z "$(find "$target" -type l -print -quit)" ]]
   cmp -- "$fixture/shared/guide.md" "$target/sample-a-alpha/references/guide.md"
   cmp -- "$fixture/shared/guide.md" "$target/sample-a-alpha/assets/guide.md"
   if [[ "$provider" == codex ]]; then
-    rg -Fq 'Use $sample-a-alpha and $sample-b-beta, plus $external.' "$target/sample-a-alpha/agents/openai.yaml"
-    rg -Fq 'allow_implicit_invocation: false' "$target/sample-a-alpha/agents/openai.yaml"
+    grep -Fq 'Use $sample-a-alpha and $sample-b-beta, plus $external.' "$target/sample-a-alpha/agents/openai.yaml"
+    grep -Fq 'allow_implicit_invocation: false' "$target/sample-a-alpha/agents/openai.yaml"
   fi
   # Ownership also records provider, so pointing the other provider here fails.
   if [[ "$provider" == codex ]]; then other=claude; else other=codex; fi
