@@ -47,6 +47,13 @@ the change. Capture `git diff <fixed-point>...HEAD` and
 unstaged working-tree changes. Record the changed-file list and give the same
 commands and evidence to every delegated reviewer.
 
+Before assigning reviewer work, confirm that the fixed point and selected
+input paths resolve, match verification evidence to the reviewed commit or
+working-tree content, and check model and tool boundaries. Validate supplied
+input hashes or handoff contracts when present. Supply read-only reviewers
+with the diff and command results they cannot collect within their tool
+boundary. Stale or missing evidence remains a verification gap.
+
 If the fixed point is unknown, ask for it. Do not infer that the current branch
 base represents one ticket when it also contains unrelated work. Stop when the
 combined diff is empty. If unrelated changes share the working tree, identify
@@ -54,6 +61,12 @@ them and ask the user to narrow the review boundary rather than attributing
 them to the ticket.
 
 ## Find requirements and standards sources
+
+When the independent coordinating root owns the review, defer reading planning
+artifacts and the implementer's explanation until its initial technical
+assessment. Validate supplied paths beforehand, then read the selected intent
+to reconcile that assessment. A delegated review owner receives the same
+staged evidence.
 
 Use only the ticket path or approved specification slice explicitly supplied
 for this review. New process inputs belong in
@@ -96,35 +109,49 @@ for a substitute. This review never changes process files or ignore rules.
 
 ## Delegation profiles
 
-For a small, obvious diff, work directly.
-
 Read [the ownership and delegation guide](references/ownership-and-delegation.md)
 before selecting profiles or declaring delegation unavailable.
 Give every handoff the fixed point, exact diff commands, source paths,
 constraints and required output.
 
-- Use `read_low` as a locator. It inventories changed behaviour and tests,
-  verifies the selected specification and ticket links, locates standards
-  sources, and maps each acceptance criterion to the most relevant changed code
-  or test. It does
-  not judge the implementation.
-- Use `read_medium` only to check a bounded requirements-to-diff trace or
-  verification and coverage evidence when that cheaper audit will make the
-  high-capability review more precise. It reports missing evidence and
-  contradictions, not final findings.
-- Use `read_high` for the review itself. It evaluates the diff in context,
-  using the locator's evidence, and reports only actionable risks. For a large
-  or materially risky change, run independent `read_high` reviews in parallel:
-  one for requirements and test coverage, one for standards and technical
-  risks. Its initial evidence packet contains raw code, diff, repository
-  standards and runtime wiring, excluding requirements mappings, planning
-  artifacts and the implementer's explanation. Then supply intent evidence
-  to reconcile its conclusions. Keep the two assessments separate until
-  aggregation so shared assumptions do not hide a defect.
+Name one independent owner for the complete diff and both assessment axes.
+A fresh root, including one from another provider, can own the review directly
+when it has sufficient reasoning capability. If the coordinator implemented
+the change, use a fresh reviewer. Keep requirements and technical conclusions
+distinct within that review; they do not require separate complete reviews.
+
+- Use `read_high` or an equivalent high-effort owner for substantive review.
+  A clear, bounded change with understood runtime effects may be reviewed
+  directly at medium effort. Diff size alone does not justify lower effort
+  or additional agents.
+- Use `read_low` only to resolve a missing behaviour, test or standards map,
+  or to verify selected source links. Use `read_medium` only for a specific
+  requirements trace, verification or coverage uncertainty. Helpers report
+  evidence and contradictions, not final findings.
+- Use `read_deep` for a selected review or unresolved question whose difficult
+  interacting contracts, destructive effects, authentication or secret
+  boundaries, migrations, concurrency or cross-service recovery justify
+  maximum reasoning. Material risk warrants scrutiny but does not automatically
+  require maximum effort or a second complete review.
+- Reserve `read_exceptional` or another senior reviewer for an unresolved
+  material dispute with a complete evidence packet. Escalate the difficult
+  question without repeating unrelated review work.
+
+The owner's initial evidence contains raw code, diff, tests, repository
+standards and runtime wiring, excluding requirements mappings, planning
+artifacts and the implementer's explanation. Then supply selected intent and
+coverage evidence to reconcile its conclusions. Keep all reviewers inside
+the selected input boundary and wait for required results before returning
+the assessment. Reuse relevant mapping and verification evidence; do not add
+agents merely to fill roles.
 
 The coordinator owns the fixed-point decision, final assessment, user
 questions, and any repair. Read-only delegates do not alter code, contact
 reviewers, or make external writes.
+
+When comparing routing costs, record agent count, elapsed time, repeated
+investigations, findings and reported usage. Leave missing measures unknown;
+unlike reviews do not establish savings.
 
 ## Review the change
 

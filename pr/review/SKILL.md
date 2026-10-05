@@ -23,6 +23,30 @@ before selecting profiles or declaring delegation unavailable.
 
 Use this workflow when asked to review a pull request, branch diff, or colleague's proposed change. It is a review-only workflow.
 
+Name one independent owner for the complete diff, covering technical risks,
+selected intent and test quality. A fresh reviewer session, including one from
+another provider, can own the review directly when its reasoning capability
+is sufficient. If the coordinator implemented the change, use a fresh
+reviewer. Do not add a reviewer solely to duplicate an already independent
+owner.
+
+Use `read_high` or an equivalent high-effort reviewer for substantive code
+review. A clear, bounded change with understood runtime effects may be
+reviewed directly at medium effort. Diff size alone does not justify lower
+effort or extra agents. Use `read_deep` for a selected review or unresolved
+question involving difficult interacting contracts, destructive data effects,
+authentication or secret boundaries, migrations, concurrency or cross-service
+recovery. Material risk warrants scrutiny, but does not automatically require
+maximum effort or a second complete review.
+
+Use `read_low` only for a missing behaviour or ownership map, and `read_medium`
+only for a specific uncertainty in selected intent, verification or coverage.
+These helpers return evidence and contradictions, not the final assessment.
+Reserve `read_exceptional` or another senior reviewer for an unresolved
+material dispute with a complete evidence packet. All delegates remain
+read-only and inside the selected input boundary. The coordinator owns scope,
+user questions and the final report.
+
 ## Inputs
 
 Establish the pull request or branch, base branch, stated intent or ticket, and any known test results. If the base is unknown, identify it before judging the diff.
@@ -32,7 +56,19 @@ configuration, comments and tests. Do not review only the last corrective commit
 or treat a sequence of fixes as proof that the final behaviour is sound. Record
 any working-tree changes separately; they are not part of the published PR.
 
+Before assigning reviewer work, confirm that the pinned commits and selected
+input paths resolve, match verification evidence to the reviewed revision,
+and check the available model and tool boundaries. Validate any supplied input
+hashes or handoff contract. Identify stale or missing evidence as a gap; do not
+treat passing CI as a correctness assessment. Supply read-only reviewers with
+the diff and command results they cannot collect within their tool boundary.
+
 ## Find local intent when available
+
+When the independent coordinating root owns the review, defer reading planning
+artifacts and the author's explanation until its initial technical assessment.
+Validate supplied paths beforehand, then read selected intent to reconcile
+that assessment. A delegated owner receives the same staged evidence.
 
 Use only a ticket path or specification slice explicitly supplied for this
 review. New process files live beneath `.sdlc/work/<reference>/`, where the
@@ -63,9 +99,9 @@ do not expose private artifact contents in external comments.
 ## Workflow
 
 1. Read applicable repository instructions, coding standards, service contracts and required check commands. Trace changed code from entry points through runtime wiring, side effects and recovery before relying on the author's explanation or planning artifacts.
-2. For a non-trivial review, run `read_low` and `read_medium` in parallel: one maps behaviour and ownership; the other checks the explicitly supplied intent sources and test coverage.
-3. Ask `read_high` to evaluate the complete diff. Its initial packet contains raw code, runtime wiring, repository standards and the behaviour map, excluding planning artifacts, requirements mappings and the author's explanation. Then supply intent and coverage evidence to reconcile its conclusions. It should report only correctness, regression, security, compatibility, concurrency, or missing-test risks.
-4. Use a separate `read_high` handoff only when a finding concerns a plausible high-impact security, data-loss, migration, concurrency, or cross-service failure.
+2. Have the selected owner evaluate the complete diff at the chosen effort. Its initial packet contains raw code, tests, runtime wiring, repository standards and any behaviour map, excluding planning artifacts, requirements mappings and the author's explanation. Optional helpers address only the identified evidence gaps.
+3. Then supply selected intent and coverage evidence to reconcile the owner's technical conclusions. The owner checks all review axes and reports only correctness, regression, security, compatibility, concurrency, or missing-test risks.
+4. Escalate an unresolved material question using the delegation rules above. Reuse the pinned evidence and existing reviewers; retain one owner responsible for the complete final assessment.
 
 Derive the technical checks from the changed paths and surrounding system:
 identify affected actors, inputs, state changes, effects, contracts and
@@ -96,4 +132,10 @@ For each finding, include priority, file and line, a concrete failure scenario, 
 
 ## Cost control
 
-Do not delegate a one-file obvious review. Do not use a second `read_high` handoff for low-impact or speculative concerns.
+Do not add agents for role completeness or repeat a complete review because a
+bounded question needs more reasoning. Keep helper model and effort settings
+explicit when the owner uses maximum reasoning. Reuse relevant mapping and
+verification evidence, and wait for required helpers before returning the
+assessment. When comparing routing costs, record agent count, elapsed time,
+repeated investigations, findings and reported usage; leave missing measures
+unknown and do not claim savings from unlike reviews.

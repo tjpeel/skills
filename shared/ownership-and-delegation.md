@@ -14,6 +14,7 @@ Use the least sufficient configured profile available in the current session:
 | `read_low` | Inventories, repository mapping and quick evidence checks. |
 | `read_medium` | Bounded analysis, drafting and evidence or acceptance audits. |
 | `read_high` | Material risk analysis, complex planning or independent review. |
+| `read_deep` | Bounded investigation or complete-diff review whose difficulty justifies maximum reasoning. |
 | `read_exceptional` | A small, evidence-complete synthesis that justifies exceptional effort. |
 | `write_medium` | One scoped local change as the sole writer, when the invoking skill permits it. |
 
@@ -24,6 +25,15 @@ write or expand the invoking skill's scope.
 A coordinator running at Ultra or max does not make every handoff exceptional.
 Use the profile's explicit effort for its bounded task. Raise effort only for
 a selected task whose evidence or failed lower-effort attempt justifies it.
+
+Keep reasoning depth separate from agent count. A difficult review can need
+one strong reviewer without extra mapping or audit agents. Select `read_deep`
+upfront when the task warrants it, or for an unresolved difficult question;
+`read_exceptional` remains limited to synthesis from a completed evidence
+packet. Client Ultra can also enable proactive delegation and is not a
+portable model-effort value. Do not change pinned settings through a handoff
+prompt or assume the client applied a requested model or effort. Report the
+actual settings when exposed; otherwise leave them unverified.
 
 ## Discover Codex profiles before falling back
 
@@ -70,6 +80,10 @@ Give each delegate its question, selected inputs, constraints, permitted paths
 and required evidence or output. Supply a small task packet rather than the
 entire conversation when the tool supports that choice. Reuse relevant work;
 do not delegate merely to repeat the coordinator's investigation.
+Before adding a delegate, state the unanswered question, why existing evidence
+and the owner cannot efficiently resolve it, the least sufficient profile,
+and the stop condition. Wait for every required result before finalising the
+handoff; incomplete work remains a limitation, not a completed assessment.
 
 Keep user questions, scope decisions, commits and external writes with the
 coordinator. Read-only delegates return evidence. A permitted local writer
