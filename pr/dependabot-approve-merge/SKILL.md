@@ -35,7 +35,29 @@ before investigating.
 Read [the ownership and delegation guide](references/ownership-and-delegation.md)
 before selecting profiles or declaring delegation unavailable.
 
-Keep all external writes with the coordinating agent. When delegation is available, use `read_low` for the inventory: PR identity, dependency diff, check conclusion, and an impact ranking with uncertainty. Use `read_high` only when the leading candidate's dependency impact needs code/test interpretation; it must return an evidence-backed risk assessment. Both profiles are read-only and must not approve, merge, comment, or alter GitHub state. The coordinator ranks the queue, processes at most one green PR at a time, and monitors main before reassessing the queue. If delegation is unavailable, the coordinator performs those read-only steps itself.
+One quick deterministic read can stay with the coordinator. Use configured
+`read_low` for sustained queue inventory and post-merge observation: PR
+identity, dependency diff, check conclusion, impact ranking with uncertainty,
+and workflow state for the resulting default-branch commit. Give the observer
+the repository and selected PR or merged revision. It may read evidence only;
+it must not edit local files, mutate Git state, approve, merge, comment or alter
+GitHub state. Reuse one observer across bounded waits. It returns PR/commit
+identities, check/run identities and URLs, meaningful changes, terminal result
+or blocker; stop its assignment when that bounded question is answered.
+
+Use `read_medium` when a candidate's dependency impact needs nontrivial
+code/test interpretation, and `read_high` only for difficult questions or
+material security/risk analysis. Return evidence-backed impact and uncertainty;
+these assessments do not add approval conditions or permit diagnosis of a
+non-green PR.
+
+Keep all external writes with the coordinator. Re-read the selected PR's
+relevant state immediately before each permitted write, including its current
+check rollup before approval and merge and the clean-merge rejection before
+the exact recreate comment. Process at most one green PR at a time and observe
+the merged commit's runs before reassessing the queue. A failed, cancelled or
+missing merged-commit run stops the queue without diagnosis or repair. This
+skill has no writer phase; a separate custom PR needs separate authority.
 
 ## Completion standard
 

@@ -35,6 +35,39 @@ portable model-effort value. Do not change pinned settings through a handoff
 prompt or assume the client applied a requested model or effort. Report the
 actual settings when exposed; otherwise leave them unverified.
 
+## Size monitoring and repair phases separately
+
+For workflows that observe checks and then repair failures, choose effort for
+each phase. Sustained read-only inventory, status polling and log collection
+belong with `read_low` at low reasoning. Prefer deterministic queries and
+native waits; reuse one observer when repeated results need interpretation.
+A single quick read can stay with the coordinator. Do not keep a higher-effort
+writer or reviewer processing unchanged status results, or spawn an agent for
+every poll.
+
+When evidence identifies a failure, move its diagnosis to `read_medium` at
+medium reasoning. Use `read_high` at high reasoning for a difficult root cause
+or material security, behaviour or concurrency risk. A local repair and its
+tests belong with `write_medium` at medium reasoning as the sole scoped writer.
+The read-only observer collects facts and does not design or implement fixes.
+An existing owner can retain a small repair when its effort and write scope
+already fit; profile selection must not create competing writers.
+
+Task-specific observer inputs, return conditions and write paths belong in
+the invoking skill. Keep commits and external writes with the coordinator,
+then give the observer the newly published revision and return to low-effort
+observation. Test commands that generate files need the local writer's or
+coordinator's permitted write scope; a read-only observer may inspect their
+results but cannot run them by assuming they are read-only.
+
+Report the selected profile, actual model and reasoning effort when starting
+a phase, where those settings are exposed. Use the profile's pinned model;
+do not hardcode model names in skills or override pinned effort in a prompt.
+A skill does not change the coordinating chat's model or reasoning setting.
+If a suitable observer or writer cannot be spawned, follow the discovery and
+fallback rules below and disclose that direct work retains the coordinator's
+settings; do not describe that fallback as low reasoning unless verified.
+
 ## Discover Codex profiles before falling back
 
 Profiles are custom agents, not skills. Their absence from the skill catalogue

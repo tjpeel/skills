@@ -31,6 +31,23 @@ or ask the agent to read the selected `SKILL.md` directly.
 
 ### Draft, publish and monitor
 
+Monitoring and repair use separate reasoning levels:
+
+| Phase | Profile | Reasoning |
+| --- | --- | --- |
+| Sustained inventory, check polling and log collection | `read_low` | Low |
+| Non-trivial diagnosis or a repair evidence audit | `read_medium` | Medium |
+| Implementation and required local tests | `write_medium` | Medium |
+| Difficult diagnosis or material security/behaviour risk | `read_high` | High |
+
+The configured profile supplies the model. Skills report the actual model
+and effort when available; they do not change the chat's selected settings.
+One observer is reused across waits and receives the new revision after each
+push. The coordinator retains signatures, commits and external writes.
+Dependabot monitoring follows the low-reasoning observation phase but retains
+its no-repair boundary. If a configured profile cannot run, the direct fallback
+retains the coordinator's settings and is reported as such.
+
 Prepare reviewable metadata from the actual diff:
 
 ```text

@@ -99,12 +99,27 @@ requested terminal state; it need not cause speculative code changes.
 Read [the ownership and delegation guide](references/ownership-and-delegation.md)
 before selecting profiles or declaring delegation unavailable.
 
-Routine monitoring is a direct task. For a non-trivial failure, use
-`read_medium` for a bounded log-to-result audit. Use `read_high` only when a
-material risk in the proposed repair needs independent judgement.
-Give auditors the head, raw run results, required outcomes and exact question;
-they do not repair, publish or approve the PR. The coordinator owns external
-writes and the final delivery assessment.
+Use `read_low` at low reasoning for sustained status observation and log
+collection. Give the observer the PR, published head/base, check and run
+identities, required outcomes and observation deadline. It returns evidence
+on a terminal result, actionable failure, changed head, missing access or
+deadline. It has no write scope: it cannot repair files, generate test reports,
+rerun jobs, commit or publish. A single quick status read can stay direct.
+
+Move a non-trivial failure to `read_medium` at medium reasoning for bounded
+diagnosis. Use `read_high` at high reasoning for a difficult root cause or
+material risk; neither analyst can write. For an authorised code repair, use
+the existing implementation owner when its effort and scope fit, or assign
+`write_medium` at medium reasoning the exact implementation and test paths as
+the sole local writer. It implements the supported fix, runs required checks
+and returns its diff and results without staging, committing or publishing.
+An independent `read_medium` audit can check a material repair when useful.
+
+The coordinator owns scope decisions, commits, external writes and the final
+delivery assessment. After publishing, reuse the low-reasoning observer with
+the new revision; do not keep the repair writer polling. Follow the shared
+guide's model reporting and fallback rules instead of assuming the selected
+chat effort was lowered by the skill.
 
 Return the PR URL, current published SHA, requested-check conclusions and
 supporting run links. Distinguish local verification, published repairs and

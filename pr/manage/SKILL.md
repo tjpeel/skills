@@ -16,10 +16,24 @@ apply.
 
 ## Delegation profiles
 
-Delegate only when it materially helps.
-
 Read [the ownership and delegation guide](references/ownership-and-delegation.md)
 before selecting profiles or declaring delegation unavailable.
+
+One quick deterministic read can stay with the coordinator. For sustained
+target, preflight, validation-result or check inventory, use configured
+`read_low`. Give the observer the repository, branch, PR and revision to
+inspect. It may read evidence only; it must not edit files, mutate Git state or
+write to GitHub. Reuse it across bounded observations and have it return the
+observed revision, check/run identities, meaningful changes, terminal result
+or blocker. End its assignment when that bounded question is answered.
+
+Use `read_medium` for nontrivial evidence interpretation and `read_high` only
+for difficult questions or material security/risk analysis. Keep publication
+writes with the coordinator, who refreshes the target and relevant state
+before acting. This skill authorises no implementation or repair. When the
+user has authorised monitoring or repair after publication, hand off to
+`$pr-monitor`; use that skill's observer and higher-reasoning writer phases
+within its permitted scope.
 
 Use this personal skill for GitHub work across repositories. Read applicable
 `AGENTS.md` and `CLAUDE.md` files before acting; they may define branch, PR, or

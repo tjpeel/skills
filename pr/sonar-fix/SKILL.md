@@ -150,23 +150,32 @@ the blocker. Monitor-only gaps do not justify empty commits or repeated reruns.
 
 Read [the ownership and delegation guide](references/ownership-and-delegation.md)
 before selecting a profile or declaring delegation unavailable. A small
-single-rule repair can stay with the coordinator. For a non-trivial PR with
-several rule or coverage failures, bounded mapping and an independent
-verification pass can materially improve the repair:
+single-rule repair can stay with an existing owner whose effort and write
+scope fit. For a sustained repair loop, route each phase explicitly:
 
-- `read_low` may map named rules, source locations, test commands and coverage
-  paths. It reads only the supplied PR evidence and relevant repository files.
-- `write_medium` may own explicitly assigned implementation and test files as
-  the sole local writer. It preserves others' changes and returns its diff and
-  check results; it cannot stage, commit, push or change remote settings.
-- `read_medium` may audit the final diff, tests and revision-bound Sonar
-  evidence independently. Use `read_high` only for a material security,
-  behaviour or concurrency risk that needs deeper judgement. Auditors have
-  no write scope.
+- `read_low`, low reasoning, observes GitHub checks and Sonar tasks, collects
+  logs, conditions and complete finding lists, and maps named source locations
+  and coverage paths. Give it the PR, head/base, project and run identities,
+  required outcomes and deadline. It returns revision-bound evidence on a
+  terminal result, actionable failure, changed head, access gap or deadline;
+  it cannot edit files, run report-generating tests, rerun analysis or repair.
+- `read_medium`, medium reasoning, diagnoses a non-trivial failed condition
+  from that evidence or audits a completed repair independently. Use
+  `read_high`, high reasoning, for a difficult root cause or material security,
+  behaviour or concurrency risk. Both return evidence and a bounded repair
+  recommendation without writes; a clear failure needs no separate analyst.
+- `write_medium`, medium reasoning, owns the assigned implementation and test
+  paths as the sole local writer, implements the supported repair and runs
+  the required validation. It returns its diff and check results; it cannot
+  stage, commit, push or change remote settings. Higher-risk repairs use the
+  high-reasoning diagnosis before this writer implements the agreed change.
 
-The coordinator owns scope decisions, signatures, commits, pushes, waits and
-the final outcome. Reuse evidence and delegates across cycles; routine polling
-does not need delegation.
+The coordinator owns scope decisions, signatures, commits, pushes and the
+final outcome. It checks the publication boundary, then gives the reusable
+low-reasoning observer the new head and analysis identities. Keep the writer
+for subsequent repairs; do not leave it polling while the build runs. Apply
+the shared guide's model reporting and honest fallback rules when a profile
+is unavailable; the chat's selected effort does not become low automatically.
 
 Return the PR link and current published SHA, repaired findings or conditions,
 tests run, signed commit IDs and signature evidence, and links to the final
