@@ -8,6 +8,7 @@
 | [`monitor`](monitor/SKILL.md) | Follows checks for the published PR head and completes only explicitly authorised repairs and publication. |
 | [`replicate`](replicate/SKILL.md) | Recreates the intended outcome of a source GitHub pull request in the current destination repository. |
 | [`review`](review/SKILL.md) | Reviews a colleague's pull request and reports actionable correctness, regression, security, or test risks. |
+| [`sonar-fix`](sonar-fix/SKILL.md) | Repairs Sonar PR findings, tests, creates signed commits, pushes and repeats against fresh analyses until clean and green. |
 
 ## Using the workflow
 
@@ -19,6 +20,7 @@ monitoring have different authority from publishing or merging.
 | A local change needing a title and description | `$pr-draft` | The branch and base, available check results, and ticket context if selected. |
 | A branch to push, PR to create, or fields to edit | `$pr-manage` | The exact action, repository, branch, base and approved fields; the confirmed ticket key or selected work reference. |
 | A published PR whose checks need following | `$pr-monitor` | The PR identity, requested outcomes and observation window; explicit repair/publishing scope if included. |
+| A PR failing its Sonar gate or reporting new-code issues | `$pr-sonar-fix` | The PR URL and repair/push authority; optional project details, cycle limit and observation window. |
 | A colleague's PR needing a correctness review | `$pr-review` | The PR or branch and base, stated intent, check evidence and any selected local inputs. |
 | A source PR to reproduce in another repository | `$pr-replicate` | The source PR URL, destination checkout and alignment constraints. |
 | A Dependabot queue to process | `$pr-dependabot-approve-merge` | The repository URL; explicitly request report-only mode to prevent approvals and merges. |
@@ -75,6 +77,29 @@ actions need their own authority. For a
 [selected engineering stack](../engineering/README.md#using-the-workflow),
 supply the verified predecessor and intended PR base. Parent repairs make
 affected descendants stale until carried through and reverified.
+
+### Repair a Sonar gate
+
+```text
+Use $pr-sonar-fix on <PR-URL>. Fix the Sonar findings and failing gate
+conditions, run the required tests, create verified signed commits and push.
+Monitor each new build and Sonar analysis, repeating when it reports more
+issues, until the current PR is clean and all required checks are green.
+```
+
+This request authorises each in-scope repair, signed commit and push without
+per-cycle approval. The skill checks every relevant Sonar project against the
+published revision and retrieves the complete outstanding PR finding list.
+A passing gate alone does not establish that the PR has no further findings.
+It preserves the quality policy and leaves finding dispositions to their
+authorised reviewers.
+
+The default bounds are five repair pushes and a 60-minute elapsed window;
+provide different limits in the request when needed. Missing signing or
+required validation, unresolved ownership, out-of-scope repairs and incomplete
+analysis evidence stop the loop with a specific blocker. The handoff includes
+the published SHA, signed commits, tests and final build and Sonar evidence.
+For inspection only, explicitly request a read-only diagnosis.
 
 ### Review a colleague's change
 

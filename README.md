@@ -9,7 +9,7 @@ skill that matches the task; each group explains its inputs and handoffs.
 | Group | Use it to |
 | --- | --- |
 | [Engineering](engineering/README.md#using-the-workflow) | Investigate failures, find refactors, simplify code, settle decisions, specify work, implement and verify it. |
-| [Pull requests](pr/README.md#using-the-workflow) | Draft, publish, monitor, review or reproduce PRs, and process Dependabot updates. |
+| [Pull requests](pr/README.md#using-the-workflow) | Draft, publish, monitor, review or reproduce PRs, repair Sonar failures, and process Dependabot updates. |
 | [Architecture](architecture/README.md#using-the-workflow) | Recover retrospective ADRs from code and history. |
 | [Productivity](productivity/README.md#using-the-workflow) | Prepare a compact handoff for another session. |
 | [Writing](writing/README.md#using-the-workflow) | Make supplied prose direct and specific while preserving its meaning and voice. |
@@ -56,3 +56,11 @@ Inspired by these public repositories:
 Skill packaging and profile discovery also draw on OpenAI's
 [skill documentation](https://learn.chatgpt.com/docs/build-skills) and
 [custom agent documentation](https://learn.chatgpt.com/docs/agent-configuration/subagents).
+
+The Sonar repair workflow draws on SonarSource's
+[PR analysis documentation](https://docs.sonarsource.com/sonarqube-cloud/analyzing-source-code/pull-request-analysis),
+[quality-gate documentation](https://docs.sonarsource.com/sonarqube-cloud/standards/managing-quality-gates/introduction-to-quality-gates),
+[Web API documentation](https://docs.sonarsource.com/sonarqube-server/extension-guide/web-api)
+and [quality-gate action](https://github.com/SonarSource/sonarqube-quality-gate-action),
+with signature verification guided by
+[Git's documentation](https://git-scm.com/docs/git-verify-commit).

@@ -1,0 +1,4 @@
+interface:
+  display_name: "PR Sonar fix"
+  short_description: "Repair Sonar findings with signed commits until green"
+  default_prompt: "Use $pr-sonar-fix to inspect this PR's failing Sonar analysis, fix the findings, run required tests, create verified signed commits, push and monitor each new build, repeating within the skill's limits until Sonar is clean and the required checks are green."
