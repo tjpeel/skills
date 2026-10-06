@@ -94,6 +94,12 @@ case and the proposed change using the same terms. Ask targeted questions where
 the evidence leaves meaning, responsibility or acceptable outcomes unclear.
 The model should expose decisions, not prescribe an implementation structure.
 
+Record where the changed outcome can be observed and what existing evidence
+protects it. A domain workflow ending in an API response or screen does not by
+itself require a new journey scenario or changes in another repository. Settle
+broader verification scope only for a named behaviour that cheaper evidence
+seams cannot establish; keep ordinary test choices for implementation.
+
 Use the project's existing glossary and ADR conventions where relevant. First
 identify the knowledge gap that cannot be resolved by reading code. When an
 authorised record needs to capture that domain context, read

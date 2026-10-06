@@ -147,6 +147,15 @@ responsibility. Ask a targeted question when the remaining choice changes
 required behaviour, a guard rail, the verification guarantee or delivery scope.
 Do not treat a newly proposed test structure as a ticket requirement.
 
+Recheck the proposed test seam against the actual code and existing coverage.
+Ordinary choices within an adequate seam remain implementation decisions. If a
+ticket mandates a broader layer without an uncovered behaviour, propose a
+bounded correction upstream with the evidence and added cost. Name any
+applicable repository rule that prevents the narrower approach; do not silently
+drop that requirement or manufacture companion scope to satisfy it. Apply an
+explicit user or session decision that already settles the scope; escalate only
+an unresolved conflict, not ordinary mechanics of the adequate selected seam.
+
 Do not start when an input has blocking questions, conflicts with an accepted
 decision, has an unresolved blocker, or needs an unrecorded product or design
 choice. Return that choice to `$engineering-decision-discovery` or

@@ -157,6 +157,15 @@ If a new seam is necessary, explain why existing seams cannot verify the
 outcome; ask for confirmation only when its choice materially constrains the
 implementation or verification.
 
+Choose an adequate seam from the evidence, rather than prescribing the highest
+layer named by an outcome or a fixed sequence of lower layers. Before mandating
+a broader test layer, identify the additional failure or guarantee it covers
+beyond existing or proposed adequate checks. A new journey or companion change
+needs a named scenario and evidence that the selected cheaper coverage is
+insufficient. If a broad repository testing rule forces unrelated scope, state
+that conflict and seek a bounded decision before approval; do not silently
+override it or disguise it as a behavioural need.
+
 For environment-dependent verification, state where the required assertion
 applies, its material prerequisites and the established selection convention.
 Distinguish an unexercised defined prerequisite from unresolved policy. Inspect

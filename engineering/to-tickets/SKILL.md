@@ -140,6 +140,15 @@ ticket. The specification must already settle how affected actors or inputs
 are handled while a capability is incomplete. Return a gap upstream rather
 than treating "out of scope" as a runtime policy.
 
+Carry the specification's reason for its chosen verification seam into the
+owning ticket. Do not turn endpoint or workflow acceptance wording into a new
+validation ticket, journey fixture or companion repository change. New broader
+scope needs the concrete uncovered behaviour and evidence that the selected
+coverage is insufficient; mandatory-suite execution alone does not imply those
+additions. Apply an existing explicit approved scope correction and carry its
+rationale into the handoff. Return only an unresolved scope conflict upstream
+instead of making unjustified expansion a dependency.
+
 Apply `$engineering-testing` when specifying that verification. Name the
 required behaviour, relevant existing coverage, any distinct gap and the
 independent expected outcome. Do not add a test task for every ticket,

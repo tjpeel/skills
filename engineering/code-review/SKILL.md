@@ -192,6 +192,13 @@ For a stack, verify that the reviewed child includes its required predecessor
 repairs and that its base isolates the intended slice. Keep local repairs and
 the published PR head distinct when assessing delivery claims.
 
+Scrutinise excessive verification scope as well as missing coverage. New journey
+scenarios, fixtures or companion changes must protect a named gap that cheaper
+seams cannot cover. Report unnecessary scope only when it creates an actionable
+cost, fragility or correctness problem. Distinguish required suite execution
+from new test authoring, and name a repository-rule conflict when it requires
+an upstream decision rather than demanding more tests by default.
+
 Apply `$engineering-testing` when assessing coverage and test quality. Map
 required changed behaviour and credible failures to existing, updated or new
 tests at the agreed seam, or to justified alternative verification. An unchanged

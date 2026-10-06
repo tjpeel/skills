@@ -119,6 +119,13 @@ head, and identify stale, partial or unavailable results. Passing tests alone
 do not establish correctness, and a requirements match does not excuse a
 technical defect.
 
+Assess unnecessary test expansion as well as missing coverage: identify the
+named failure a broader layer protects and why cheaper seams cannot cover it.
+Report extra scenarios, fixtures or companion changes only for a concrete cost,
+fragility or correctness issue. Separate running mandatory suites from creating
+new scope; identify a conflicting repository rule for an upstream decision
+rather than silently overriding it.
+
 Apply `$engineering-testing` to coverage and test quality. Existing tests count
 even when unchanged; request an addition only for a concrete uncovered failure
 at a boundary that can reproduce it. Do not require tests for every changed

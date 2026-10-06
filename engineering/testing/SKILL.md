@@ -39,12 +39,25 @@ Mandatory repository checks still apply to a small change. New test layers,
 harnesses and setup need a distinct coverage gap or an applicable explicit
 rule; identify that reason rather than treating them as automatic work.
 
-For a calculation-only fix, a focused regression can reproduce the failure
-while existing integration and endpoint tests protect unchanged propagation
-and serialisation. Extend those tests for an uncovered interaction or contract,
-or when repository guidance explicitly requires it. Do not add a combined
-end-to-end scenario merely because an acceptance criterion mentions the final
-response.
+Choose the lowest-cost existing boundary that can expose the actual failure
+and required outcome, using code and coverage evidence rather than a fixed
+ladder of test levels. A focused calculation test may be sufficient when
+existing checks protect propagation and serialisation; transport or runtime
+wiring failures may need to start at an endpoint or integration boundary. Skip
+irrelevant layers and stop when the required outcomes and credible risks are
+adequately covered. New cross-service, browser or journey scenarios need a
+named behaviour and a distinct guarantee cheaper checks cannot establish.
+Retain real-service journeys when the evidence requires them; endpoint wording
+alone neither mandates nor rules out that boundary.
+
+If an applicable repository rule mandates broader testing than the demonstrated
+gap, name the rule and the added scope before treating it as required work.
+Distinguish executing an existing mandatory suite from creating scenarios,
+fixtures, supplementary repository changes, authentication setup or delivery
+coordination. Apply an explicit user or session decision that already resolves
+the scope conflict; do not ask again. Otherwise, name the unresolved conflict
+and return it for a bounded upstream decision rather than silently overriding
+the rule. An inferred guideline alone does not require fresh approval.
 
 Mechanical edits, behaviour-preserving refactors and throwaway prototypes can
 be verified without new permanent tests when relevant existing checks or direct
