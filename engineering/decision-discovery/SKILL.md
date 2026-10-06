@@ -23,6 +23,13 @@ and identify a concrete deficiency before proposing replacements, abstractions
 or wider work. The eventual PR should have one clear explanation for its
 reviewer; depth of investigation does not determine size of implementation.
 
+Reuse an explicitly selected supplementary checkout when suitable. If an
+authorised investigation needs a new clone, keep it in a locally ignored
+directory beneath the active workspace, record its path and checked revision,
+and preserve it for later inspection. Do not default repository clones to a
+system temporary directory or reset, overwrite or remove existing checkouts
+as routine investigation cleanup.
+
 ## Platform compatibility
 
 This workflow is platform-agnostic. Use it in Codex, Claude Code, or another
@@ -200,6 +207,13 @@ explain why the decision exists without retelling how that code works. Use the
 project's ADR format and status convention. Confirm a decision before recording
 it as accepted; otherwise mark it proposed. Do not use this skill to recover historical ADRs; use
 `$architecture-adrs` for that work.
+
+When verification depends on controlled data, credentials or service
+configuration, inspect the relevant test repository and runner conventions.
+Identify material differences between local, CI and deployed execution. Settle
+choices that change the verification guarantee; leave routine setup that
+preserves existing contracts to implementation. Carry these constraints into
+the handoff.
 
 ## Finish with a handoff
 

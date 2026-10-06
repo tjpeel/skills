@@ -24,6 +24,13 @@ and verification a reviewer can understand easily. Extra mechanisms, test
 layers and delivery stages need a concrete reason; completeness is not a
 reason to expand the change.
 
+Reuse an explicitly selected supplementary checkout when suitable. If an
+authorised investigation needs a new clone, keep it in a locally ignored
+directory beneath the active workspace, record its path and checked revision,
+and preserve it for later inspection. Do not default repository clones to a
+system temporary directory or reset, overwrite or remove existing checkouts
+as routine investigation cleanup.
+
 ## Platform compatibility
 
 This workflow is platform-agnostic. Use it in Codex, Claude Code, or another
@@ -149,6 +156,14 @@ adds scope. Do not create production code or tests during specification.
 If a new seam is necessary, explain why existing seams cannot verify the
 outcome; ask for confirmation only when its choice materially constrains the
 implementation or verification.
+
+For environment-dependent verification, state where the required assertion
+applies, its material prerequisites and the established selection convention.
+Distinguish an unexercised defined prerequisite from unresolved policy. Inspect
+the actual runner and participating repositories: identify each change's owner
+and how its revision reaches the check. Do not assume a runner can modify,
+publish or test a companion repository. Resolve a missing delivery route or
+material applicability decision before approval.
 
 Follow required repository formats. Otherwise start with this compact
 structure, merging or omitting sections that add no useful information:

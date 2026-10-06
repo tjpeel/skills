@@ -34,6 +34,13 @@ or duplicated explanations, or replace them with signposts, rather than adding
 another account. Documentation must not conceal unclear code or contradict
 executable behaviour.
 
+Reuse an explicitly selected supplementary checkout when suitable. If an
+authorised investigation needs a new clone, keep it in a locally ignored
+directory beneath the active workspace, record its path and checked revision,
+and preserve it for later inspection. Do not default repository clones to a
+system temporary directory or reset, overwrite or remove existing checkouts
+as routine investigation cleanup.
+
 ## Platform compatibility
 
 This workflow is platform-agnostic. Use it in Codex, Claude Code, or another
@@ -132,9 +139,13 @@ do today and what later work changes before coding them.
 Check the handoff before editing: can the available sources establish the
 relevant domain rules, valid inputs and preconditions, intended outcomes and
 effects, boundary cases, and credible verification? Investigate missing facts
-in the repository. Ask a targeted question when the remaining gap changes
-observable behaviour or a guard rail. Routine implementation choices that
-preserve those contracts remain the implementer's responsibility.
+in the affected repositories and the actual runner. Before escalating a test
+or execution choice, inspect existing commands, environment selection,
+fixtures and scenario conventions, and evaluate a supported adaptation.
+Routine choices preserving approved contracts remain the implementer's
+responsibility. Ask a targeted question when the remaining choice changes
+required behaviour, a guard rail, the verification guarantee or delivery scope.
+Do not treat a newly proposed test structure as a ticket requirement.
 
 Do not start when an input has blocking questions, conflicts with an accepted
 decision, has an unresolved blocker, or needs an unrecorded product or design
@@ -358,6 +369,13 @@ functionality. Do not test private details, mock internal collaborators, or
 assert values computed by the
 same logic under test. Mock only genuine system boundaries when the
 repository's existing test style supports it.
+
+An established pattern may require deterministic assertions locally or in CI
+while retaining applicable shared assertions in deployed runs. Reuse it when
+it preserves the approved verification contract. Missing required prerequisites
+in an applicable environment must fail or be reported as blocked. State what
+other environments do not verify. A new project, filter or whole-scenario
+exclusion needs a concrete reason when an existing assertion pattern suffices.
 
 Establish early test feedback. Prefer a unit test for isolated domain or
 application behaviour. Add an integration test when the changed behaviour

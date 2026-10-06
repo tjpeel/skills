@@ -25,6 +25,13 @@ ticket and one coherent change. Decompose only for real session-size,
 compatibility or delivery boundaries; separate files, layers and checks do not
 by themselves require tickets or implementation phases.
 
+Reuse an explicitly selected supplementary checkout when suitable. If an
+authorised investigation needs a new clone, keep it in a locally ignored
+directory beneath the active workspace, record its path and checked revision,
+and preserve it for later inspection. Do not default repository clones to a
+system temporary directory or reset, overwrite or remove existing checkouts
+as routine investigation cleanup.
+
 ## Platform compatibility
 
 This workflow is platform-agnostic. Use it in Codex, Claude Code, or another
@@ -206,6 +213,13 @@ preconditions, permitted effects, retry/recovery responsibility or verification
 that an implementer needs here. Do not duplicate the specification or
 repository check commands. An unresolved intermediate policy still blocks the
 ticket's readiness.
+
+For required verification outside the implementation repository, confirm its
+applicable environments, material prerequisites, repository owner and delivery
+route through the actual runner or coordinating workflow. Carry slice-specific constraints into the
+ticket or link their settled definition. An unmade selection policy or missing
+delivery route blocks readiness. A defined but unexecuted check may remain an
+evidence gap when its effect and completion requirement are explicit.
 
 Audit each ticket as an implementation handoff to a fresh agent. Using the
 ticket, linked specification and applicable repository sources, it must be able
