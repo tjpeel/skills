@@ -18,6 +18,12 @@ not generate additional context files, ADRs or functionality guides by default.
 Link to existing supporting records for rationale or constraints that code
 cannot convey, rather than copying their content into another explanation.
 
+Prefer the simplest solution and smallest coherent diff that meets the agreed
+outcome and preserves required behaviour. Plan for a PR whose problem, change
+and verification a reviewer can understand easily. Extra mechanisms, test
+layers and delivery stages need a concrete reason; completeness is not a
+reason to expand the change.
+
 ## Platform compatibility
 
 This workflow is platform-agnostic. Use it in Codex, Claude Code, or another
@@ -129,22 +135,23 @@ decisions or blockers in chat. A saved approved specification can be supplied to
 
 ## Design for observable behaviour
 
-Apply `$engineering-testing` to the proposed verification strategy. Record
-the existing coverage, concrete gaps and independent expected outcomes rather
-than requiring a new test for every criterion. Existing checks or direct
-verification can suffice for mechanical changes; a testable criterion does
-not automatically require a new automated test.
+Apply `$engineering-testing` before prescribing new tests. Identify the
+behaviour being changed, inspect relevant existing coverage, and choose the
+lowest-cost public seam that reproduces the failure. Record the gap and an
+independent expected outcome for each proposed addition. An acceptance
+criterion does not imply a new test at every layer it traverses.
 
-Define the lowest-cost existing public seam that faithfully exercises the
-proposed behaviour. Prefer existing seams. If one is missing, describe the
-smallest new seam needed and why it belongs at that boundary. Do not create
-production code or tests as part of writing the specification. Choose the
-fewest high-level seams that cover the independently observable boundaries,
-record the relevant existing test style, and ask for confirmation when a seam
-choice materially constrains implementation or verification.
+Separate mandatory repository check executions from new test scenarios and
+fixture/setup changes. Reuse coverage of unchanged persistence, transport and
+error handling when it protects the relevant contracts. Require extra coverage
+only for a concrete gap or an applicable explicit rule; name that rule when it
+adds scope. Do not create production code or tests during specification.
+If a new seam is necessary, explain why existing seams cannot verify the
+outcome; ask for confirmation only when its choice materially constrains the
+implementation or verification.
 
-Write the specification in the repository's established format. If none
-exists, use this structure:
+Follow required repository formats. Otherwise start with this compact
+structure, merging or omitting sections that add no useful information:
 
 ```md
 # <Outcome-oriented title>
@@ -152,34 +159,25 @@ exists, use this structure:
 **Status:** draft
 **Work reference:** <reference>
 
-## Problem
+## Problem and current behaviour
 
 ## Source artifacts
 
-## Current behaviour and evidence
-
-## Scope
-
-## Required behaviour
-
-## User and system outcomes
-
-## Decisions and constraints
+## Scope and required behaviour
 
 ## Observable acceptance criteria
 
-## Test strategy and seams
+## Verification
 
-## Interfaces and data
+## Constraints
 
-## Change and rollout constraints
-
-## Out of scope
-
-## Blocking questions
-
-## Assumptions and evidence gaps
+## Open questions and evidence gaps
 ```
+
+Add separate interface, data, lifecycle or rollout sections only when they
+contain material constraints. Do not fill empty headings, repeat the outcome
+under several names, or copy repository procedures into the specification;
+link to applicable guidance and record only task-specific implications.
 
 Keep current behaviour factual and distinct from agreed future intent. State
 required behaviour and stable contracts, rather than implementation file paths,
@@ -197,12 +195,13 @@ its settled content is
 now captured by this specification and the specification supersedes it for
 future work. Say `None` only when no such artifact applies.
 
-Use change and rollout constraints for applicable migration and reversibility,
+Use the constraints section for applicable migration and reversibility,
 compatibility, rollout or rollback, operational observability, security or
-privacy, and data ownership or retention. Say `None identified after review`
-when none apply. Blocking questions keep the draft unapproved and return the
-affected decision to `$engineering-decision-discovery`. Assumptions and
-evidence gaps may remain only when they do not alter required behaviour, scope,
+privacy, and data ownership or retention. Questions about existing data do not
+by themselves justify migrations, backfills or new refresh mechanisms: trace
+the existing behaviour first. Blocking questions keep the draft unapproved and
+return the affected decision to `$engineering-decision-discovery`.
+Assumptions and evidence gaps may remain only when they do not alter required behaviour, scope,
 contracts, or acceptance criteria; state their effect if false.
 
 When lifecycle or cross-system effects matter, carry the settled states into
@@ -250,15 +249,14 @@ it was saved and ask for approval without reproducing the document in chat. Do
 not mark it approved while a question affecting scope, required behaviour, a
 contract, or acceptance remains unresolved.
 
-Before seeking approval, trace each required outcome and material boundary or
-failure case to an observable acceptance criterion and credible verification
-through an existing or proposed test seam or justified alternative check.
-Check that a fresh session can understand the actors, domain rules, contracts,
-intermediate states and verification from the specification and its linked
-sources. A required behaviour must not depend on an answer retained only in the
-conversation. Use the bounded independent audit described above when it would
-materially improve confidence. Resolve omissions through repository evidence
-or a targeted question; do not silently turn a gap into a default.
+Before seeking approval, check that each planned change supports an agreed
+outcome, a concrete risk or a mandatory repository rule. Remove incidental
+refactoring, duplicate verification and artificial stages. Trace required
+outcomes and material failure cases to credible verification, including
+existing checks where sufficient. Confirm a fresh session can implement the
+bounded change from this specification and its linked sources. An independent
+audit should challenge unnecessary scope as well as missing behaviour; its
+suggestions do not become requirements without that justification.
 
 After explicit approval, change the saved file's status to `approved`. Hand its
 local path to

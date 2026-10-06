@@ -20,6 +20,11 @@ requires it and it fills a material knowledge gap, provides a useful signpost
 or satisfies an explicit user or repository requirement. Do not ask an
 implementer to create a parallel explanation of feature behaviour.
 
+Keep the eventual PR small and easy to review. For a small fix, default to one
+ticket and one coherent change. Decompose only for real session-size,
+compatibility or delivery boundaries; separate files, layers and checks do not
+by themselves require tickets or implementation phases.
+
 ## Platform compatibility
 
 This workflow is platform-agnostic. Use it in Codex, Claude Code, or another
@@ -113,10 +118,13 @@ intent instead of adopting it. Return an unsettled product or design choice to
 `$engineering-decision-discovery` or `$engineering-specification` instead of
 inventing it.
 
-Before writing, audit coverage: every required behaviour, observable
-acceptance criterion, and applicable change or rollout constraint in the
-specification must be owned by at least one ticket. Reject ticket scope that is
-not supported by the approved specification.
+Before writing, audit coverage: every required behaviour, acceptance criterion
+and applicable rollout constraint must be owned by a ticket. Each proposed
+change must support an approved outcome, a concrete risk or an applicable
+repository rule. Do not widen the specification's scope during decomposition.
+If evidence shows that it prescribes unnecessary work, return a proposed
+reduction to `$engineering-specification` rather than copying it uncritically
+or silently discarding an approved requirement.
 
 Also audit the state of the system after each ticket lands. The ticket that
 introduces behaviour owns the relevant guard rails, boundary and failure
@@ -133,10 +141,12 @@ checks; reuse existing coverage or justified alternative verification when
 sufficient. A ticket's test cases must follow its contracts and credible
 failures, not speculative permutations or an invented coverage target.
 
-Identify necessary prefactoring first. Fold it into the first vertical slice by
-default. Create a separate prerequisite only when it can land green, is
-independently verifiable, and creates a necessary seam or materially reduces
-implementation risk. Prefer tracer-bullet vertical slices: each ticket delivers
+First check whether any prefactoring is necessary. Prefer the existing
+component and test seams; do not plan cleanup or new abstractions for a local
+fix unless the required behaviour cannot be delivered clearly without them.
+Fold essential preparation into the slice. Use a separate prerequisite only
+when it is independently verifiable and resolves a named implementation risk.
+Prefer tracer-bullet vertical slices: each ticket delivers
 a narrow, end-to-end behaviour across every layer that matters, is demoable or
 otherwise verifiable on its own, and fits in one fresh implementation session.
 Do not divide work into separate schema, API, UI, or test tickets. For a wide
@@ -174,23 +184,16 @@ Keep stale detail out of tickets: do not include file paths or code snippets.
 The only exception is a short, labelled prototype fragment when it is the
 clearest record of a settled state machine, reducer, schema, or type decision.
 
-For a non-trivial ticket, provide a short sequence of observable
-implementation increments. The ticket delivers the vertical slice; an
-increment is a smaller committable step towards it and need not deliver a
-standalone user capability. It may be necessary preparation, a bounded
-behaviour change or an agreed partial capability. Give each checkpoint one
-verifiable purpose, its regression check and seam, and a commit boundary
-excluding later work. Keep relevant tests and guard rails with each step; it
-must land green with acceptable intermediate behaviour.
+Describe implementation increments only when distinct migration,
+compatibility or delivery boundaries need staged verification. Omit this
+section for a small fix; coupled code, regression tests and required setup can
+be one coherent change. Do not invent phases to populate the template.
 
-Reject a checkpoint that bundles separable committable steps. Also reject a
-split that leaves broken wiring, violates a contract or loses a credible
-test seam; explain the coupling instead. Do not turn every function, test
-case or layer into a checkpoint. Resolve overly broad checkpoints before
-marking the ticket ready, and explain why an atomic batch cannot safely be
-split when that exception applies. The implementer must audit the proposed
-boundaries against actual repository evidence before coding; they are not
-permission to make an oversized commit.
+For each necessary increment, name its observable purpose, verification seam,
+acceptable intermediate behaviour and commit boundary. Keep required guards
+and tests with the behaviour they protect. Do not split by file, function,
+layer or test case, or combine unrelated outcomes. Verify proposed boundaries
+against the actual checkout before implementation.
 
 State the current behaviour at deferred boundaries and name the later ticket
 that changes it. Request a short code comment only where the reason for a
@@ -198,12 +201,11 @@ deliberate limitation would otherwise be unclear. Explain that constraint
 without repeating control flow or implying that the later capability exists.
 Its meaning must remain understandable without the local ticket file.
 
-Carry the specification's relevant lifecycle rows into the slice's contracts
-and verification: what permits work to start, which effects are allowed while
-another stage is incomplete, how retry or replay behaves, and who recovers a
-partial effect. Name the prerequisite that makes a transition available. Do
-not mark a ticket ready while its observable intermediate behaviour depends
-on an unsettled rollout or recovery policy.
+Link to shared lifecycle and rollout contracts. Restate only slice-specific
+preconditions, permitted effects, retry/recovery responsibility or verification
+that an implementer needs here. Do not duplicate the specification or
+repository check commands. An unresolved intermediate policy still blocks the
+ticket's readiness.
 
 Audit each ticket as an implementation handoff to a fresh agent. Using the
 ticket, linked specification and applicable repository sources, it must be able
@@ -229,7 +231,7 @@ local-exclusion check. A missing `.sdlc/work/` or work folder may be created as
 part of this write. Do not show a preview as a substitute for writing, and do
 not load other files merely because the work folder already exists.
 
-Write one file for each ticket using this form:
+Write one file per ticket with the required metadata and a compact body:
 
 ```md
 # 01: <Outcome-oriented title>
@@ -241,36 +243,21 @@ Write one file for each ticket using this form:
 
 ## What to build
 
-<The end-to-end behaviour delivered, in the project's domain language.>
+<The bounded behaviour delivered and its starting point.>
 
 ## Acceptance criteria
 
-- [ ] <Observable behaviour that is unmet at the baseline.>
-- [ ] <Independent observable behaviour.>
-
-## Decisions and constraints
-
-<Only settled detail that a fresh implementation session needs. Omit this
-section when it is empty.>
+- [ ] <Observable behaviour unmet at the baseline.>
 
 ## Contracts and verification
 
-<The slice's relevant inputs, preconditions, outcomes and effects; boundary or
-failure examples and expected results; and the seams that can verify them.
-Link to shared definitions rather than duplicating them.>
-
-## Implementation increments
-
-<For non-trivial work, ordered committable steps within this ticket: each step's
-verifiable purpose, regression check and seam, acceptable intermediate behaviour
-and boundary excluding later work. Each step need not be a complete vertical
-slice.>
-
-## Deferred behaviour
-
-<When applicable, current behaviour and consequences at incomplete boundaries,
-the later ticket that changes each, and any comment needed to explain it.>
+<Relevant existing coverage, concrete gaps, expected results and required
+checks. Link to shared rules; include only slice-specific constraints.>
 ```
+
+Add decisions, implementation increments or deferred-behaviour sections only
+when the slice needs them. Keep acceptance criteria explicit, but link to
+shared definitions instead of repeating the specification's explanation.
 
 For a blocked ticket, list every blocker as a relative Markdown link, such as
 `[01 — Add read path](01-add-read-path.md)`, under `**Blocked by:**`. The

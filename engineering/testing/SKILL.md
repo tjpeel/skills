@@ -18,8 +18,9 @@ explicit user requirements for tests, verification and coverage thresholds.
 
 ## Decide whether a test is needed
 
-Read the relevant existing tests and check commands before proposing additions.
-For each candidate, establish:
+Start with the production behaviour being changed and read the relevant
+existing tests and check commands before proposing additions. Identify what
+already protects unchanged boundaries, then establish for each new case:
 
 - the required observable behaviour or realistic failure it protects;
 - the gap in existing tests or other checks;
@@ -32,6 +33,18 @@ whose expected behaviour has changed, extend an existing scenario, or add a
 new case for a distinct gap. Do not broaden a test to combine independent
 behaviours merely to avoid adding a case. Existing coverage counts even when
 its file is unchanged.
+
+Separate running required suites from authoring new scenarios or fixtures.
+Mandatory repository checks still apply to a small change. New test layers,
+harnesses and setup need a distinct coverage gap or an applicable explicit
+rule; identify that reason rather than treating them as automatic work.
+
+For a calculation-only fix, a focused regression can reproduce the failure
+while existing integration and endpoint tests protect unchanged propagation
+and serialisation. Extend those tests for an uncovered interaction or contract,
+or when repository guidance explicitly requires it. Do not add a combined
+end-to-end scenario merely because an acceptance criterion mentions the final
+response.
 
 Mechanical edits, behaviour-preserving refactors and throwaway prototypes can
 be verified without new permanent tests when relevant existing checks or direct

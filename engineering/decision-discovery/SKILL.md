@@ -17,6 +17,12 @@ configuration cannot convey, and signpost the relevant sources. Do not create
 one merely because a decision or term was discussed, a file is missing, or
 repository writes have been authorised.
 
+Prefer the simplest solution and minimum change that resolves the observed
+problem while preserving required behaviour. Start from existing mechanisms
+and identify a concrete deficiency before proposing replacements, abstractions
+or wider work. The eventual PR should have one clear explanation for its
+reviewer; depth of investigation does not determine size of implementation.
+
 ## Platform compatibility
 
 This workflow is platform-agnostic. Use it in Codex, Claude Code, or another
@@ -148,6 +154,11 @@ cases rather than following a fixed technology checklist. When state or
 external effects matter, record the trigger, outcome, effects and recovery in
 a small table. Ask about unresolved policy; do not invent it to fill the table.
 
+When asked about existing data, first trace current reads, writes, refreshes
+and failure handling. Distinguish consequences of the agreed change from new
+work needed to manage them. A data-impact question does not itself request a
+migration, backfill, new operational mechanism or tests at every layer.
+
 For a change crossing service, schema or external-effect boundaries, work
 through the relevant lifecycle states before settling the design: startup or
 incomplete migration, coexistence of versions, activation, retry or replay,
@@ -193,7 +204,8 @@ it as accepted; otherwise mark it proposed. Do not use this skill to recover his
 ## Finish with a handoff
 
 Finish when every branch is settled, intentionally deferred, or blocked by a
-named external fact or decision. Return a concise decision record containing:
+named external fact or decision. Return a concise decision record using only
+the following items that materially affect this change:
 
 - the problem and agreed scope;
 - settled decisions and their rationale;
