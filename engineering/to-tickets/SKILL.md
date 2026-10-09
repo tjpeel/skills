@@ -20,6 +20,12 @@ requires it and it fills a material knowledge gap, provides a useful signpost
 or satisfies an explicit user or repository requirement. Do not ask an
 implementer to create a parallel explanation of feature behaviour.
 
+Treat the approved specification as a source of requirements, not content to
+reproduce. Include only what this slice's implementer needs to build and
+verify it. Leave conversation history, access troubleshooting and task
+logistics out; carry a blocker or evidence limit only when it affects this
+ticket's readiness or verification.
+
 Keep the eventual PR small and easy to review. For a small fix, default to one
 ticket and one coherent change. Decompose only for real session-size,
 compatibility or delivery boundaries; separate files, layers and checks do not
@@ -230,15 +236,6 @@ ticket or link their settled definition. An unmade selection policy or missing
 delivery route blocks readiness. A defined but unexecuted check may remain an
 evidence gap when its effect and completion requirement are explicit.
 
-Audit each ticket as an implementation handoff to a fresh agent. Using the
-ticket, linked specification and applicable repository sources, it must be able
-to identify the starting behaviour, intended delta, relevant domain rules and
-contracts, boundary and failure outcomes, exclusions, prerequisites and
-credible verification. Include the slice-specific detail needed to connect
-those sources; do not copy the whole specification. Resolve a missing fact
-from evidence or ask a targeted question and return an unsettled choice
-upstream before marking the ticket ready.
-
 The blocker graph also identifies which tickets can be assigned independently.
 For that frontier, make shared contracts and any integration dependencies
 explicit. A ticket must not depend on another agent's unpublished decisions or
@@ -289,11 +286,32 @@ still decides whether it can start. Report the created paths and the ready
 frontier: tickets with no open blockers. Do not implement tickets, create
 branches, or make external changes.
 
-Before handing off, resolve every specification and blocker link from the
-directory of the file containing it. Confirm the specification target exists
-inside the invoking repository and blocker links resolve to the intended
-lower-numbered tickets. A written file with a broken source link is not ready
-for an isolated implementation session.
+## Review the saved tickets
+
+After writing, read every saved ticket with the approved specification and
+its selected relevant sources as an implementation handoff to a fresh agent.
+Review the set for both missing information and simplification:
+
+- Check that each slice has a clear starting behaviour, intended delta,
+  required contracts, boundaries, prerequisites and credible verification.
+  Surface facts a fresh implementer would otherwise have to guess. Confirm
+  that every required outcome is owned and blockers are real prerequisites.
+- Remove unnecessary decomposition, prefactoring, repeated specification
+  content, unrelated context and checks without a distinct guarantee. Keep
+  the smallest coherent change and the constraints needed to implement it.
+- Resolve factual gaps from selected sources and repository evidence. Return
+  gaps requiring a new decision or approved scope change to specification;
+  do not invent a requirement or broaden a ticket to conceal uncertainty.
+
+Revise only this invocation's newly created ticket files and repeat the
+review after substantive changes. Do not hand off the set as ready until no
+unnecessary scope or material information gap remains. Keep the review in
+the conversation; do not create another report or checklist file.
+
+Resolve every specification and blocker link from the containing file's
+directory. Confirm the specification exists inside the invoking repository
+and blockers resolve to the intended lower-numbered tickets. Broken links
+prevent readiness.
 
 ## Handoff to a worker checkout
 

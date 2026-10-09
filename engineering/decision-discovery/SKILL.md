@@ -17,6 +17,12 @@ configuration cannot convey, and signpost the relevant sources. Do not create
 one merely because a decision or term was discussed, a file is missing, or
 repository writes have been authorised.
 
+Select saved content for the record's purpose, not from everything discussed.
+Keep decision rationale, domain meaning and uncertainty that affect this
+change. Leave session chronology, access troubleshooting, personal availability
+and task logistics in the conversation. If a missing fact blocks a decision,
+record the question and its consequence without the discovery narrative.
+
 Prefer the simplest solution and minimum change that resolves the observed
 problem while preserving required behaviour. Start from existing mechanisms
 and identify a concrete deficiency before proposing replacements, abstractions

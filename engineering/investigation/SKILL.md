@@ -112,6 +112,11 @@ and processes started for this investigation. Clean up owned processes and
 disposable state, retain evidence through the handoff and report its path.
 Do not overwrite another run or kill processes by name.
 
+A saved report contains the selected investigation's findings, evidence and
+material uncertainty, not a recap of the conversation. Include an access or
+execution limit only when it affects the finding or necessary next action;
+state that effect without unrelated troubleshooting history.
+
 Save a report only when requested or required by repository guidance. Use an
 explicitly selected destination, or `evidence/investigation.md` inside that
 fresh temporary directory when none was supplied. Resolve the destination

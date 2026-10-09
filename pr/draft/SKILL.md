@@ -36,17 +36,22 @@ Create an accurate PR brief from repository evidence. Never create, edit, or pus
 
 ## Write the draft
 
-Return a concise, copy-ready title and Markdown description.
+Return a concise, copy-ready title and Markdown description. Select content
+for the reviewer of the final change: conversation history, tool/access
+troubleshooting and task logistics belong in the handoff, not the description.
+Preserve limitations that affect the change or interpretation of verification.
 
 - Use `<TICKET>: <concise outcome>` as the title when a ticket key is known; otherwise use a concise outcome title.
 - Explain the problem using ticket facts and evidence from the repository. Clearly mark measurements, assumptions, or unknowns.
 - Describe implementation changes by purpose and outcome, not as a file-by-file diff.
-- Include schema, data, configuration, migration, deployment, compatibility, and rollback implications when they exist. Explicitly say when none were identified.
+- Include schema, data, configuration, migration, deployment, compatibility and rollback implications only when material to this change.
 - Summarise the testing approach: important scenarios covered by existing, new or changed tests and the behaviour each protects. If no new tests were needed, state why existing coverage or other verification was sufficient; do not imply that new tests are required for the description.
 - Add a separate verification section with executed commands and their results. If tests have not run, say `Not run` rather than implying they passed.
 - Identify deliberately excluded scope, follow-up work, or unresolved risks.
 
-Use this structure unless the repository provides a required PR template:
+Follow a required repository PR template. Otherwise use only useful sections
+from the structure below, merging or omitting sections that repeat content or
+add nothing relevant:
 
 ```md
 ## What

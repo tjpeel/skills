@@ -18,6 +18,13 @@ not generate additional context files, ADRs or functionality guides by default.
 Link to existing supporting records for rationale or constraints that code
 cannot convey, rather than copying their content into another explanation.
 
+Filter conversation context by the specification's purpose. Include a detail
+only if it changes the intended behaviour, scope, contract, constraint or
+verification. Session history, access troubleshooting, personal availability
+and task logistics stay in the conversation. When a missing fact matters,
+record the unresolved requirement or verification limit and its effect,
+without the session narrative.
+
 Prefer the simplest solution and smallest coherent diff that meets the agreed
 outcome and preserves required behaviour. Plan for a PR whose problem, change
 and verification a reviewer can understand easily. Extra mechanisms, test
@@ -217,7 +224,7 @@ inventory other process files or copy their content as assumed current intent.
 Do not link to or list a `.handoffs/` document there: if one informed the work,
 its settled content is
 now captured by this specification and the specification supersedes it for
-future work. Say `None` only when no such artifact applies.
+future work. Omit this section when no relevant source artifact applies.
 
 Use the constraints section for applicable migration and reversibility,
 compatibility, rollout or rollback, operational observability, security or
@@ -225,8 +232,10 @@ privacy, and data ownership or retention. Questions about existing data do not
 by themselves justify migrations, backfills or new refresh mechanisms: trace
 the existing behaviour first. Blocking questions keep the draft unapproved and
 return the affected decision to `$engineering-decision-discovery`.
-Assumptions and evidence gaps may remain only when they do not alter required behaviour, scope,
-contracts, or acceptance criteria; state their effect if false.
+Retain an assumption or evidence gap only when a future implementer needs it
+to apply the settled contract or interpret required verification; state its
+effect. A gap that leaves scope, behaviour, contracts or acceptance undecided
+blocks approval. Omit incidental limitations in how evidence was gathered.
 
 When lifecycle or cross-system effects matter, carry the settled states into
 a compact contract in that section. Record the relevant versions or
@@ -265,22 +274,35 @@ handled while a capability is deferred, any resulting effects and recovery,
 and what makes the stage safe to use. An unresolved intermediate policy blocks
 approval even when the final design is settled.
 
-## Produce the local specification
+## Produce and review the local specification
 
-Write the draft locally with its test seams, out-of-scope items, assumptions,
-evidence gaps, and blocking questions clearly identified. Tell the user where
-it was saved and ask for approval without reproducing the document in chat. Do
-not mark it approved while a question affecting scope, required behaviour, a
-contract, or acceptance remains unresolved.
+Write the focused draft locally, including applicable test seams, constraints
+and material unresolved questions. After writing, read the saved specification
+in full with its selected linked sources as an implementation input for a
+fresh session. Review it for both missing information and simplification:
 
-Before seeking approval, check that each planned change supports an agreed
-outcome, a concrete risk or a mandatory repository rule. Remove incidental
-refactoring, duplicate verification and artificial stages. Trace required
-outcomes and material failure cases to credible verification, including
-existing checks where sufficient. Confirm a fresh session can implement the
-bounded change from this specification and its linked sources. An independent
-audit should challenge unnecessary scope as well as missing behaviour; its
-suggestions do not become requirements without that justification.
+- Check that the starting behaviour, intended delta, contracts, acceptance
+  criteria and verification are clear enough to implement without unstated
+  conversation context. Identify contradictions and missing facts that could
+  change implementation or its expected result.
+- Check that every planned change supports an agreed outcome, concrete risk
+  or mandatory repository rule. Remove incidental refactoring, duplicate
+  verification, artificial stages, repeated explanations and irrelevant
+  context while preserving necessary constraints.
+- Resolve material gaps from the selected sources and repository evidence
+  first. Ask only a targeted question that evidence cannot settle; record
+  the question and its effect rather than the research history.
+
+Revise the saved file and repeat the review after substantive changes until
+no unnecessary scope or material information gap remains. Do not expand the
+work to cover speculative cases or create a separate review report. An
+independent audit, when justified, must challenge unnecessary scope as well
+as missing behaviour; suggestions need the same evidence before becoming
+requirements. Keep the file as `draft` while a question affecting scope,
+behaviour, a contract or acceptance remains unresolved.
+
+After this review cycle, tell the user where the file was saved and ask for
+approval without reproducing the document in chat.
 
 After explicit approval, change the saved file's status to `approved`. Hand its
 local path to

@@ -24,15 +24,18 @@ repository instructions: this normally includes `AGENTS.md` in Codex and
 `CLAUDE.md` in Claude Code. If the platform cannot write a file, return the
 handoff as Markdown and state that it was not saved.
 
-Capture the current objective, completed work, decisions and constraints,
-remaining work, known risks or blockers, and the most useful next actions.
+Capture the selected continuation objective and only the completed work,
+decisions, constraints, remaining work and next actions needed to resume it.
+Include past work only when it explains the current state or a constraint.
+An access problem belongs here only while it blocks a necessary next action;
+record the blocker and next step, not its troubleshooting history. Omit
+unrelated conversation, obsolete questions and personal circumstances.
 Reference existing specifications, plans, ADRs, issues, commits, diffs, and
 other artifacts by path or URL instead of copying their content into the
 handoff.
 
-Include a `Suggested skills` section that names any skills the next agent
-should invoke before continuing. Omit the section's entries when no skill is
-needed. Redact credentials, secrets, personal data, and other sensitive
+Include `Suggested skills` only when the next agent needs to invoke one;
+otherwise omit the section. Redact credentials, secrets, personal data, and other sensitive
 information.
 
 If the user supplies an argument, treat it as the next session's focus and

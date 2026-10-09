@@ -160,6 +160,10 @@ request another reference or explicit selection. Do not merge reports, replace
 an unselected format, or update decisions, specifications or tickets.
 
 The report is an uncommitted process artifact, not maintained documentation.
+Save only selected survey findings, supporting evidence and limits that
+affect their confidence, scope or proposed cost. Keep unrelated session
+history and access troubleshooting in the conversation; record a material
+evidence limit by its effect on the finding.
 Before writing, verify that the target is untracked and locally ignored. If
 needed, append `/.sdlc/work/` to the local exclude file resolved by
 `git rev-parse --git-path info/exclude`, preserving existing entries. Leave

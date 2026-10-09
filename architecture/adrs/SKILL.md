@@ -13,6 +13,11 @@ cannot convey: rationale, rejected alternatives, external constraints or
 consequential trade-offs. Signpost the relevant code and tests instead of
 retelling their functionality. A credible investigation may produce no ADRs.
 
+Write each ADR for a future engineer assessing that decision. Keep material
+evidence and limits on confidence; omit the recovery session's chronology,
+tool troubleshooting and unrelated conversation. When unavailable evidence
+limits a claim, qualify that claim rather than copying the access history.
+
 ## Platform compatibility
 
 This workflow is platform-agnostic. Use it in Codex, Claude Code, or another
