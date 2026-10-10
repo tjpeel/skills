@@ -52,6 +52,12 @@ Inspired by these public repositories:
 
 - [cursor/plugins](https://github.com/cursor/plugins)
 - [mattpocock/skills](https://github.com/mattpocock/skills)
+- [humanlayer/skills](https://github.com/humanlayer/skills)
+
+The PR draft skill's compact visual explanations draw on Humanlayer's
+[show-me skill](https://github.com/humanlayer/skills/tree/main/plugins/show-me)
+and Matt Pocock's
+[PR skill](https://github.com/mattpocock/skills/blob/main/skills/engineering/pr/SKILL.md).
 
 Skill packaging and profile discovery also draw on OpenAI's
 [skill documentation](https://learn.chatgpt.com/docs/build-skills) and
