@@ -48,13 +48,17 @@ controller, orchestration, signing or review process.
 - Explain the problem using ticket facts and evidence from the repository. Clearly mark measurements, assumptions, or unknowns.
 - Describe implementation changes by purpose and outcome, not as a file-by-file diff.
 - Include schema, data, configuration, migration, deployment, compatibility and rollback implications only when material to this change.
-- Mention new or changed regression scenarios once when they help explain the behaviour protected. Do not repeat routine CI commands, passing checks, test counts or review approvals; the PR's checks already show those results. Do not add a testing section merely to say no tests were needed.
+- Explain new or changed regression scenarios in Testing approach when they help explain the behaviour protected. Do not repeat routine CI commands, passing checks, test counts or review approvals; the PR's checks already show those results.
 - Use Verification for relevant evidence beyond routine CI: an observed before/after result, manual check, performance measurement or rollout-specific validation. State the outcome and any material limitation briefly. Keep a missing required check or unresolved verification gap explicit; never imply unrun checks passed.
 - Identify deliberately excluded scope, follow-up work, or unresolved risks.
 
-Follow a required repository PR template. Otherwise use only useful sections
-from the structure below, merging or omitting sections that repeat content or
-add nothing relevant:
+Follow a required repository PR template when present. Otherwise use every
+heading below exactly as written and in this order. Do not merge, rename or
+omit headings. Keep each section brief and avoid repeating information across
+sections. Use "Not applicable" only where a section has no relevant content.
+Put `Ticket: <ticket-key>` or `Work reference: <reference>` before the first
+heading when the selected reference is known. Preserve the exact reference in
+the title and body; a reference in introductory prose does not replace this field.
 
 ```md
 ## What
@@ -71,6 +75,12 @@ add nothing relevant:
 
 ## Scope and follow-up
 ```
+
+Before handing off the draft, check that all required headings appear once,
+in order, with non-empty content; the title and body carry the same selected
+reference; and verification claims have observed evidence. Repository templates
+take precedence over the default headings. Keep required verification gaps
+explicit and preserve the publication skill's test gate.
 
 ## Explain the change visually
 
