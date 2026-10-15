@@ -1,6 +1,6 @@
 ---
 name: pr-review
-description: Review a colleague's pull request with focused mapping and validation, then report only actionable correctness, regression, security, or test findings.
+description: Review a colleague's pull request with focused mapping and validation, then report actionable technical findings and evidence-backed scope recommendations.
 ---
 
 # Review pull request
@@ -100,7 +100,7 @@ do not expose private artifact contents in external comments.
 
 1. Read applicable repository instructions, coding standards, service contracts and required check commands. Trace changed code from entry points through runtime wiring, side effects and recovery before relying on the author's explanation or planning artifacts.
 2. Have the selected owner evaluate the complete diff at the chosen effort. Its initial packet contains raw code, tests, runtime wiring, repository standards and any behaviour map, excluding planning artifacts, requirements mappings and the author's explanation. Optional helpers address only the identified evidence gaps.
-3. Then supply selected intent and coverage evidence to reconcile the owner's technical conclusions. The owner checks all review axes and reports only correctness, regression, security, compatibility, concurrency, or missing-test risks.
+3. Then supply selected intent and coverage evidence to reconcile the owner's technical conclusions. The owner checks all review axes and reports correctness, regression, security, compatibility, concurrency, or missing-test risks, plus evidence-backed scope recommendations with concrete user or maintenance consequences.
 4. Escalate an unresolved material question using the delegation rules above. Reuse the pinned evidence and existing reviewers; retain one owner responsible for the complete final assessment.
 
 Derive the technical checks from the changed paths and surrounding system:
@@ -112,6 +112,16 @@ create a credible failure path. Check comments against executable behaviour.
 If a domain outcome remains uncertain, research it or ask a targeted question
 while reviewing unaffected paths; do not invent policy or present that
 uncertainty as a verified defect.
+
+For newly exposed filters, links, guidance or actions, trace the required data
+and prerequisites to an implemented production source. Distinguish states
+reachable through supported production paths from states created only by test
+fixtures. If useful operation depends on deferred work, assess whether exposing
+it now misleads users or adds unjustified storage or maintenance cost, even when
+it matches the written specification. Report concrete consequences; frame changes
+to approved scope as recommendations requiring a decision, not permission to
+silently remove contracted behaviour. Do not demand a local writer when an
+established external producer or supported existing data supplies the capability.
 
 Assess test coverage by whether tests expose those outcomes, separately from
 whether the suite passes. Inspect the required-check evidence for the pinned
@@ -134,6 +144,9 @@ change-detector and other named anti-patterns by the guarantee they miss or
 concrete maintenance burden they introduce, not as style-only findings.
 
 ## Findings format
+Separate verified defects from scope recommendations that require a product or
+design decision. Specification compliance does not rule out a recommendation
+when the current capability misleads users or has concrete unjustified cost.
 
 For each finding, include priority, file and line, a concrete failure scenario, and the recommended fix or test. Do not edit the pull request, comment externally, or include style-only nits. If no finding meets the threshold, say so clearly and mention any remaining test limitation.
 

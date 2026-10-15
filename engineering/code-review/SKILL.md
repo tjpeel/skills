@@ -170,6 +170,16 @@ use available repository evidence or ask a targeted question while continuing
 the review of unaffected paths. Distinguish a verified technical defect from a
 requirements question; do not invent policy to resolve the latter.
 
+For newly exposed filters, links, guidance or actions, trace the required data
+and prerequisites to an implemented production source. Distinguish states
+reachable through supported production paths from states created only by test
+fixtures. If useful operation depends on deferred work, assess whether exposing
+it now misleads users or adds unjustified storage or maintenance cost, even when
+it matches the written specification. Report concrete consequences; frame changes
+to approved scope as recommendations requiring a decision, not permission to
+silently remove contracted behaviour. Do not demand a local writer when an
+established external producer or supported existing data supplies the capability.
+
 Then check requirements. Compare each in-scope required behaviour, accepted
 decision, observable acceptance criterion, and applicable rollout or change
 constraint with the diff and its verification. Report missing, partial, or
