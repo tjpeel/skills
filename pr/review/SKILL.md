@@ -185,6 +185,15 @@ keep recommendations distinct from defects that may enter automatic repair.
 Do not edit the PR or comment externally. If neither tier contains an actionable
 item, say so clearly and retain genuine review or verification limitations.
 
+For each producer claim, identify the production write location or established
+external source. A declaration, projection, index or test fixture is not a
+producer. When a search finds no writer, record the production paths searched
+and close the question explicitly: a current source is established, a material
+prerequisite remains unresolved, or a design/scope recommendation explains the
+cost of shipping the dependent surface now. A deferred label or a hypothetical
+external producer is not evidence of current use. Do not infer that a missing
+in-repository writer proves all retained data is empty; state that boundary.
+
 ## Evidence of completed inspection
 
 Retain a compact inspection record in the final report, not just a statement
