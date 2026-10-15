@@ -274,14 +274,11 @@ handled while a capability is deferred, any resulting effects and recovery,
 and what makes the stage safe to use. An unresolved intermediate policy blocks
 approval even when the final design is settled.
 
-For planned filters, navigation, guidance and actions, identify the production
-source of required data and prerequisites. Existing data or an established
-external producer can supply this; a new local writer is not always needed.
-Test fixtures alone do not establish that the capability is useful in production.
-Where useful operation depends on a deferred producer or workflow, recommend
-deferring the public surface and supporting infrastructure unless the current
-stage has a concrete use that justifies them. Flag changes to approved scope for
-a decision rather than silently dropping requirements.
+Challenge whether each proposed capability serves the current outcome, whether
+its prerequisites hold, and whether its apparent success reliably means what
+the user would expect. Prefer the smallest coherent design and identify
+assumptions that implementation and verification must establish. Flag changes
+to approved scope for a decision rather than silently dropping requirements.
 
 ## Produce and review the local specification
 

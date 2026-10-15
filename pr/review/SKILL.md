@@ -113,15 +113,14 @@ If a domain outcome remains uncertain, research it or ask a targeted question
 while reviewing unaffected paths; do not invent policy or present that
 uncertainty as a verified defect.
 
-For newly exposed filters, links, guidance or actions, trace the required data
-and prerequisites to an implemented production source. Distinguish states
-reachable through supported production paths from states created only by test
-fixtures. If useful operation depends on deferred work, assess whether exposing
-it now misleads users or adds unjustified storage or maintenance cost, even when
-it matches the written specification. Report concrete consequences; frame changes
-to approved scope as recommendations requiring a decision, not permission to
-silently remove contracted behaviour. Do not demand a local writer when an
-established external producer or supported existing data supplies the capability.
+Challenge the assumptions that make the change useful and trustworthy. Look
+for behaviour that can appear successful while failing the user's intent, rules
+represented in several places that can drift, and complexity or scope without
+a demonstrated current purpose. Follow concrete user and failure paths rather
+than treating specification compliance or passing tests as sufficient evidence.
+Report the observable consequence and smallest justified improvement;
+distinguish defects from recommendations that require a scope decision. Do not
+silently remove contracted behaviour or treat a preference as a defect.
 
 Assess test coverage by whether tests expose those outcomes, separately from
 whether the suite passes. Inspect the required-check evidence for the pinned
