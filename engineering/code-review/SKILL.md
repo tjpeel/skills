@@ -288,6 +288,13 @@ outside the diff, or missing tests with no credible failure scenario. Do not
 mark a change safe merely because tests pass; verify that the tests exercise
 the claimed behaviour at the agreed seam.
 
+In controller-managed implementation self-review, keep inspection evidence and
+non-blocking design or scope recommendations in the summary. If the controller
+reserves structured review fields for its independent reviewer, leave
+`recommendations` empty and `review_coverage` null. Self-review does not change the
+implementation role; do not return independent-review statuses or claim approval.
+Report actual blockers through the implementation's supported status and fields.
+
 ## Evidence of completed inspection
 
 Retain a compact inspection record in the final report, not just a statement

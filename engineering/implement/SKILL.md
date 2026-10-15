@@ -480,6 +480,13 @@ documented equivalent once after the narrow checks are green. If the full
 suite cannot run, report the exact command, reason, and the narrower checks
 that did run; do not claim complete verification.
 
+In controller-managed implementation self-review, keep inspection evidence and
+non-blocking design or scope recommendations in the summary. If the controller
+reserves structured review fields for its independent reviewer, leave
+`recommendations` empty and `review_coverage` null. Self-review does not change the
+implementation role; do not return independent-review statuses or claim approval.
+Report actual blockers through the implementation's supported status and fields.
+
 When a controller reserves the independent review for a later stage, apply
 `$engineering-code-review` directly as the implementer's self-review instead of
 launching another whole-change reviewer. This changes reviewer ownership, not
