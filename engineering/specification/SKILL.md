@@ -63,7 +63,7 @@ before selecting profiles or declaring delegation unavailable.
   strategy for unsupported claims and missing observable behaviour.
 - Use `read_high` only for credible material migration, data-loss, security,
   concurrency, compatibility, or cross-service risk.
-- Use `write_medium` as the sole local writer only when the user authorises
+- Use `write_low` as the sole local writer only when the user authorises
   creating or updating the specification file. It must not expand the agreed
   scope, turn unresolved questions into decisions, or replace an unselected
   artifact. An update is limited to the explicitly selected specification.

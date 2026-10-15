@@ -264,7 +264,7 @@ before selecting profiles or declaring delegation unavailable.
 - Use `read_high` only for credible migration, data-loss, security,
   concurrency, compatibility, or cross-service risk. It reports hazards,
   mitigations, and verification evidence; it does not make the change.
-- Use `write_medium` as the sole implementation writer when delegated. Give it
+- Use `write_low` as the sole implementation writer when delegated. Give it
   the ticket or approved slice as context, but authorise only the next planned
   increment, with its starting commit SHA, verifiable purpose, excluded work,
   test commands and local code and test ownership. It must stop after

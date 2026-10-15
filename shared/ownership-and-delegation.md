@@ -5,68 +5,71 @@ would improve the evidence or save time. The invoking skill defines each
 delegate's responsibility and write scope; this reference defines how to
 discover and select the capability.
 
-## Select the capability
+## Grade the task and select capability
 
-Use the least sufficient configured profile available in the current session:
+Choose the bounded responsibility and read/write scope first. Choose effort
+separately from the coordinator's model or effort. Ordinary reads and clear local
+changes default to **low**. A skill's named profile is a starting point for its
+described task, not a requirement to run all implementations at medium or all
+audits at high.
 
-| Profile | Responsibility |
-| --- | --- |
-| `read_low` | Inventories, repository mapping and quick evidence checks. |
-| `read_medium` | Bounded analysis, drafting and evidence or acceptance audits. |
-| `read_high` | Material risk analysis, complex planning or independent review. |
-| `read_deep` | Bounded investigation or complete-diff review whose difficulty justifies maximum reasoning. |
-| `read_exceptional` | A small, evidence-complete synthesis that justifies exceptional effort. |
-| `write_medium` | One scoped local change as the sole writer, when the invoking skill permits it. |
+| Band | Evidence that warrants it | Native profiles |
+| --- | --- | --- |
+| `low` | Inventory, mapping, status observation or a clear local change. | `read_low`, `write_low` |
+| `medium` | Bounded analysis or implementation with interacting cases. | `read_medium`, `write_medium` |
+| `high` | Consequential judgement, substantive review or material failure risks. | `read_high`, `write_high` |
+| `xhigh` | Difficult synthesis of a small, complete evidence packet. | `read_xhigh`, `write_xhigh` |
+| `max` | Sustained difficult investigation or complete-diff review. | `read_max`, `write_max` |
 
-A profile sets effort and access, not the task. Preserve its configured model,
-reasoning and access boundaries. Finding a writer profile does not authorise a
-write or expand the invoking skill's scope.
+`read_deep` is the legacy name for `read_max`; `read_exceptional` is the legacy
+name for `read_xhigh`. These bands do not claim equal performance across providers.
+Use a short task reason for higher effort. Select it upfront when warranted, or
+escalate a specific unresolved question after new evidence. No mandatory failed
+attempt, approval step, extra agent or repair-cycle gate is needed to change
+bands. Preserve the assigned access boundary at every band. A writer profile
+does not authorise a write or expand the invoking skill's scope.
 
-A coordinator running at Ultra or max does not make every handoff exceptional.
-Use the profile's explicit effort for its bounded task. Raise effort only for
-a selected task whose evidence or failed lower-effort attempt justifies it.
+Keep roles such as mapper, analyst, reviewer and writer in the handoff. The
+common model policy defaults to `gpt-6.1-sol` for Codex and
+`claude-sonnet-5-5` for Claude Code at every band. Higher effort does not select
+Opus automatically. An explicit Opus choice needs a compatible native profile
+such as `read_opus_high`, or a documented runtime override. Model choice stays
+separate from responsibility, effort, permissions and speed.
 
-Keep reasoning depth separate from agent count. A difficult review can need
-one strong reviewer without extra mapping or audit agents. Select `read_deep`
-upfront when the task warrants it, or for an unresolved difficult question;
-`read_exceptional` remains limited to synthesis from a completed evidence
-packet. Client Ultra can also enable proactive delegation and is not a
-portable model-effort value. Do not change pinned settings through a handoff
-prompt or assume the client applied a requested model or effort. Report the
-actual settings when exposed; otherwise leave them unverified.
+Use named variants where the client requires them. A spawning API may support
+explicit model/effort overrides for an equivalent bounded role; inspect its
+actual interface. This app requires fresh context for overrides. Do not assume
+native clients universally support per-call changes, or that prompt text changes
+a pinned model or effort. Report actual settings when exposed; otherwise leave
+them unverified. A skill does not change the coordinating chat's settings.
 
-## Size monitoring and repair phases separately
+Standard speed is the policy default. Generated profiles do not assert an
+unsupported speed field. Codex's official config supports `service_tier`, but
+live effective settings may be unknown. Claude Fast uses paid usage credits and
+supports selected Opus models; do not silently switch Sonnet to Opus to satisfy
+a Fast request. Use the active client's documented controls and report an
+incompatible selection before taking a different model route.
 
-For workflows that observe checks and then repair failures, choose effort for
-each phase. Sustained read-only inventory, status polling and log collection
-belong with `read_low` at low reasoning. Prefer deterministic queries and
-native waits; reuse one observer when repeated results need interpretation.
-A single quick read can stay with the coordinator. Do not keep a higher-effort
-writer or reviewer processing unchanged status results, or spawn an agent for
-every poll.
+## Size observation and repair separately
 
-When evidence identifies a failure, move its diagnosis to `read_medium` at
-medium reasoning. Use `read_high` at high reasoning for a difficult root cause
-or material security, behaviour or concurrency risk. A local repair and its
-tests belong with `write_medium` at medium reasoning as the sole scoped writer.
-The read-only observer collects facts and does not design or implement fixes.
-An existing owner can retain a small repair when its effort and write scope
-already fit; profile selection must not create competing writers.
+Use low for sustained status observation and factual log collection. A quick
+read can stay with the coordinator. Diagnose a bounded failure at medium when
+interpretation is needed; consequential or difficult causes can warrant high
+or a higher band. Grade the repair itself: a clear scoped edit stays low,
+interacting changes can warrant medium, and difficult implementation can need
+higher effort without changing ownership or permitted paths.
 
-Task-specific observer inputs, return conditions and write paths belong in
-the invoking skill. Keep commits and external writes with the coordinator,
-then give the observer the newly published revision and return to low-effort
-observation. Test commands that generate files need the local writer's or
-coordinator's permitted write scope; a read-only observer may inspect their
-results but cannot run them by assuming they are read-only.
+An observer returns facts and does not design or implement fixes. Reuse an
+existing owner whose effort and write scope fit; do not create competing
+writers. Test commands that generate files need the writer's or coordinator's
+permitted write scope. Keep commits and external writes with the coordinator,
+then return to low observation for the newly published revision.
 
-Report the selected profile, actual model and reasoning effort when starting
-a phase, where those settings are exposed. Use the profile's pinned model;
-do not hardcode model names in skills or override pinned effort in a prompt.
-A skill does not change the coordinating chat's model or reasoning setting.
-If a suitable observer or writer cannot be spawned, follow the discovery and
-fallback rules below and disclose that direct work retains the coordinator's
-settings; do not describe that fallback as low reasoning unless verified.
+If a new band profile is unavailable, an existing compatible profile can serve
+the same bounded task. For example, `write_medium` can cover a missing
+`write_low`; disclose that it retains medium effort. Use discovery below before
+declaring a profile unavailable. Direct fallback retains the coordinator's
+settings and cannot be described as low unless verified.
 
 ## Discover Codex profiles before falling back
 

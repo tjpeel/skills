@@ -66,7 +66,7 @@ overlap. Pass the captured revision IDs and the mapping report to every role.
 - **Source-to-destination analyst — `read_low`:** Build the
   behavior inventory and mapping report, identify destination integration
   points, and flag uncertainty. This role does not edit either repository.
-- **Destination implementer — `write_medium`:** the sole writer. Implement the
+- **Destination implementer — `write_low`:** the sole writer. Implement the
   mapped behavior idiomatically in the destination, add or adapt tests only
   for identified coverage gaps, and report each mapping item it completed.
   It must not modify source material or overwrite unrelated destination work.

@@ -60,7 +60,7 @@ before selecting profiles or declaring delegation unavailable.
   user preference into a recommendation or decision.
 - Use `read_high` only when a credible option carries material migration,
   data-loss, security, concurrency, or cross-service risk.
-- Use `write_medium` as the sole local writer only after the user authorises
+- Use `write_low` as the sole local writer only after the user authorises
   saving settled terminology, a decision record, or a prospective ADR. It must
   preserve the agreed wording, write only to the agreed repository locations,
   and not settle pending decisions.
