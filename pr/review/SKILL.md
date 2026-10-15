@@ -103,6 +103,14 @@ do not expose private artifact contents in external comments.
 3. Then supply selected intent and coverage evidence to reconcile the owner's technical conclusions. The owner checks all review axes and reports correctness, regression, security, compatibility, concurrency, or missing-test risks, plus evidence-backed scope recommendations with concrete user or maintenance consequences.
 4. Escalate an unresolved material question using the delegation rules above. Reuse the pinned evidence and existing reviewers; retain one owner responsible for the complete final assessment.
 
+Finish material inspection available at the pinned revision before reporting a
+completed review. Passing checks, code/document agreement or a large diff do not
+justify leaving relevant accessible behaviour unexamined. Complete both the
+technical assessment and intent reconciliation. If access, evidence, usage or a
+decision prevents completion, state that boundary and what remains uninspected;
+do not present voluntary omissions as unavailable evidence. Full inspection can
+still retain a genuine external-verification limitation.
+
 Derive the technical checks from the changed paths and surrounding system:
 identify affected actors, inputs, state changes, effects, contracts and
 invariants, then walk concrete boundary and failure scenarios. Check which
