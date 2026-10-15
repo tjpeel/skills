@@ -288,6 +288,33 @@ outside the diff, or missing tests with no credible failure scenario. Do not
 mark a change safe merely because tests pass; verify that the tests exercise
 the claimed behaviour at the agreed seam.
 
+## Evidence of completed inspection
+
+Retain a compact inspection record in the final report, not just a statement
+that the full diff was reviewed. Include:
+
+- producer/consumer rows with source and consumer file locations, current caller
+  outcome, and any unresolved prerequisite; state explicitly when a source was
+  not found and distinguish searched production code from test fixtures;
+- changed-file coverage, grouping related files when useful, with the behaviour
+  and test assertions inspected and any paths left unread or only skimmed;
+- relevant unchanged dependencies traced when a changed claim or recovery action
+  relies on them; being outside the diff does not establish their behaviour;
+- the disposition of earlier findings and recommendations supplied in the review
+  history: retained, resolved by an identified change, or withdrawn with evidence.
+
+This is evidence of inspection, not a request for command transcripts or a new
+repository document. If the caller requires JSON without dedicated fields, put
+this compact record in its summary; do not omit it to fit the output format.
+No findings is a valid result, but does not replace this record.
+
+Do not claim full inspection while material test assertions, prerequisites or
+supporting paths remain unexamined. If relevant content was only skimmed, finish
+that inspection or name the bounded unfinished work. With a controller supporting
+review_incomplete, return that status with partial coverage and named gaps so the
+same session can continue. Reserve limitations for genuine unavailable evidence;
+not running isolated controller checks again is not itself an inspection gap.
+
 ## Completion and reporting
 
 Before returning, confirm the original fixed point and current reviewed content,
