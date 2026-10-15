@@ -31,13 +31,14 @@ reviewer. Do not add a reviewer solely to duplicate an already independent
 owner.
 
 Use `read_high` or an equivalent high-effort reviewer for substantive code
-review. A clear, bounded change with understood runtime effects may be
-reviewed directly at medium effort. Diff size alone does not justify lower
-effort or extra agents. Use `read_deep` for a selected review or unresolved
-question involving difficult interacting contracts, destructive data effects,
+review. Treat changes touching more than about 20 files, or introducing
+persistence, a migration or a public endpoint, as substantive. Medium effort is
+appropriate only for a clearly bounded change with understood runtime effects
+outside those cases. This selects the owner's effort; it does not require an
+additional reviewer. Use `read_deep` for a selected review or unresolved question
+involving difficult interacting contracts, destructive data effects,
 authentication or secret boundaries, migrations, concurrency or cross-service
-recovery. Material risk warrants scrutiny, but does not automatically require
-maximum effort or a second complete review.
+recovery. Material risk does not automatically require maximum effort.
 
 Use `read_low` only for a missing behaviour or ownership map, and `read_medium`
 only for a specific uncertainty in selected intent, verification or coverage.
@@ -55,6 +56,12 @@ Pin the base and head commits and review their complete combined diff, including
 configuration, comments and tests. Do not review only the last corrective commit
 or treat a sequence of fixes as proof that the final behaviour is sound. Record
 any working-tree changes separately; they are not part of the published PR.
+
+Review from a checkout of the pinned head commit with the base available. A
+diff alone cannot establish repository-wide writers, readers or reachability.
+If a checkout is impossible, review the available diff and report that access
+boundary, the surrounding behaviour left unverified and its effect on findings.
+Do not present a diff-only review as a complete repository investigation.
 
 Before assigning reviewer work, confirm that the pinned commits and selected
 input paths resolve, match verification evidence to the reviewed revision,
@@ -99,9 +106,10 @@ do not expose private artifact contents in external comments.
 ## Workflow
 
 1. Read applicable repository instructions, coding standards, service contracts and required check commands. Trace changed code from entry points through runtime wiring, side effects and recovery before relying on the author's explanation or planning artifacts.
-2. Have the selected owner evaluate the complete diff at the chosen effort. Its initial packet contains raw code, tests, runtime wiring, repository standards and any behaviour map, excluding planning artifacts, requirements mappings and the author's explanation. Optional helpers address only the identified evidence gaps.
-3. Then supply selected intent and coverage evidence to reconcile the owner's technical conclusions. The owner checks all review axes and reports correctness, regression, security, compatibility, concurrency, or missing-test risks, plus evidence-backed scope recommendations with concrete user or maintenance consequences.
-4. Escalate an unresolved material question using the delegation rules above. Reuse the pinned evidence and existing reviewers; retain one owner responsible for the complete final assessment.
+2. Trace reachability at the pinned head. For each new or changed field, index, filter, endpoint, link, configuration key, message or behavioural documentation claim, search for its production sources, consumers and prerequisites. Record a compact producer/consumer table; group items sharing the same path without hiding exceptions. State what the caller can observe in the current delivery stage. Investigate apparently unwritten, unread, always-empty, constant or unreachable behaviour. Existing data and external producers can be valid sources: establish that context before reporting a missing connection. Where useful operation depends on deferred work, identify costs already incurred and whether a current use justifies them.
+3. Have the selected owner evaluate the complete diff at the chosen effort, including changed tests, documentation and configuration. Read the tests' relevant assertions and setup, not only method names or passing results. Its initial packet contains raw code, tests, runtime wiring, repository standards and any behaviour map, excluding planning artifacts, requirements mappings and the author's explanation. Optional helpers address only identified evidence gaps.
+4. Then supply selected intent and coverage evidence to reconcile the owner's technical conclusions. Check factual claims in the PR description and changed documentation against executable behaviour and evidence, including current scope and deferred capabilities. Distinguish unsupported claims from facts that require unavailable external verification. Report technical risks and evidence-backed design or scope recommendations separately.
+5. Escalate an unresolved material question using the delegation rules above. Reuse pinned evidence and existing reviewers; retain one owner responsible for the complete final assessment.
 
 Finish material inspection available at the pinned revision before reporting a
 completed review. Passing checks, code/document agreement or a large diff do not
@@ -120,6 +128,14 @@ create a credible failure path. Check comments against executable behaviour.
 If a domain outcome remains uncertain, research it or ask a targeted question
 while reviewing unaffected paths; do not invent policy or present that
 uncertainty as a verified defect.
+
+For timeout, cancellation and failure paths, compare the reported result with
+work that actually completed. Check whether success can be discarded, partial
+effects can be reported as total failure, and retries change the consequences.
+Respect an explicit deadline contract rather than assuming every late result
+must be accepted. Compare shared state and classification names across their
+producers and consumers, especially where an unrecognised value silently takes
+a fallback. Repeated strings matter when they create a credible drift risk.
 
 Challenge the assumptions that make the change useful and trustworthy. Look
 for behaviour that can appear successful while failing the user's intent, rules
@@ -151,11 +167,32 @@ change-detector and other named anti-patterns by the guarantee they miss or
 concrete maintenance burden they introduce, not as style-only findings.
 
 ## Findings format
-Separate verified defects from scope recommendations that require a product or
-design decision. Specification compliance does not rule out a recommendation
-when the current capability misleads users or has concrete unjustified cost.
 
-For each finding, include priority, file and line, a concrete failure scenario, and the recommended fix or test. Do not edit the pull request, comment externally, or include style-only nits. If no finding meets the threshold, say so clearly and mention any remaining test limitation.
+Report two tiers, making either explicitly empty when appropriate.
+
+- **Tier 1 — defects and verification risks:** correctness, regression, security,
+  compatibility, concurrency and missing-test risks. Include priority, file and
+  line, a concrete failure scenario, and the smallest justified fix or test.
+- **Tier 2 — design and scope recommendations:** premature or unused capability,
+  duplicated rules, repeated magic values, inconsistent behaviour and unrelated
+  changes. Include file and line, the concrete user, maintenance or drift cost,
+  and the suggested change. These are recommendations, not permission to change
+  approved requirements. Formatting and naming preferences stay out.
+
+A specification match does not rule out a Tier 2 concern. Use the caller's
+structured output categories when provided and populate its required fields;
+keep recommendations distinct from defects that may enter automatic repair.
+Do not edit the PR or comment externally. If neither tier contains an actionable
+item, say so clearly and retain genuine review or verification limitations.
+
+## Completion check
+
+Before finalising, check the pinned revisions, producer/consumer trace and both
+review phases. Confirm every changed file was inspected, including tests and
+documentation, and that Tier 2 is populated or explicitly empty. Do not fabricate
+a trace for unavailable source or treat reading test names as test assessment.
+Finish accessible material omissions before returning; disclose an actual access,
+evidence, usage or decision boundary and its uninspected scope when blocked.
 
 ## Cost control
 
