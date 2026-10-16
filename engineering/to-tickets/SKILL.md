@@ -66,15 +66,20 @@ Treat the key as literal data in filesystem and shell operations.
 Use this layout:
 
 ```text
-<repository-root>/.sdlc/work/<reference>/tickets/
-  01-<short-kebab-case-title>.md
-  02-<short-kebab-case-title>.md
+<repository-root>/.sdlc/work/<reference>/
+  plan.json
+  tickets/
+    01-<short-kebab-case-title>.md
+    02-<short-kebab-case-title>.md
 ```
 
 Number tickets in dependency order, with at least two digits. A ticket may name
 only a lower-numbered ticket as a blocker. This skill owns the new ticket files
-only. An existing specification or decision record in the work folder is
-expected; check the `tickets/` subdirectory for collisions. Create the set if
+and a new `plan.json` for that set. Never replace or reconcile an existing plan:
+if `plan.json` exists, report the collision before creating any tickets and ask
+for a new work reference or explicit direction. An existing specification or
+decision record in the work folder is expected; check the `tickets/`
+subdirectory for collisions. Create the set if
 that subdirectory is absent or empty. If it contains anything, report the
 collision and ask for a new work reference or explicit direction; do not merge,
 replace, overwrite, or partially reuse the existing set. Leave it untouched
@@ -108,8 +113,9 @@ before selecting profiles or declaring delegation unavailable.
   concurrency, compatibility, or cross-service risk, including whether risk
   sequencing creates a necessary blocker.
 - Use `write_low` as the sole local writer when delegation is warranted.
-  Its scope is the new files beneath `.sdlc/work/<reference>/tickets/`; it must
-  not rewrite the agreed decomposition or overwrite existing files.
+  Its scope is the new files beneath `.sdlc/work/<reference>/tickets/` and the
+  absent `.sdlc/work/<reference>/plan.json`; it must not rewrite the agreed
+  decomposition or overwrite existing files.
 
 The coordinator owns reference validation, user questions, the decomposition,
 and collision decisions. Read-only handoffs return evidence and audit findings
@@ -138,6 +144,14 @@ repository rule. Do not widen the specification's scope during decomposition.
 If evidence shows that it prescribes unnecessary work, return a proposed
 reduction to `$engineering-specification` rather than copying it uncritically
 or silently discarding an approved requirement.
+
+For each capability whose producer or caller is deferred, establish the useful
+outcome it delivers when this ticket lands. Passing tests or a safe empty result
+alone does not make a useful slice. Keep the producer and dependent consumers
+in the same appropriate delivery slice unless the approved design justifies a
+separate preparation step with a current purpose, cost and delivery boundary.
+If that changes approved scope, return the supported recommendation to
+`$engineering-specification`; do not silently rewrite the requirement.
 
 Also audit the state of the system after each ticket lands. The ticket that
 introduces behaviour owns the relevant guard rails, boundary and failure
@@ -245,10 +259,12 @@ dependencies and integration boundaries permit it.
 
 ## Create tickets
 
-Validate the selected work reference and inspect only its `tickets/` target for
-collisions. If absent or empty, write the ticket set immediately after the
-local-exclusion check. A missing `.sdlc/work/` or work folder may be created as
-part of this write. Do not show a preview as a substitute for writing, and do
+Validate the selected work reference and check its `tickets/` target and
+`plan.json` for collisions before writing either. If the ticket directory is
+absent or empty and the plan is absent, write both after the local-exclusion
+check. Apply the same containment, tracking and no-overwrite checks to the plan.
+A missing `.sdlc/work/` or work folder may be created as part of this write.
+Do not show a preview as a substitute for writing, and do
 not load other files merely because the work folder already exists.
 
 Write one file per ticket with the required metadata and a compact body:
@@ -280,11 +296,31 @@ when the slice needs them. Keep acceptance criteria explicit, but link to
 shared definitions instead of repeating the specification's explanation.
 
 For a blocked ticket, list every blocker as a relative Markdown link, such as
-`[01 — Add read path](01-add-read-path.md)`, under `**Blocked by:**`. The
+`[01 — Add source](01-add-source.md)`, under `**Blocked by:**`. The
 `ready-for-agent` status means the ticket content is prepared; the blocker graph
 still decides whether it can start. Report the created paths and the ready
 frontier: tickets with no open blockers. Do not implement tickets, create
 branches, or make external changes.
+
+Write `plan.json` with version 1 and one entry for every new ticket, keyed by
+its exact filename. Each `depends_on` array must contain exactly the filenames
+linked under that ticket's `**Blocked by:**`, including `[]` for roots. For
+example:
+
+```json
+{
+  "version": 1,
+  "tickets": {
+    "01-add-source.md": { "depends_on": [] },
+    "02-use-source.md": { "depends_on": ["01-add-source.md"] }
+  }
+}
+```
+
+Derive dependencies only from the explicit blocker field, never from source,
+context or deferred-boundary links. Do not add scheduling state or infer that a
+planned dependency is complete. If either write fails, report the partial
+artifacts and do not hand off the set as ready.
 
 ## Review the saved tickets
 
@@ -303,7 +339,8 @@ Review the set for both missing information and simplification:
   gaps requiring a new decision or approved scope change to specification;
   do not invent a requirement or broaden a ticket to conceal uncertainty.
 
-Revise only this invocation's newly created ticket files and repeat the
+Revise only this invocation's newly created ticket files and plan, keeping
+blocker links and `depends_on` arrays identical, and repeat the
 review after substantive changes. Do not hand off the set as ready until no
 unnecessary scope or material information gap remains. Keep the review in
 the conversation; do not create another report or checklist file.
@@ -311,7 +348,9 @@ the conversation; do not create another report or checklist file.
 Resolve every specification and blocker link from the containing file's
 directory. Confirm the specification exists inside the invoking repository
 and blockers resolve to the intended lower-numbered tickets. Broken links
-prevent readiness.
+prevent readiness. Parse the saved plan and verify exact ticket coverage,
+blocker agreement, lower-numbered targets and an acyclic graph before reporting
+the ready frontier. Report the plan path alongside the created ticket paths.
 
 ## Handoff to a worker checkout
 

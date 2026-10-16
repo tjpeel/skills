@@ -268,6 +268,14 @@ cause before effects occur. Make interacting limits explicit when they could
 defeat an outcome; distinguish verified constraints from estimates. Do not
 import a reference implementation's policy without a settled reason to adopt it.
 
+For a capability whose producer or caller will arrive later, establish the
+independently useful outcome it serves in the current delivery stage. A safe
+empty result or a verifiable implementation is not sufficient by itself. Keep
+producers and dependent consumers in the same appropriate slice unless a
+separate preparation step has a justified current purpose, cost and delivery
+boundary. Reconcile any resulting change with approved intent rather than
+silently adding or dropping requirements.
+
 When work will land in stages, specify the acceptable intermediate behaviour
 as well as the final outcome. Explain how each affected actor or input is
 handled while a capability is deferred, any resulting effects and recovery,

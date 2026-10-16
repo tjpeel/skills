@@ -95,6 +95,16 @@ slice; the specification supplies contract and shared invariants. Check deferred
 behaviour against the actual intermediate runtime outcome, without demanding
 features explicitly assigned to later tickets.
 
+During intent reconciliation, trace each new capability to the selected
+acceptance criteria or a necessary invariant, as well as its current caller and
+producer. Captured sibling context does not enlarge the selected delivery
+slice. If a producer is deferred, assess the independently useful outcome now
+or the agreed preparation purpose, cost and boundary. Flag spec-compliant but
+unnecessary work as a scope recommendation: keeping producer and dependent
+consumers in one appropriate slice may be preferable. Reconcile that
+recommendation with approved intent; it is not authority to remove contracted
+behaviour or demand later features in this PR.
+
 These local artifacts are uncommitted process inputs, not ongoing
 documentation. They supplement the review; their absence, unselected path or
 broken links do not block it. State the requirements limitation and use the PR's

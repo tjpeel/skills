@@ -134,7 +134,17 @@ Use the ticket to select the behaviour due in this invocation. The full
 specification constrains its contracts and shared invariants; it does not
 authorise implementing every future feature. Read a sibling ticket only to
 resolve a named dependency or deferred boundary. Confirm what incomplete paths
-do today and what later work changes before coding them.
+do today and what later work changes before coding them. Captured sibling
+context explains those boundaries; it does not add implementation scope.
+
+Trace each new capability to a selected acceptance criterion or necessary
+invariant, and establish its current caller and producer. If a required feature
+depends on a deferred producer, check whether it has an independently useful
+outcome now or an agreed preparation purpose, cost and boundary. Specification
+compliance alone does not justify unnecessary work. Surface a supported scope
+recommendation and reconcile it with the approved ticket or specification
+before changing that requirement; do not silently omit it or implement future
+producers to make it useful.
 
 Check the handoff before editing: can the available sources establish the
 relevant domain rules, valid inputs and preconditions, intended outcomes and
