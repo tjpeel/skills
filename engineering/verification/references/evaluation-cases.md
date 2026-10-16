@@ -29,7 +29,7 @@ cannot infer which variant produced them.
 
 In Codex, use `read_medium` for a bounded candidate that verifies existing
 artifacts, with no product edits. If a selected case includes authorised
-implementation, use `write_medium` as the sole writer for that candidate's
+implementation, use `write_low` as the sole writer for that candidate's
 exact fixture paths. Use a separate `read_medium` assessor for the bounded
 evidence audit. In Claude Code, use equivalently bounded configured
 subagents when available. Keep user decisions and external writes with the

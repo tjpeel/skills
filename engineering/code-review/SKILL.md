@@ -1,6 +1,6 @@
 ---
 name: engineering-code-review
-description: Review a local engineering change against its approved ticket or specification and repository standards, reporting only actionable correctness, regression, security, compatibility, concurrency, or test risks. Use after implementation or to review another local change; do not use to make the change or review external pull requests.
+description: Review a local engineering change against its approved ticket or specification and repository standards, reporting actionable technical risks and evidence-backed design or scope recommendations. Use after implementation or to review another local change; do not use to make the change or review external pull requests.
 ---
 
 # Engineering code review
@@ -60,6 +60,11 @@ combined diff is empty. If unrelated changes share the working tree, identify
 them and ask the user to narrow the review boundary rather than attributing
 them to the ticket.
 
+Review from the complete source tree at the recorded head, with the fixed
+point available, rather than from a diff alone. Include pending changes when
+those are part of the declared boundary. If full source is unavailable, name
+the missing paths and conclusions that cannot be established.
+
 ## Find requirements and standards sources
 
 When the independent coordinating root owns the review, defer reading planning
@@ -117,7 +122,10 @@ constraints and required output.
 Name one independent owner for the complete diff and both assessment axes.
 A fresh root, including one from another provider, can own the review directly
 when it has sufficient reasoning capability. If the coordinator implemented
-the change, use a fresh reviewer. Keep requirements and technical conclusions
+the change, use a fresh reviewer unless the controller explicitly reserves that
+independent stage for later and requests self-review now. In that mode, keep the
+same inspection checks, disclose self-review, and do not launch a duplicate
+whole-change reviewer or claim independence. Keep requirements and technical conclusions
 distinct within that review; they do not require separate complete reviews.
 
 - Use `read_high` or an equivalent high-effort owner for substantive review.
@@ -155,6 +163,21 @@ unlike reviews do not establish savings.
 
 ## Review the change
 
+Inspect every changed file, including tests, documentation and configuration.
+Read relevant test setup and assertions rather than relying on names or passing
+results. After repairs, review against the original fixed point, not only the
+last corrective commit.
+
+For new or changed fields, indexes, filters, endpoints, links, configuration,
+messages and behavioural claims, search the source tree for production sources,
+consumers and prerequisites. Keep a compact producer/consumer trace, grouping
+shared paths without hiding exceptions. Establish what a caller observes now:
+investigate unwritten or unread values, always-empty or constant results and
+unreachable paths. Tests alone do not establish a production producer. Existing
+data or external producers may justify a path; establish that context before
+claiming a connection exists or is missing. For deferred capabilities, identify
+current storage, migration, API and operational costs and their present purpose.
+
 First trace the actual behaviour from public entry points through effects,
 failure handling and recovery using code, tests and applicable configuration.
 Identify the actors, inputs, state changes, contracts and invariants affected
@@ -170,11 +193,33 @@ use available repository evidence or ask a targeted question while continuing
 the review of unaffected paths. Distinguish a verified technical defect from a
 requirements question; do not invent policy to resolve the latter.
 
+Challenge the assumptions that make the change useful and trustworthy. Look
+for behaviour that can appear successful while failing the user's intent, rules
+represented in several places that can drift, and complexity or scope without
+a demonstrated current purpose. Follow concrete user and failure paths rather
+than treating specification compliance or passing tests as sufficient evidence.
+Report the observable consequence and smallest justified improvement;
+distinguish defects from recommendations that require a scope decision. Do not
+silently remove contracted behaviour or treat a preference as a defect.
+
+Compare completion and reported outcomes on timeout, cancellation and failure
+paths: can completed work be discarded or partial effects reported as total
+failure, and what happens on retry? Respect an explicit deadline contract.
+Compare shared states, classifications, mappings and links across their producers
+and consumers. Report repeated rules or magic values when they create a concrete
+drift risk, especially a silent fallback. Compare related branches for inconsistent
+caller-visible recovery and diagnostic behaviour.
+
 Then check requirements. Compare each in-scope required behaviour, accepted
 decision, observable acceptance criterion, and applicable rollout or change
 constraint with the diff and its verification. Report missing, partial, or
 apparently incorrect behaviour; scope that the source did not ask for; and
 tests that do not actually observe the intended behaviour.
+
+Check factual claims in selected intent and changed documentation against code
+and verification evidence. Distinguish unsupported claims from externally
+unverified facts. Agreement between code and specification does not establish
+that a capability has a useful current path.
 
 Apply `$engineering-verification` when assessing the supplied evidence.
 Confirm that results describe the actual revision or working-tree content
@@ -242,6 +287,70 @@ Do not report style preferences, hypothetical redesigns, pre-existing defects
 outside the diff, or missing tests with no credible failure scenario. Do not
 mark a change safe merely because tests pass; verify that the tests exercise
 the claimed behaviour at the agreed seam.
+
+In controller-managed implementation self-review, keep inspection evidence and
+non-blocking design or scope recommendations in the summary. If the controller
+reserves structured review fields for its independent reviewer, leave
+`recommendations` empty and `review_coverage` null. Self-review does not change the
+implementation role; do not return independent-review statuses or claim approval.
+Report actual blockers through the implementation's supported status and fields.
+
+For each producer claim, identify the production write location or established
+external source. A declaration, projection, index or test fixture is not a
+producer. When a search finds no writer, record the production paths searched
+and close the question explicitly: a current source is established, a material
+prerequisite remains unresolved, or a design/scope recommendation explains the
+cost of shipping the dependent surface now. A deferred label or a hypothetical
+external producer is not evidence of current use. Do not infer that a missing
+in-repository writer proves all retained data is empty; state that boundary.
+
+## Evidence of completed inspection
+
+Retain a compact inspection record in the final report, not just a statement
+that the full diff was reviewed. Include:
+
+- producer/consumer rows with source and consumer file locations, current caller
+  outcome, and any unresolved prerequisite; state explicitly when a source was
+  not found and distinguish searched production code from test fixtures;
+- changed-file coverage, grouping related files when useful, with the behaviour
+  and test assertions inspected and any paths left unread or only skimmed;
+- relevant unchanged dependencies traced when a changed claim or recovery action
+  relies on them; being outside the diff does not establish their behaviour;
+- the disposition of earlier findings and recommendations supplied in the review
+  history: retained, resolved by an identified change, or withdrawn with evidence.
+
+This is evidence of inspection, not a request for command transcripts or a new
+repository document. If the caller requires JSON without dedicated fields, put
+this compact record in its summary; do not omit it to fit the output format.
+No findings is a valid result, but does not replace this record.
+
+Do not claim full inspection while material test assertions, prerequisites or
+supporting paths remain unexamined. If relevant content was only skimmed, finish
+that inspection or name the bounded unfinished work. With a controller supporting
+review_incomplete, return that status with partial coverage and named gaps so the
+same session can continue. Reserve limitations for genuine unavailable evidence;
+not running isolated controller checks again is not itself an inspection gap.
+
+## Completion and reporting
+
+Before returning, confirm the original fixed point and current reviewed content,
+the producer/consumer trace, every changed file including tests and docs, and
+both technical and requirements assessments. Finish accessible omissions; report
+an actual access or evidence boundary and its uninspected scope when blocked.
+Passing checks and familiarity with the implementation do not replace review.
+
+Keep two output tiers within the assessment axes below:
+
+- **Defects and verification risks:** use the finding fields below for actionable
+  correctness, regression, security, compatibility, concurrency and test risks.
+- **Design and scope recommendations:** give file and line, concrete user,
+  maintenance or drift cost, and the suggested change for premature capability,
+  duplicated rules, inconsistent behaviour or unrelated scope. These do not
+  authorise changing approved contracts. Exclude formatting and naming preferences.
+
+Make either tier explicitly empty when appropriate. With controller-supplied
+structured output, use its findings and recommendations fields rather than
+turning a scope recommendation into an automatic repair.
 
 ## Report and return repairs to implementation
 

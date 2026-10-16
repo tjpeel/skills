@@ -63,7 +63,7 @@ before selecting profiles or declaring delegation unavailable.
   strategy for unsupported claims and missing observable behaviour.
 - Use `read_high` only for credible material migration, data-loss, security,
   concurrency, compatibility, or cross-service risk.
-- Use `write_medium` as the sole local writer only when the user authorises
+- Use `write_low` as the sole local writer only when the user authorises
   creating or updating the specification file. It must not expand the agreed
   scope, turn unresolved questions into decisions, or replace an unselected
   artifact. An update is limited to the explicitly selected specification.
@@ -273,6 +273,12 @@ as well as the final outcome. Explain how each affected actor or input is
 handled while a capability is deferred, any resulting effects and recovery,
 and what makes the stage safe to use. An unresolved intermediate policy blocks
 approval even when the final design is settled.
+
+Challenge whether each proposed capability serves the current outcome, whether
+its prerequisites hold, and whether its apparent success reliably means what
+the user would expect. Prefer the smallest coherent design and identify
+assumptions that implementation and verification must establish. Flag changes
+to approved scope for a decision rather than silently dropping requirements.
 
 ## Produce and review the local specification
 

@@ -107,7 +107,7 @@ before selecting profiles or declaring delegation unavailable.
 - Use `read_high` only for credible migration, data-loss, security,
   concurrency, compatibility, or cross-service risk, including whether risk
   sequencing creates a necessary blocker.
-- Use `write_medium` as the sole local writer when delegation is warranted.
+- Use `write_low` as the sole local writer when delegation is warranted.
   Its scope is the new files beneath `.sdlc/work/<reference>/tickets/`; it must
   not rewrite the agreed decomposition or overwrite existing files.
 

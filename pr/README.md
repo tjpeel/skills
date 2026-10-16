@@ -37,10 +37,10 @@ Monitoring and repair use separate reasoning levels:
 | --- | --- | --- |
 | Sustained inventory, check polling and log collection | `read_low` | Low |
 | Non-trivial diagnosis or a repair evidence audit | `read_medium` | Medium |
-| Implementation and required local tests | `write_medium` | Medium |
+| Clear implementation and required local tests | `write_low` | Low |
 | Difficult diagnosis or material security/behaviour risk | `read_high` | High |
 
-The configured profile supplies the model. Skills report the actual model
+Grade difficult repairs separately using the [shared task grading](../shared/ownership-and-delegation.md). The configured profile supplies the model. Skills report the actual model
 and effort when available; they do not change the chat's selected settings.
 One observer is reused across waits and receives the new revision after each
 push. The coordinator retains signatures, commits and external writes.

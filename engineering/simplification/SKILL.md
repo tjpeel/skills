@@ -133,7 +133,7 @@ before selecting profiles or declaring delegation unavailable.
 
 - `read_low` maps specified callers, effects, dependencies and existing checks,
   returning source anchors and unresolved usage without proposing a rewrite.
-- `write_medium` is the sole local writer for explicitly owned source, test
+- `write_low` is the sole local writer for explicitly owned source, test
   and configuration paths. Give it the pinned contract, selected candidate,
   constraints and required checks; it must preserve others' edits.
 - `read_medium` audits the completed diff and raw verification evidence

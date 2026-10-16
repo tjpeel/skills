@@ -264,7 +264,7 @@ before selecting profiles or declaring delegation unavailable.
 - Use `read_high` only for credible migration, data-loss, security,
   concurrency, compatibility, or cross-service risk. It reports hazards,
   mitigations, and verification evidence; it does not make the change.
-- Use `write_medium` as the sole implementation writer when delegated. Give it
+- Use `write_low` as the sole implementation writer when delegated. Give it
   the ticket or approved slice as context, but authorise only the next planned
   increment, with its starting commit SHA, verifiable purpose, excluded work,
   test commands and local code and test ownership. It must stop after
@@ -480,8 +480,28 @@ documented equivalent once after the narrow checks are green. If the full
 suite cannot run, report the exact command, reason, and the narrower checks
 that did run; do not claim complete verification.
 
+In controller-managed implementation self-review, keep inspection evidence and
+non-blocking design or scope recommendations in the summary. If the controller
+reserves structured review fields for its independent reviewer, leave
+`recommendations` empty and `review_coverage` null. Self-review does not change the
+implementation role; do not return independent-review statuses or claim approval.
+Report actual blockers through the implementation's supported status and fields.
+
+When a controller reserves the independent review for a later stage, apply
+`$engineering-code-review` directly as the implementer's self-review instead of
+launching another whole-change reviewer. This changes reviewer ownership, not
+the inspection scope: trace production sources and consumers, inspect the complete
+diff including tests and docs, check current usefulness and failure outcomes, and
+separate defects from design or scope recommendations. Do not rely on the later
+reviewer to find gaps. Existing knowledge of the implementation is not independent
+evidence; disclose self-review and use the skill's technical and requirements
+checks without claiming a fresh assessment. Retain a concise trace and review
+conclusions in the conversation or controller handoff, not a new repository file.
+This applies to adopted work even when no new source change is needed.
+
 After the focused and full checks are green, invoke
-`$engineering-code-review` against the recorded fixed point. Supply the
+`$engineering-code-review` against the recorded fixed point, using the controller
+self-review mode above when applicable. Supply the
 ticket or specification, applicable standards sources, changed-file list, and
 verification evidence. Fix actionable review findings that remain within the
 approved scope, rerun affected verification, and repeat the review against the

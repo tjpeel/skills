@@ -143,5 +143,28 @@ cannot spawn. Claude Code can use an equivalently bounded configured subagent.
 The guide defines profile selection and the direct-work fallback. Installing
 these skills does not install profiles or change agent configuration.
 
+Install the agents catalogue separately for each client you use:
+
+```sh
+# From the agents repository
+./scripts/install-agents --runtime codex --prefix tjpeel
+./scripts/install-agents --runtime claude --prefix tjpeel
+```
+
+The model-bands catalogue installs Sonnet and Opus Claude profiles at every
+effort band, and Sol Codex profiles at every band. Reload the client after
+installing. Skills classify each bounded task and select model and effort
+independently through the bundled delegation guide. Sonnet high and Opus low
+are both available. A Sonnet lead can delegate to Opus, while an Opus lead can
+send routine work to Sonnet. The `model-policy` script is a source-maintenance
+and explicit-selection tool, not a runtime dependency of installed skills.
+
+For an existing agents installation, use `--refresh` with the same runtime,
+prefix and target; this adds missing definitions and refreshes unchanged owned
+copies while preserving conflicts. Refresh skills using the uninstall/install
+sequence above. In SDLC, build a runtime with both revised catalogues; host
+installation alone does not update the runtime image. Lead model/effort flags
+remain separate from delegate profile choices.
+
 For installer tests and catalogue changes, see
 [maintenance](maintenance.md#validate-a-change).

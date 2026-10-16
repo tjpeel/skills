@@ -110,7 +110,7 @@ Move a non-trivial failure to `read_medium` at medium reasoning for bounded
 diagnosis. Use `read_high` at high reasoning for a difficult root cause or
 material risk; neither analyst can write. For an authorised code repair, use
 the existing implementation owner when its effort and scope fit, or assign
-`write_medium` at medium reasoning the exact implementation and test paths as
+`write_low` at low reasoning the exact implementation and test paths as
 the sole local writer. It implements the supported fix, runs required checks
 and returns its diff and results without staging, committing or publishing.
 An independent `read_medium` audit can check a material repair when useful.

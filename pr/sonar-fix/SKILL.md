@@ -164,11 +164,12 @@ scope fit. For a sustained repair loop, route each phase explicitly:
   `read_high`, high reasoning, for a difficult root cause or material security,
   behaviour or concurrency risk. Both return evidence and a bounded repair
   recommendation without writes; a clear failure needs no separate analyst.
-- `write_medium`, medium reasoning, owns the assigned implementation and test
+- `write_low`, low reasoning, owns the assigned implementation and test
   paths as the sole local writer, implements the supported repair and runs
   the required validation. It returns its diff and check results; it cannot
-  stage, commit, push or change remote settings. Higher-risk repairs use the
-  high-reasoning diagnosis before this writer implements the agreed change.
+  stage, commit, push or change remote settings. Grade the writer
+  separately using the shared guide; difficult implementation can require a
+  higher band as well as high-reasoning diagnosis.
 
 The coordinator owns scope decisions, signatures, commits, pushes and the
 final outcome. It checks the publication boundary, then gives the reusable

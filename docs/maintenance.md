@@ -26,7 +26,7 @@ configured capability. Keep user decisions and external writes with the
 coordinator unless the skill explicitly allows a bounded local writer. A
 small direct workflow does not need an agent team.
 
-Maintain common profile discovery and ownership rules in
+Maintain common task grading, model policy, profile discovery and ownership rules in
 [shared/ownership-and-delegation.md](../shared/ownership-and-delegation.md).
 For a delegating skill at a two-level package path, link
 `references/ownership-and-delegation.md` to
