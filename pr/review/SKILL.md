@@ -221,6 +221,21 @@ review_incomplete, return that status with partial coverage and named gaps so th
 same session can continue. Reserve limitations for genuine unavailable evidence;
 not running isolated controller checks again is not itself an inspection gap.
 
+### File inspection accounting
+
+Where the caller provides `review_coverage.inspection`, account for each changed
+file and material supporting path. Record substantive inspection evidence, or mark
+it incomplete and name the remaining work. A method inventory, selected bodies,
+or passing checks cannot establish the quality of unexamined assertions, fixtures
+or helpers. Inspect enough setup, controls and shared helpers to assess the
+behaviour the tests claim to protect.
+
+Reconcile prose and structured coverage before returning. Every accessible path
+named as unread or only skimmed must be finished or retained as a named gap; it
+cannot coexist with a full-coverage claim. Do not move accessible unfinished work
+to external-verification limitations. Continue the same review owner and pinned
+checkout; no fresh whole-PR review or duplicate check run is needed to close it.
+
 ## Completion check
 
 Before finalising, check the pinned revisions, producer/consumer trace and both
