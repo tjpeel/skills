@@ -110,6 +110,12 @@ a new description rather than repurposing it.
 
 ## PR identity and description wording
 
+When generating or substantively rewriting a PR description, apply $pr-draft
+for evidence, review detail and Mermaid selection, including during SDLC runs.
+Publish the approved body with its explanations and diagrams intact; do not
+compress it into a capability list. For a narrow metadata edit, preserve
+unrelated content rather than regenerating the description.
+
 Every proposed or created PR title must begin with the exact confirmed ticket
 key or selected work reference, using `<reference>: <Concise description>`.
 For example, a tracker ticket uses `EX-123: Add read path`; work reference

@@ -309,65 +309,36 @@ evidence that the adaptation fits this service.
 
 ## Plan commit boundaries before coding
 
-The ticket is the useful vertical slice delivered by this invocation. A
-commit increment is a smaller coherent step towards that outcome, not a
-separate ticket or necessarily a complete vertical slice. It can introduce a
-bounded behaviour, preserve behaviour through necessary preparation, or
-establish an agreed partial capability. Each increment must land green with
-credible checks and acceptable intermediate behaviour. Use the
-specification's settled policy at incomplete boundaries; do not invent it to
-make a commit possible.
+One invocation delivers one ticket or approved slice through coherent commit
+increments. An increment may deliver behaviour, necessary preparation or an
+agreed partial capability; it need not be a complete feature. Each must have
+credible checks and acceptable intermediate behaviour using settled policy.
+Do not invent policy to make an increment possible.
 
-Before editing, state a short ordered commit plan in the conversation. Each
-planned increment has one verifiable purpose and a commit boundary: name the
-ticket outcome or prerequisite it advances, its regression check and
-relevant failure or recovery cases, and the work excluded until later
-increments. Keep the plan in the conversation; do not create a planning
-document. Use the ticket's checkpoints as input, but refine their commit
-boundaries from code before authorising the writer.
+Before editing, state an ordered plan in the conversation, not a new document.
+For each increment, name its outcome or prerequisite, regression check,
+material failure/recovery cases and work deferred. Refine ticket checkpoints
+against the code before authorising the writer.
 
-Audit each proposed increment for both cohesion and achievability. Split a
-bundle when it contains separable steps that can each be committed and
-checked with acceptable intermediate behaviour. Keep coupled changes
-together when splitting would break wiring, violate a contract or remove the
-credible test seam; state that reason. Include the regression coverage and
-guard rails needed for the step. Do not require a complete user feature per
-commit, separate every test case or function, or leave changed behaviour
-untested until a later commit. An atomic mechanical batch follows the same
-test: keep it bounded and explain why it cannot safely be split.
+Split independently committable steps; keep coupled code, tests and justified
+documentation together when separation would break wiring, contracts, the test
+seam or the accuracy of the intermediate state. State why an atomic batch must
+stay together. Do not split by function or test case, demand a complete feature
+per commit, defer regression coverage, or use file/line/commit counts as limits.
+Exclude independent behaviours, speculative cleanup and later tickets.
 
-For non-trivial work, have `read_medium` independently audit the proposed
-boundaries before coding. It returns `accept` or `revise` for each
-increment, checking both excessive scope and fragmentation that prevents a
-coherent commit. When recommending a split, name a credible smaller
-committable step and its verification; a shorter title or fewer files is not
-enough. Resolve those findings before authorising the writer. If equivalent
-delegation is unavailable, perform the same audit directly and disclose that
-it was not independent. A small, clearly indivisible change can be checked
-directly.
+For non-trivial work, use `read_medium` to audit boundaries before coding. It
+returns `accept` or `revise` per increment, checking excessive scope and harmful
+fragmentation. A proposed split must identify a smaller committable outcome and
+its verification. Resolve findings before authorising the writer. A small,
+indivisible change can be audited directly; if delegation is unavailable, audit
+directly and disclose that it was not independent.
 
-Keep only one increment active. If it grows beyond its authorised outcome,
-stop extending the diff and revise the boundary before adding behaviour.
-Reaudit affected boundaries when the plan changes materially. A large final
-commit followed by cleanup commits does not satisfy this contract.
-
-After the increment's focused verification and required pre-commit cycle,
-stop editing. The coordinator inspects the actual diff against the
-authorised outcome. Resolve scope violations and verify the final increment
-revision before committing. Commit only that coherent increment, then verify
-in Git that the commit exists on the ticket branch and includes the completed
-increment, with none of its changes left pending. Report the completed outcome
-and verification results in the conversation. Passing
-checks or a writer's completion message alone do not permit the next
-increment. If checks or the commit are blocked, keep the increment active
-and report the blocker; do not continue into later behaviour. Follow any
-explicit user instruction that changes the commit workflow.
-
-The coordinator can authorise the next increment autonomously within
-approved scope once this gate is satisfied. Apply the same stop, inspect,
-commit and verify sequence when the coordinator also writes the code. Git
-provides the commit history; include a SHA in a writer handoff or resumption
-context when it is needed to pin the starting state.
+Keep one increment active. Inspect the growing diff; if scope, cohesion or
+verifiability changes materially, stop extending it, revise affected boundaries
+and reaudit before adding behaviour. Complete the commit gate below before
+starting or authorising the next increment. A large final commit followed by
+cleanup commits does not meet this workflow.
 
 ## Build and verify one increment at a time
 
@@ -438,41 +409,34 @@ the constraint without repeating control flow or implying that the final
 capability exists. Keep it understandable without local planning files. Do not
 add speculative scaffolding for later work.
 
-## Commit logical, verified increments
+## Commit each increment before continuing
 
-Make each commit a coherent, committable step that moves the approved ticket
-forward, with its relevant verification. For changed behaviour, keep the
-regression test and the production change that satisfies it together; do not
-combine independent behaviours, speculative cleanup, or a later ticket's
-work. Keep related code, tests, and documentation justified by the
-documentation boundary together when splitting them would leave the
-repository in a misleading or incomplete state. This does not require
-documentation in every increment.
+Apply this gate whether the coordinator or a delegate writes the code, unless
+an explicit user instruction changes the commit workflow:
 
-Periodically inspect the pending diff as a reviewer would. If it exceeds the
-authorised purpose, bundles separable committable steps, or cannot be
-credibly verified as one increment, stop extending it. Resolve the boundary,
-verify the coherent step, and complete the commit gate before continuing.
-Use judgement rather than a file, line, or commit-count threshold.
+1. Stop editing after focused verification. Apply repository coding standards
+   and complete the repository's documented test cycle for this increment,
+   including unit tests, integration tests and every other required check. Resolve
+   failures. If a required check cannot run, report its command, reason and remaining risk; wait for direction
+   when repository policy requires a clean cycle.
+2. The coordinator inspects the actual diff against the authorised outcome,
+   resolves scope violations and verifies the final increment content. Keep its
+   production change and regression protection together. Documentation is needed
+   only under the documentation boundary above.
+3. Stage only this increment's implementation files and inspect staged paths.
+   Never stage `.sdlc/work/`, `.specifications/` or `.tickets/` inputs, including
+   through broad staging or force-add. After input setup, the writer must not
+   untrack existing files, edit ignore rules or maintain planning inputs; unrelated
+   process folders remain outside its read boundary.
+4. Commit, then verify in Git that the commit exists on the ticket branch and
+   contains the increment with none of its changes left pending. Report the
+   completed outcome and verification in the conversation. Include the starting
+   SHA in later handoffs or resumption context when needed.
 
-Before every commit, apply the repository's coding standards and complete its
-documented test cycle for that increment. This includes unit tests, integration
-tests, and every other required check, not only the narrow checks used while
-developing. Resolve failures before committing. If a documented check cannot
-run, do not commit it as fully verified: report the command, reason, and
-remaining risk to the user and wait for direction when the repository policy
-requires a clean cycle.
-
-Stage only the implementation files for that increment. Never stage process
-inputs from `.sdlc/work/`, `.specifications/`, or `.tickets/`, including with a
-force-add or broad staging command. Inspect the staged paths before committing.
-After the coordinator's input setup, the implementation writer must not
-untrack existing files, edit ignore rules, or maintain planning inputs. An
-unrelated local process folder is not permission to load its contents.
-
-Verify that the completed increment was committed before beginning or authorising
-a later step, using the completion gate above. Do not defer all
-commits until the ticket is fully implemented.
+Only then may the coordinator autonomously authorise the next in-scope increment.
+Passing checks or a writer's completion message alone are insufficient. A blocked
+check or commit keeps the increment active; report the blocker and do not begin
+later behaviour. Do not defer commits until the whole ticket is implemented.
 
 ## Verify, review, and hand off
 

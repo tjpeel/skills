@@ -1,103 +1,119 @@
 ---
 name: pr-draft
-description: Draft an evidence-based pull-request title and Markdown description from a repository's implementation, tests, and optionally a Jira ticket. Use when asked to prepare PR metadata, summarise what was identified and changed, or turn a ticket and local diff into a review-ready PR brief. This skill only drafts content; use github-pr-management for pushing, creating, or editing a GitHub PR.
+description: Draft an evidence-based pull-request title and Markdown description from implementation, tests and optional ticket context. Use for PR metadata or a review-ready change summary; publishing belongs to $pr-manage.
 ---
 
-# Draft PR Description
+# Draft a PR description
 
-## Platform compatibility
+Produce copy-ready metadata that lets a reviewer understand the problem,
+changed behaviour and verification without reconstructing the diff. This skill
+is read-only: do not push or create or edit a PR.
 
-This workflow is platform-agnostic. Use it in Codex, Claude Code, or another
-agent environment with repository and GitHub read access. Follow all applicable
-repository instructions: this normally includes `AGENTS.md` in Codex and
-`CLAUDE.md` in Claude Code. When a source skill is named with `$`, invoke it
-where supported; otherwise read that source skill's `SKILL.md` and apply its
-workflow directly.
+Follow applicable repository instructions, including `AGENTS.md` or `CLAUDE.md`.
+Invoke named source skills where supported; otherwise read their `SKILL.md`.
+Work directly for ordinary drafts. Before useful delegation, read
+[the ownership and delegation guide](references/ownership-and-delegation.md).
+A delegated reader may gather code and test evidence only; the coordinator
+owns the draft and handoff.
 
-## Delegation profiles
+## Gather evidence
 
-Delegate only when it materially helps.
+- Identify the selected ticket key or work reference. Use installed ticket-context
+  guidance when available and keep ticket access read-only. Use its problem,
+  acceptance criteria, dependencies and rollout constraints. If access fails,
+  disclose it and ask whether to continue repository-only; without a selected
+  reference, identify the draft as repository-only in the handoff.
+- Inspect the branch, merge base, commits and pending changes across code,
+  configuration, migrations, documentation and tests. For a stack, establish
+  the actual predecessor and PR base; separate inherited work, this slice,
+  deferred capabilities and local changes from published content.
+- Trace the changed path through callers and dependencies far enough to explain
+  its decisions, ordering, boundaries and material failure or recovery behaviour.
+  A ticket or commit summary alone is insufficient implementation evidence.
+- Bind verification claims to observed results for the reviewed content. After
+  signing or rebasing, check tested and published trees before reusing evidence.
+  Keep candidate hashes and reconciliation in the handoff.
 
-Read [the ownership and delegation guide](references/ownership-and-delegation.md)
-before selecting profiles or declaring delegation unavailable.
+## Write for the reviewer
 
-Create an accurate PR brief from repository evidence. Never create, edit, or push a PR.
+Use `<reference>: <concise outcome>` when a ticket key or selected work reference
+is known; otherwise use the outcome alone. Preserve the exact selected reference
+in title and body. Put `Ticket: <ticket-key>` or `Work reference: <reference>`
+before the first heading; retain both when both were supplied.
 
-## Gather context
-
-1. Read applicable `AGENTS.md` and `CLAUDE.md` files before inspecting the repository.
-2. Identify a ticket key from the request, branch name, commits, or supplied link. If a key is available and the `jira-ticket-context` skill is installed, read and follow that skill to retrieve the ticket. Treat Jira as read-only.
-   - Use the ticket's stated problem, acceptance criteria, dependencies, and rollout requirements.
-   - If Jira access fails, say so plainly. Do not invent ticket context; ask whether to continue with a repository-only draft.
-   - If no key is available, state that the draft is repository-only.
-3. Inspect the branch, merge base, commits, staged and unstaged changes. Establish the exact implementation scope from code, configuration, migrations, documentation, and tests; do not rely on the ticket alone.
-4. Inspect test changes and available test or build output. Bind any cited result to the reviewed changes. When signing or rebasing changes commit IDs, establish whether the tested and published trees match before reusing evidence. Keep candidate hashes and that reconciliation in the handoff; never claim a command passed without its result.
-5. For a selected stack, establish the actual predecessor and base before describing this PR's slice. Separate inherited work from new behaviour, local repairs from published content, and this slice from deferred capabilities. Use public behaviour and the supplied work reference in external wording; do not expose private process paths or local ticket sequence numbers as tracker identities.
-
-## Write the draft
-
-Return a concise, copy-ready title and Markdown description. Select content
-for the reviewer of the final change: conversation history, tool/access
-troubleshooting and task logistics belong in the handoff, not the description.
-Preserve limitations that affect the change or interpretation of verification.
-Describe the completed behaviour, using the repository's domain language. Avoid
-instructions such as "correct the design sentence" and reports about the agent,
-controller, orchestration, signing or review process.
-
-- Use `<TICKET>: <concise outcome>` as the title when a ticket key is known; otherwise use a concise outcome title.
-- Explain the problem using ticket facts and evidence from the repository. Clearly mark measurements, assumptions, or unknowns.
-- Describe implementation changes by purpose and outcome, not as a file-by-file diff.
-- Include schema, data, configuration, migration, deployment, compatibility and rollback implications only when material to this change.
-- Explain new or changed regression scenarios in Testing approach when they help explain the behaviour protected. Do not repeat routine CI commands, passing checks, test counts or review approvals; the PR's checks already show those results.
-- Use Verification for relevant evidence beyond routine CI: an observed before/after result, manual check, performance measurement or rollout-specific validation. State the outcome and any material limitation briefly. Keep a missing required check or unresolved verification gap explicit; never imply unrun checks passed.
-- Identify deliberately excluded scope, follow-up work, or unresolved risks.
-
-Follow a required repository PR template when present. Otherwise use every
-heading below exactly as written and in this order. Do not merge, rename or
-omit headings. Keep each section brief and avoid repeating information across
-sections. Use "Not applicable" only where a section has no relevant content.
-Put `Ticket: <ticket-key>` or `Work reference: <reference>` before the first
-heading when the selected reference is known. Preserve the exact reference in
-the title and body; a reference in introductory prose does not replace this field.
+Follow the repository's required PR template. Otherwise use these headings once,
+in this order, with non-empty content; use “Not applicable” only when appropriate:
 
 ```md
 ## What
-
 ## Why
-
 ## Implementation
-
 ## Testing approach
-
 ## Verification
-
 ## Data and rollout
-
 ## Scope and follow-up
 ```
 
-Before handing off the draft, check that all required headings appear once,
-in order, with non-empty content; the title and body carry the same selected
-reference; and verification claims have observed evidence. Repository templates
-take precedence over the default headings. Keep required verification gaps
-explicit and preserve the publication skill's test gate.
+Scale detail to the behaviour and review risk, not a sentence limit per section.
+For a substantial change, a list of capabilities is insufficient. Explain:
 
-## Explain the change visually
+- **What / Why:** The concrete trigger, previous outcome or limitation, and
+  resulting behaviour, grounded in ticket and repository evidence.
+- **Implementation:** How the changed path works and why the important choices
+  matter. Cover material decisions, ordering, identity or state, contracts and
+  failure/recovery handling. Use domain terms rather than a file inventory.
+- **Testing approach:** The important regression conditions and expected
+  outcomes, including the failures they protect against; “covers retries” alone
+  does not explain what happens after a partial failure.
+- **Verification:** Relevant evidence beyond routine CI, such as observed
+  before/after behaviour, manual checks, query plans or rollout validation.
+  State material limitations and missing required checks explicitly. Never
+  imply an unrun check passed. Omit routine CI command lists, counts and approvals.
+- **Data and rollout:** Material schema, configuration, migration, deployment,
+  compatibility and rollback implications, including ordering or prerequisites.
+- **Scope and follow-up:** Deliberately excluded behaviour, unresolved risks and
+  required follow-up without implying deferred capabilities already exist.
 
-Add a compact visual within the useful section when it explains the change more
-clearly than prose. Preserve the structure above; a diagram is optional, not a
-new template or a required section.
+Keep assumptions and unknowns explicit. Exclude conversation history, access
+troubleshooting, agent/controller logistics, private process paths and local
+sequence numbers presented as tracker keys. Use one physical line per prose
+paragraph in the output; retain Markdown structural line breaks.
 
-- Use a small table for precedence rules, state transitions or before/after values.
-- Use Mermaid for interactions, control flow or data flow. Show only the participants, decisions and boundaries needed to explain the changed behaviour.
-- Use pseudocode, a call tree or a short diff sketch when order or a changed decision is the point. Avoid reproducing a file inventory or the full code diff.
-- For a visible UI change, use relevant before/after screenshots when available and safe to share. Do not invent screenshots or create an HTML artifact that cannot be read in the PR.
+## Use Mermaid when it clarifies the change
 
-Place the visual beside the short explanation it supports. Use actual domain
-labels and distinguish previous behaviour from the implemented result. Remove
-prose that merely repeats the visual. A diagram explains behaviour; it does not
-establish that a check ran or that the result was observed.
+Actively assess the changed behaviour for a useful diagram before finalising.
+Include a compact fenced `mermaid` diagram when a changed interaction, control
+or data flow, state transition, retry/recovery path or ordering constraint is
+material to understanding the PR and can be represented accurately from evidence.
+This is the expected choice for those changes, including drafts produced during
+SDLC runs; do not omit it merely to keep the description short.
 
-## Handoff
+Use a flowchart for branches or state, or a sequence diagram for participants and
+ordering. Place it beside the explanation it supports, usually in Implementation,
+within the required template. Show the changed path, key decision or failure
+branch and relevant boundary, using actual domain labels. Identify before/after
+behaviour when needed; do not imply unchanged or deferred work is new.
 
-Present the proposed repository, branch, base branch when known, title, and description. For a push, draft PR creation, or PR metadata edit, hand off to `github-pr-management`; those external writes require an explicit user request.
+Omit Mermaid when it adds no understanding: a small isolated fix, mechanical
+rename, dependency bump or prose-only edit often needs none. Prefer a table for
+value or precedence comparisons, or available safe screenshots for a UI change.
+Never invent interactions to justify a diagram. If evidence is insufficient,
+keep that limitation explicit in the handoff. Do not add an empty diagram section
+or an omission explanation to the PR.
+
+Check the fence, syntax and consistency of every node and edge with the reviewed
+code. Render with available tooling when practical; do not claim a render check
+that did not run. Keep the prose needed to explain rationale and consequences;
+a diagram does not replace it or prove verification occurred.
+
+## Final check and handoff
+
+Check template structure, exact references, evidence-backed claims and material
+verification gaps. Could a reviewer trace the changed path and its important
+failure outcome from the description? If not, add the missing explanation.
+For diagram-suitable changes, confirm the diagram is present and accurate.
+
+Return the proposed repository, branch, known base, title and description.
+Keep drafting or access limitations in the handoff and preserve $pr-manage's
+required-test gate. Hand off authorised publication to $pr-manage; external
+writes still require the user's explicit request.
