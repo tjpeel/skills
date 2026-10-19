@@ -60,6 +60,7 @@ checks from the repository root:
 ```sh
 tests/test-install-skills
 tests/test-check-public-content
+tests/test-context-inventory
 git diff --check
 scripts/check-public-content
 ```
