@@ -1,0 +1,4 @@
+interface:
+  display_name: "Reconcile existing engineering work"
+  short_description: "Sanity-check and update an existing spec and ticket set"
+  default_prompt: "Use $engineering-work-reconcile to sanity-check and reconcile this explicitly selected existing work item, preserving approved intent and captured execution history."

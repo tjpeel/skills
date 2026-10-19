@@ -8,6 +8,7 @@
 | [`decision-discovery`](decision-discovery/SKILL.md) | Leads an evidence-informed conversation that resolves prospective engineering decisions for later specification. |
 | [`specification`](specification/SKILL.md) | Turns settled decisions into a reviewable implementation specification for later ticket decomposition. |
 | [`to-tickets`](to-tickets/SKILL.md) | Turns an approved specification into dependency-ordered local Markdown tickets. |
+| [`work-reconcile`](work-reconcile/SKILL.md) | Sanity-checks and updates an existing selected specification, ticket set and dependency plan without rewriting captured runs. |
 | [`implement`](implement/SKILL.md) | Implements one ready ticket in bounded, verified increments, scrutinises adapted reference code, and runs full checks before review. |
 | [`code-review`](code-review/SKILL.md) | Reviews actual runtime behaviour and the complete local diff, then checks the current delivery slice against approved intent. |
 | [`testing`](testing/SKILL.md) | Selects tests for concrete coverage gaps and rejects tautological, implementation-coupled, change-detector and other weak or redundant tests. |
@@ -28,6 +29,7 @@ straight to implementation.
 | An outcome with unresolved design choices | `$engineering-decision-discovery` | The proposed change, constraints and selected evidence. |
 | Settled decisions needing an implementation contract | `$engineering-specification` | The decision handoff or current conversation, and a work reference. |
 | An approved specification spanning several implementation sessions | `$engineering-to-tickets` | The exact saved specification path. |
+| Existing planning artifacts needing a scope and dependency sanity check | `$engineering-work-reconcile` | The work reference or exact specification and ticket paths. |
 | A ready ticket or small approved specification slice | `$engineering-implement` | The exact ticket path or explicitly bounded specification slice. |
 | An existing change needing review | `$engineering-code-review` | The fixed point for the diff and any selected ticket or specification. |
 | A test plan or suite needing a coverage assessment | `$engineering-testing` | Required behaviour, credible failures and the relevant existing checks. |
@@ -128,6 +130,20 @@ For the smaller route, approve the saved specification and invoke
 `$engineering-implement` with its exact path and the slice to deliver. A work
 reference identifies a folder; it does not select every input inside it.
 Select each later ticket explicitly once its blockers are complete.
+
+For an existing work item, reconcile its selected artifacts instead of running
+the new-set writer over its ticket directory:
+
+```text
+Use $engineering-work-reconcile on work reference EXAMPLE in this repository.
+Check its specification and existing ticket against current code, scope and
+prerequisites. Reconcile uncaptured planning artifacts and the dependency plan.
+Keep one ticket if it is already a useful bounded change.
+```
+
+The skill preserves approved intent, raises material scope decisions and leaves
+captured execution inputs unchanged. Its handoff names the ready frontier and
+next implementation command; it does not start work.
 
 When explicitly requesting a dependent series, supply the selected tickets
 and intended dependency order. The coordinator launches one implementation
