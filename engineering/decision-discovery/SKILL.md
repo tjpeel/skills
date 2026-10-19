@@ -1,6 +1,6 @@
 ---
 name: engineering-decision-discovery
-description: Lead an evidence-informed design conversation that resolves prospective engineering decisions and preserves a concise handoff for later specification. Use when a team needs to make and record consequential design choices; do not use to reconstruct past decisions or decompose approved work into tickets.
+description: Resolve consequential prospective design choices through an evidence-informed conversation and concise specification handoff. Use before specification; not historical decision recovery or decomposition of approved work into tickets.
 ---
 
 # Engineering decision discovery
@@ -17,11 +17,10 @@ configuration cannot convey, and signpost the relevant sources. Do not create
 one merely because a decision or term was discussed, a file is missing, or
 repository writes have been authorised.
 
-Select saved content for the record's purpose, not from everything discussed.
-Keep decision rationale, domain meaning and uncertainty that affect this
-change. Leave session chronology, access troubleshooting, personal availability
-and task logistics in the conversation. If a missing fact blocks a decision,
-record the question and its consequence without the discovery narrative.
+Save only decision rationale, domain meaning and uncertainty relevant to the
+record's purpose. Leave chronology, access troubleshooting, personal availability
+and task logistics in the conversation. Record a blocking question and its
+consequence without the discovery narrative.
 
 Prefer the simplest solution and minimum change that resolves the observed
 problem while preserving required behaviour. Start from existing mechanisms
@@ -38,12 +37,11 @@ as routine investigation cleanup.
 
 ## Platform compatibility
 
-This workflow is platform-agnostic. Use it in Codex, Claude Code, or another
-agent environment with equivalent repository and research access. Follow all
-applicable repository instructions: this normally includes `AGENTS.md` in
-Codex and `CLAUDE.md` in Claude Code. When this skill names another source
-skill with `$`, invoke it where supported; otherwise read that source skill's
-`SKILL.md` and apply its workflow directly.
+Use this workflow in Codex, Claude Code or another environment with equivalent
+repository and research access. Follow applicable repository instructions,
+including `AGENTS.md` or `CLAUDE.md`. Invoke source skills named with `$`
+where supported; otherwise read their `SKILL.md` and apply the workflow
+directly.
 
 ## Delegation profiles
 

@@ -5,16 +5,16 @@ description: Rank and process open Dependabot pull requests from a GitHub reposi
 
 # Dependabot PR Queue
 
-Use this skill when the user supplies a GitHub repository link and wants its open Dependabot pull requests processed. Rank the updates by value, then approve, merge, and monitor them one at a time. It is not for editing Dependabot branches, changing Dependabot configuration, or solving the underlying dependency problem in a new PR.
+When asked to process a supplied repository’s Dependabot PRs, rank by value, then
+approve, merge and monitor them sequentially. Do not edit Dependabot branches
+or configuration, or solve the dependency problem in a new PR.
 
 ## Platform compatibility
 
-This workflow is platform-agnostic. Use it in Codex, Claude Code, or another
-agent environment with the GitHub CLI and the authority to make the requested
-GitHub changes. Follow all applicable repository instructions: this normally
-includes `AGENTS.md` in Codex and `CLAUDE.md` in Claude Code. Use the current
-platform's approval mechanism for GitHub writes; the safety boundary below
-applies unchanged.
+Use this workflow in Codex, Claude Code or another environment with GitHub CLI
+access and authority for the requested changes. Follow applicable repository
+instructions, including `AGENTS.md` or `CLAUDE.md`, and platform approval
+mechanisms. The safety boundary below still applies.
 
 ## Safety boundary
 
@@ -45,11 +45,10 @@ GitHub state. Reuse one observer across bounded waits. It returns PR/commit
 identities, check/run identities and URLs, meaningful changes, terminal result
 or blocker; stop its assignment when that bounded question is answered.
 
-Use `read_medium` when a candidate's dependency impact needs nontrivial
-code/test interpretation, and `read_high` only for difficult questions or
-material security/risk analysis. Return evidence-backed impact and uncertainty;
-these assessments do not add approval conditions or permit diagnosis of a
-non-green PR.
+Use `read_medium` for nontrivial dependency-impact interpretation and
+`read_high` only for difficult questions or material security/risk analysis.
+Return impact evidence and uncertainty; neither adds approval conditions nor
+permits diagnosing non-green PRs.
 
 Keep all external writes with the coordinator. Re-read the selected PR's
 relevant state immediately before each permitted write, including its current

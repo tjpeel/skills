@@ -18,13 +18,15 @@ Read PR diffs through GitHub; do not check out, modify, or run commands on a Dep
 
 ## 2. Rank the queue
 
-Rank every open Dependabot PR by likely value, whether or not it is green. Use this order:
+Rank every open Dependabot PR by likely value, green or otherwise, in this order:
 
 1. Security updates that remediate exploitable vulnerabilities, sorted by severity and production reachability when evidence is available.
 2. Direct production dependencies with material reliability, compatibility, or support impact.
 3. Transitive or development-only updates, with unblocking changes ahead of routine refreshes.
 
-Within a tier, prefer clear release/advisory evidence, a smaller compatible version jump, and less downstream disruption. Call out uncertainty rather than inventing it.
+Within each tier, prefer clear release/advisory evidence, smaller compatible version
+jumps and less downstream disruption. State uncertainty rather than inventing
+evidence.
 
 ## 3. Process the queue sequentially
 
@@ -38,7 +40,10 @@ For the highest-ranked remaining PR, refresh only its current CI check rollup.
 
 After a merge, identify and monitor the workflow runs for the resulting default-branch commit. Give runs a short discovery window, then wait with bounded polling and report progress at least every minute. If any observed main-branch run fails, is cancelled, or does not appear, stop the queue and report the run URL and conclusion; do not investigate or repair it. If the runs succeed, refresh the open Dependabot list, re-rank it, and repeat from the top.
 
-Treat a recreate request as asynchronous. Do not wait for Dependabot to complete it or retry the affected PR during this run. Continue inspecting every other PR that was pending in the current queue: if its merge is rejected for the same clean-merge reason, add the same exact recreate comment. Once all pending PRs have been inspected, report the affected PRs as awaiting Dependabot and pause queue execution; a later explicit queue request starts a fresh run.
+Recreation is asynchronous: do not wait or retry that PR in this run. Inspect
+every other pending PR and post the same exact recreate comment for each
+clean-merge rejection. After inspecting all pending PRs, report those awaiting
+Dependabot and pause. A later explicit queue request starts a fresh run.
 
 ## 4. Report
 

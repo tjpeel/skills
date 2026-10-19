@@ -5,12 +5,11 @@ workflow, not a cherry-pick substitute.
 
 ## Capture and analysis
 
-Capture a stable source PR base and head revision before comparing code. Review
-the source diff and enough unchanged context around each changed area to answer
-what behavior changed and why. Account for repository instructions, review
-comments that changed the final implementation, and source tests. Treat a
-closed, draft, merged, or cross-repository PR like any other source only after
-recording the final head revision being used.
+Capture stable source base and head revisions. Review the diff and unchanged
+context to establish what changed and why, including repository instructions,
+review comments affecting the final implementation and tests. For closed,
+draft, merged or cross-repository PRs, record the final head used before
+treating them as sources.
 
 Inspect the destination independently. Find its analogous domain model,
 entrypoints, configuration, integrations, feature gates, error handling, and
@@ -22,9 +21,8 @@ Create a mapping report with at least these fields:
 | --- | --- | --- | --- | --- |
 | Source file, symbol, and source revision | Observable effect and constraints | Target file/symbol or subsystem | implement / adapt / not applicable, with reason | Test, check, or inspection that demonstrates the result |
 
-Keep an item for deleted source behavior as well. An `adapt` or `not
-applicable` decision must state why the destination is genuinely different; it
-may not be shorthand for an unimplemented item.
+Include deleted behavior. Explain each `adapt` or `not applicable` decision
+through a real destination difference; neither excuses an unimplemented item.
 
 Before implementation, use the report to inspect these common omissions when
 they appear in the source PR:
@@ -47,10 +45,10 @@ never copy source paths, imports, dependencies, configuration, or generated
 output just because they occur in the source PR. Keep compatibility promises of
 the destination unless the user explicitly changes them.
 
-Use one writer for all destination changes. The implementation handoff should
-identify changed files, mapping rows completed, existing coverage reused,
-tests added or adapted for distinct gaps, and assumptions made. Do not claim
-equivalence based solely on matching line count or passing unrelated tests.
+Keep one destination writer. Its handoff identifies changed files, completed
+mapping rows, reused coverage, tests added or adapted for distinct gaps, and
+assumptions. Matching line counts or unrelated passing tests do not establish
+equivalence.
 
 Run the narrowest relevant formatter, static analysis, unit/integration tests,
 and build checks documented by the destination. Expand coverage when the source

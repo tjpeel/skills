@@ -35,7 +35,7 @@ uses them.
 
 ## Content
 
-Keep the ADR concise. It must state:
+State concisely:
 
 - the context that created the decision;
 - the decision; and

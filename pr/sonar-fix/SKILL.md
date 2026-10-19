@@ -1,21 +1,20 @@
 ---
 name: pr-sonar-fix
-description: Repair a GitHub pull request's SonarQube or SonarCloud findings and quality-gate failures, test, create signed commits, push and monitor each new analysis until the PR is clean and green. Use for an authorised Sonar repair loop; inspection-only requests remain read-only.
+description: Repair authorised GitHub PR SonarQube or SonarCloud findings and quality gates; test, sign commits, push and monitor each analysis until clean and green. Inspection-only requests stay read-only.
 ---
 
 # Fix a PR's Sonar gate
 
-Diagnose the PR's completed Sonar analysis, repair the underlying defects,
-test, sign and publish each repair, then inspect the next build and analysis.
-Repeat when that analysis reports further in-scope issues. Finish only when
-the current published revision has a passing gate, no outstanding Sonar
-findings in the PR's new code, and passing required build checks.
+Diagnose the PR’s completed Sonar analysis, repair defects, test, sign and
+publish, then inspect the next build and analysis. Repeat for further in-scope
+issues. Finish only with a passing gate, no outstanding new-code Sonar
+findings and passing required build checks for the current published revision.
 
 ## Authority and limits
 
 Use this workflow in Codex, Claude Code or another environment with local Git,
-GitHub and Sonar access. Read applicable repository instructions and follow
-the platform's execution permissions. No tracker or catalogue setup is needed.
+GitHub and Sonar access. Follow applicable repository instructions and
+platform execution permissions. No tracker or catalogue setup is required.
 
 A request to fix, test, sign, commit, push and monitor authorises those actions
 throughout this repair loop; do not request approval again for each cycle.
@@ -25,13 +24,13 @@ continuing read-only diagnosis. This workflow does not authorise merging,
 force pushing, amending published commits, PR metadata edits, comments, or
 changes to remote Sonar policy or finding dispositions.
 
-Honour supplied limits. Otherwise use at most five repair pushes and a
-60-minute elapsed window, stating those defaults in the opening update.
-Inspect the build from the last permitted push before deciding the outcome,
-within the time window. Stop sooner for a concrete blocker or two attempted
-repairs of the same root cause without measurable progress. A remaining
-failure at a limit is unresolved; report the evidence and next action. Resume
-from the actual published revision when the user extends the run.
+Honour supplied limits; otherwise allow at most five repair pushes within 60
+elapsed minutes and state these defaults in the opening update. Inspect the
+last permitted push’s build before deciding the outcome, within that window.
+Stop earlier for a concrete blocker or two attempted repairs of one root
+cause without measurable progress. Report unresolved failures, evidence and
+next action at the limit. If extended, resume from the actual published
+revision.
 
 ## Establish the PR and signing
 
@@ -171,12 +170,11 @@ scope fit. For a sustained repair loop, route each phase explicitly:
   separately using the shared guide; difficult implementation can require a
   higher band as well as high-reasoning diagnosis.
 
-The coordinator owns scope decisions, signatures, commits, pushes and the
-final outcome. It checks the publication boundary, then gives the reusable
-low-reasoning observer the new head and analysis identities. Keep the writer
-for subsequent repairs; do not leave it polling while the build runs. Apply
-the shared guide's model reporting and honest fallback rules when a profile
-is unavailable; the chat's selected effort does not become low automatically.
+The coordinator owns scope decisions, signatures, commits, pushes and final
+outcome. After checking the publication boundary, return new head and analysis
+identities to the reusable low-reasoning observer; retain the writer for
+repairs, not polling. Follow the shared guide’s model reporting and fallback
+rules; this skill does not lower the chat’s selected effort.
 
 Return the PR link and current published SHA, repaired findings or conditions,
 tests run, signed commit IDs and signature evidence, and links to the final

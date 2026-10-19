@@ -7,28 +7,24 @@ description: Review a colleague's pull request with focused mapping and validati
 
 ## Platform compatibility
 
-This workflow is platform-agnostic. Use it in Codex, Claude Code, or another
-agent environment with repository and GitHub access. Follow all applicable
-repository instructions: this normally includes `AGENTS.md` in Codex and
-`CLAUDE.md` in Claude Code. Keep the review read-only in every platform; do not
-use a platform's PR-comment or approval control unless the user separately
-asks.
-When a source skill is named with `$`, invoke it where supported; otherwise
-read that source skill's `SKILL.md` and apply its guidance directly.
+Use this workflow in Codex, Claude Code or another environment with repository
+and GitHub access. Follow applicable repository instructions, including
+`AGENTS.md` or `CLAUDE.md`. Keep reviews read-only; PR comments and approvals
+require a separate user request. Invoke `$` source skills where supported;
+otherwise read and apply their `SKILL.md`.
 
 ## Delegation profiles
 
 Read [the ownership and delegation guide](references/ownership-and-delegation.md)
 before selecting profiles or declaring delegation unavailable.
 
-Use this workflow when asked to review a pull request, branch diff, or colleague's proposed change. It is a review-only workflow.
+Use this read-only workflow for a PR, branch diff or colleague’s proposed
+change.
 
-Name one independent owner for the complete diff, covering technical risks,
-selected intent and test quality. A fresh reviewer session, including one from
-another provider, can own the review directly when its reasoning capability
-is sufficient. If the coordinator implemented the change, use a fresh
-reviewer. Do not add a reviewer solely to duplicate an already independent
-owner.
+Assign one independent owner the complete diff, technical risks, selected
+intent and test quality. A capable fresh reviewer session, including another
+provider’s, can own this directly. Use a fresh reviewer if the coordinator
+implemented the change; do not duplicate an already independent owner.
 
 Use `read_high` or an equivalent high-effort reviewer for substantive code
 review. Treat changes touching more than about 20 files, or introducing
@@ -50,7 +46,8 @@ user questions and the final report.
 
 ## Inputs
 
-Establish the pull request or branch, base branch, stated intent or ticket, and any known test results. If the base is unknown, identify it before judging the diff.
+Establish the PR or branch, base, stated intent or ticket, and known test
+results. Resolve an unknown base before judging the diff.
 
 Pin the base and head commits and review their complete combined diff, including
 configuration, comments and tests. Do not review only the last corrective commit
@@ -219,10 +216,9 @@ that the full diff was reviewed. Include:
 - the disposition of earlier findings and recommendations supplied in the review
   history: retained, resolved by an identified change, or withdrawn with evidence.
 
-This is evidence of inspection, not a request for command transcripts or a new
-repository document. If the caller requires JSON without dedicated fields, put
-this compact record in its summary; do not omit it to fit the output format.
-No findings is a valid result, but does not replace this record.
+Retain this inspection record even with no findings. It does not require
+command transcripts or a repository document. If JSON lacks dedicated fields,
+put the record in its summary rather than omitting it.
 
 Do not claim full inspection while material test assertions, prerequisites or
 supporting paths remain unexamined. If relevant content was only skimmed, finish
@@ -240,20 +236,20 @@ or passing checks cannot establish the quality of unexamined assertions, fixture
 or helpers. Inspect enough setup, controls and shared helpers to assess the
 behaviour the tests claim to protect.
 
-Reconcile prose and structured coverage before returning. Every accessible path
-named as unread or only skimmed must be finished or retained as a named gap; it
-cannot coexist with a full-coverage claim. Do not move accessible unfinished work
-to external-verification limitations. Continue the same review owner and pinned
-checkout; no fresh whole-PR review or duplicate check run is needed to close it.
+Reconcile prose and structured coverage. Finish accessible unread or skimmed
+paths or retain them as named gaps; neither full coverage nor
+external-verification limitations can hide unfinished inspection. Continue
+with the same owner and pinned checkout; closing a gap needs no fresh whole-PR
+review or duplicate check run.
 
 ## Completion check
 
-Before finalising, check the pinned revisions, producer/consumer trace and both
-review phases. Confirm every changed file was inspected, including tests and
-documentation, and that Tier 2 is populated or explicitly empty. Do not fabricate
-a trace for unavailable source or treat reading test names as test assessment.
-Finish accessible material omissions before returning; disclose an actual access,
-evidence, usage or decision boundary and its uninspected scope when blocked.
+Before finalising, confirm pinned revisions, producer/consumer traces, both
+review phases, inspection of every changed file including tests and
+documentation, and Tier 2 findings or an explicit empty result. Never
+fabricate unavailable-source traces or count test names as assessment. Finish
+accessible material omissions; when blocked, disclose the actual access,
+evidence, usage or decision boundary and uninspected scope.
 
 ## Cost control
 

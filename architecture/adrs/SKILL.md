@@ -1,11 +1,11 @@
 ---
 name: architecture-adrs
-description: Recover retrospective architecture decision records from a codebase and its Git and pull-request history. Use when durable implementation choices need evidence-backed ADRs; do not use to invent future decisions or conduct an ordinary code review.
+description: Recover evidence-backed retrospective ADRs from code, Git and pull-request history. Use for durable implemented decisions, not prospective design or ordinary code review.
 ---
 
 # Retrospective ADRs
 
-Create a reflective but concise set of ADRs that explains decisions still material to operating or changing the system. Use two complementary lenses: accountable historical coverage and current-code materiality. The output is evidence-led: distinguish a documented rationale from an inference drawn from code or history.
+Explain decisions still material to operating or changing the system through concise ADRs. Combine historical accountability with current-code materiality, distinguishing documented rationale from inference.
 
 Code documents implemented functionality. Use this workflow for requested ADR
 recovery, not as a default implementation step. An ADR must add knowledge code
@@ -13,19 +13,17 @@ cannot convey: rationale, rejected alternatives, external constraints or
 consequential trade-offs. Signpost the relevant code and tests instead of
 retelling their functionality. A credible investigation may produce no ADRs.
 
-Write each ADR for a future engineer assessing that decision. Keep material
-evidence and limits on confidence; omit the recovery session's chronology,
-tool troubleshooting and unrelated conversation. When unavailable evidence
-limits a claim, qualify that claim rather than copying the access history.
+Write for a future engineer assessing the decision. Retain material evidence
+and confidence limits; omit session chronology, tool troubleshooting and
+unrelated conversation. Express unavailable evidence as a limit on the claim.
 
 ## Platform compatibility
 
-This workflow is platform-agnostic. Use it in Codex, Claude Code, or another
-agent environment with equivalent repository and Git-history access. Follow
-all applicable repository instructions: this normally includes `AGENTS.md` in
-Codex and `CLAUDE.md` in Claude Code. When a source skill is named with `$`,
-invoke it where supported; otherwise read that source skill's `SKILL.md` and
-apply its workflow directly.
+Use this workflow in Codex, Claude Code or another environment with equivalent
+repository and Git-history access. Follow applicable repository instructions,
+including `AGENTS.md` or `CLAUDE.md`. Invoke source skills named with `$`
+where supported; otherwise read their `SKILL.md` and apply the workflow
+directly.
 
 ## Delegation profiles
 

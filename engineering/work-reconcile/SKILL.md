@@ -1,6 +1,6 @@
 ---
 name: engineering-work-reconcile
-description: Sanity-check and update an explicitly selected existing local engineering work item, including its specification, ticket scope and scheduling plan. Use to reconcile older or inconsistent planning artifacts; not to implement work, create an unrelated ticket set or rewrite saved execution history.
+description: Assess or update an explicitly selected existing local specification, ticket scope and scheduling plan. Use for older or inconsistent planning artifacts; not implementation, unrelated ticket creation or rewriting execution history.
 ---
 
 # Reconcile existing engineering work
@@ -10,8 +10,8 @@ intent, the current code baseline and a usable dependency plan. A conversion
 request authorises changes to the explicitly selected planning artifacts, not
 new product decisions or implementation. An assessment-only request stays
 read-only; a request merely to sanity-check does not authorise rewriting.
-Preserve useful content and keep one ticket when the work is already a bounded,
-independently useful change. Changing the format is not a reason to split it.
+Preserve useful content. Keep a bounded, independently useful change as one
+ticket; a format change does not justify splitting it.
 
 This skill updates existing artifacts. Use $engineering-to-tickets to create a
 new set from an approved specification, and $engineering-implement to build a

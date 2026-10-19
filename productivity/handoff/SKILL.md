@@ -1,6 +1,6 @@
 ---
 name: productivity-handoff
-description: Compact the current conversation into a redacted handoff document for a fresh agent to continue. Use when work needs to move to another session; do not use for an ordinary status update.
+description: Compact the current conversation into a redacted handoff document for a fresh agent. Use to continue work in another session, not for ordinary status updates.
 ---
 
 # Handoff
@@ -18,11 +18,10 @@ workspace files. Report the path that was actually written.
 
 ## Platform compatibility
 
-This workflow is platform-agnostic. Use it in Codex, Claude Code, or another
-agent environment with equivalent filesystem access. Follow all applicable
-repository instructions: this normally includes `AGENTS.md` in Codex and
-`CLAUDE.md` in Claude Code. If the platform cannot write a file, return the
-handoff as Markdown and state that it was not saved.
+Use this workflow in Codex, Claude Code or another environment with equivalent
+filesystem access. Follow applicable repository instructions, including
+`AGENTS.md` or `CLAUDE.md`. If files cannot be written, return Markdown and
+state that the handoff was not saved.
 
 Capture the selected continuation objective and only the completed work,
 decisions, constraints, remaining work and next actions needed to resume it.

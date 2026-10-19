@@ -1,12 +1,11 @@
 ---
 name: engineering-code-review
-description: Review a local engineering change against its approved ticket or specification and repository standards, reporting actionable technical risks and evidence-backed design or scope recommendations. Use after implementation or to review another local change; do not use to make the change or review external pull requests.
+description: Review a local change against approved intent and repository standards for actionable technical risks and design or scope recommendations. Use after implementation or for another local change; no implementation or external PR review.
 ---
 
 # Engineering code review
 
-Review a local diff independently of its implementation. Check two distinct
-questions without allowing one to hide the other:
+Review a local diff independently of its implementation on two axes:
 
 - **Requirements:** does the change deliver the approved ticket or
   specification without unsupported scope?
@@ -14,29 +13,25 @@ questions without allowing one to hide the other:
   conventions and avoid actionable correctness, regression, security,
   compatibility, concurrency, or test risks?
 
-Use this after `$engineering-implement` has completed focused verification, or
-whenever the user needs an evidence-based review of a local change. It is a
-review-only skill: it does not edit code, commit, push, publish comments, or
-approve a pull request. Use `$pr-review` for a colleague's pull request.
+Use after `$engineering-implement` completes focused verification, or for
+another local change. This skill does not edit, commit, push, publish comments
+or approve pull requests. Use `$pr-review` for a colleague’s pull request.
 
-Code documents implemented functionality. Do not request additional docs by
-default. Specifications and local tickets are uncommitted process inputs, not
-ongoing documentation; do not require them to be committed, refreshed, or
-maintained after delivery. Missing ADRs, context files or functionality guides
-alone are not defects. Request a new
-document only for an explicit requirement or material knowledge gap that code
-cannot convey. Report misleading claims or broken signposts in relevant docs
-when they could cause a concrete error in a future change or operation. Prefer
-removing duplicated explanations or linking to code over extending them.
+Code documents implemented functionality. Specifications and local tickets
+are uncommitted process inputs; do not require them to be committed, refreshed or
+maintained after delivery. Missing ADRs, context files or guides alone are
+not defects. Request docs only for an explicit requirement or material
+knowledge gap code cannot convey. Report misleading claims or broken
+signposts in relevant docs when they could cause a concrete future error.
+Prefer removing duplicate explanations or linking to code over extending them.
 
 ## Platform compatibility
 
-This workflow is platform-agnostic. Use it in Codex, Claude Code, or another
-agent environment with equivalent repository and command access. Follow all
-applicable repository instructions: this normally includes `AGENTS.md` in
-Codex and `CLAUDE.md` in Claude Code. When this skill names another source
-skill with `$`, invoke it where supported; otherwise read that source skill's
-`SKILL.md` and apply its workflow directly.
+Use this workflow in Codex, Claude Code, or another environment with
+equivalent repository and command access. Follow applicable repository
+instructions, including `AGENTS.md` in Codex and `CLAUDE.md` in Claude Code.
+Invoke `$` source-skill references where supported; otherwise read the
+referenced `SKILL.md` and apply it directly.
 
 ## Pin the review boundary
 
@@ -169,14 +164,19 @@ results. After repairs, review against the original fixed point, not only the
 last corrective commit.
 
 For new or changed fields, indexes, filters, endpoints, links, configuration,
-messages and behavioural claims, search the source tree for production sources,
-consumers and prerequisites. Keep a compact producer/consumer trace, grouping
-shared paths without hiding exceptions. Establish what a caller observes now:
-investigate unwritten or unread values, always-empty or constant results and
-unreachable paths. Tests alone do not establish a production producer. Existing
-data or external producers may justify a path; establish that context before
-claiming a connection exists or is missing. For deferred capabilities, identify
-current storage, migration, API and operational costs and their present purpose.
+messages and behavioural claims, trace production sources, consumers and
+prerequisites. Group shared paths without hiding exceptions. Establish current
+caller outcomes, investigating unwritten or unread values, empty or constant
+results and unreachable paths. A producer claim needs a production write
+location or established external source; declarations, projections, indexes
+and fixtures are insufficient. Existing data or external producers may justify
+a path, but a deferred label or hypothetical source does not establish use.
+If no writer is found, record the production paths searched and close the
+question: establish a current source, report a material unresolved prerequisite,
+or recommend a scope decision with the cost of shipping the dependent surface.
+Absence of an in-repository writer does not prove retained data is empty.
+For deferred capabilities, identify current storage, migration, API and
+operational costs and their present purpose.
 
 First trace the actual behaviour from public entry points through effects,
 failure handling and recovery using code, tests and applicable configuration.
@@ -187,11 +187,10 @@ what happens when an operation is incomplete, and how the next action follows.
 Investigate interacting limits or imported assumptions when they create a
 credible failure scenario. Compare comments and docs with executable behaviour.
 
-Do this without relying on the implementer's narrative or treating the planning
-artifacts as proof of correctness. If an expected domain outcome is uncertain,
-use available repository evidence or ask a targeted question while continuing
-the review of unaffected paths. Distinguish a verified technical defect from a
-requirements question; do not invent policy to resolve the latter.
+Do not treat the implementer’s narrative or planning artifacts as proof of
+correctness. Resolve uncertain domain outcomes from repository evidence or
+a targeted question while reviewing unaffected paths. Distinguish technical
+defects from requirements questions; do not invent policy.
 
 Challenge the assumptions that make the change useful and trustworthy. Look
 for behaviour that can appear successful while failing the user's intent, rules
@@ -295,15 +294,6 @@ reserves structured review fields for its independent reviewer, leave
 implementation role; do not return independent-review statuses or claim approval.
 Report actual blockers through the implementation's supported status and fields.
 
-For each producer claim, identify the production write location or established
-external source. A declaration, projection, index or test fixture is not a
-producer. When a search finds no writer, record the production paths searched
-and close the question explicitly: a current source is established, a material
-prerequisite remains unresolved, or a design/scope recommendation explains the
-cost of shipping the dependent surface now. A deferred label or a hypothetical
-external producer is not evidence of current use. Do not infer that a missing
-in-repository writer proves all retained data is empty; state that boundary.
-
 ## Evidence of completed inspection
 
 Retain a compact inspection record in the final report, not just a statement
@@ -319,10 +309,9 @@ that the full diff was reviewed. Include:
 - the disposition of earlier findings and recommendations supplied in the review
   history: retained, resolved by an identified change, or withdrawn with evidence.
 
-This is evidence of inspection, not a request for command transcripts or a new
-repository document. If the caller requires JSON without dedicated fields, put
-this compact record in its summary; do not omit it to fit the output format.
-No findings is a valid result, but does not replace this record.
+Keep this record in the final report, not command transcripts or a new
+repository document. For JSON without dedicated fields, use the summary.
+A no-findings result still requires the record.
 
 Do not claim full inspection while material test assertions, prerequisites or
 supporting paths remain unexamined. If relevant content was only skimmed, finish
@@ -333,11 +322,11 @@ not running isolated controller checks again is not itself an inspection gap.
 
 ## Completion and reporting
 
-Before returning, confirm the original fixed point and current reviewed content,
-the producer/consumer trace, every changed file including tests and docs, and
-both technical and requirements assessments. Finish accessible omissions; report
-an actual access or evidence boundary and its uninspected scope when blocked.
-Passing checks and familiarity with the implementation do not replace review.
+Before returning, confirm the original fixed point, reviewed content,
+producer/consumer trace, every changed file including tests and docs, and both
+assessment axes. Finish accessible omissions; report genuine access or
+evidence blockers and their uninspected scope. Passing checks and familiarity
+with the implementation do not replace review.
 
 Keep two output tiers within the assessment axes below:
 
@@ -355,9 +344,7 @@ turning a scope recommendation into an automatic repair.
 ## Report and return repairs to implementation
 
 Report findings under separate `## Requirements` and `## Standards and risk`
-headings. Keep those axes separate: a conventionally clean change can implement
-the wrong requirement, and a correct feature can still violate a repository
-constraint.
+headings; neither assessment substitutes for the other.
 
 For every finding, include:
 

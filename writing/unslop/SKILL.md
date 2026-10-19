@@ -1,19 +1,18 @@
 ---
 name: writing-unslop
-description: Edit prose to remove generic AI-sounding language while preserving the author's facts, voice, and intended format. Use when asked to "unslop," humanise, tighten, or make supplied writing sound less AI-generated; do not use to change a deliberately stylised voice.
+description: Remove generic AI-sounding prose while preserving facts, voice and format. Use to unslop, humanise or tighten writing; preserve deliberate stylisation.
 ---
 
 # Unslop writing
 
-Make the supplied writing sound like it was written with intent. Keep its
-meaning, evidence, audience, and requested format intact. Edit the text rather
-than adding a new argument, research, or unsupported detail.
+Edit the supplied writing with intent, preserving its meaning, evidence,
+audience and requested format. Do not add arguments, research or unsupported
+detail.
 
 ## Platform compatibility
 
-This workflow is platform-agnostic. Use it in Codex, Claude Code, or another
-agent environment. If a platform does not support direct skill invocation,
-read and apply this `SKILL.md` directly; the editing standard does not change.
+Use this workflow in Codex, Claude Code or another agent environment. If
+direct skill invocation is unsupported, read and apply this `SKILL.md`.
 
 ## First, establish the target
 

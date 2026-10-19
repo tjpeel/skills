@@ -1,23 +1,21 @@
 ---
 name: engineering-verification
-description: Verify engineering outputs against real behaviour and report evidence for the actual revision. Use before declaring completion or when auditing verification; does not implement changes or replace test selection.
+description: Verify actual behaviour and report evidence for the checked revision. Use before completion or to audit verification; no implementation; does not replace test selection.
 ---
 
 # Engineering verification
 
-Establish whether the selected change delivers its required outcomes. Check
-the actual artifact and retain enough evidence for another agent or the user
-to assess the result. A completion message or green check alone does not
-establish that the required behaviour was exercised.
+Check whether the actual artifact delivers the selected change's required
+outcomes. Retain evidence another agent or the user can assess; a completion
+message or green check alone does not establish that the behaviour ran.
 
 ## Platform compatibility
 
-This workflow is platform-agnostic. Use it in Codex, Claude Code, or another
-agent environment with equivalent repository and command access. Follow
-applicable repository instructions, including `AGENTS.md` or `CLAUDE.md`, and
-the current task's authorised scope. When this skill names another source
-skill with `$`, invoke it where supported; otherwise read its `SKILL.md` and
-apply the guidance directly.
+Use this workflow in Codex, Claude Code or another environment with equivalent
+repository and command access. Follow applicable repository instructions,
+including `AGENTS.md` or `CLAUDE.md`. Invoke source skills named with `$`
+where supported; otherwise read their `SKILL.md` and apply the workflow
+directly. Keep verification within the task's authorised scope.
 
 Verification permits running the agreed checks in their local test or scratch
 environment. Repairs, permanent tests or harnesses, commits and external

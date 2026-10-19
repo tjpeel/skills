@@ -1,20 +1,20 @@
 ---
 name: pr-draft
-description: Draft an evidence-based pull-request title and Markdown description from implementation, tests and optional ticket context. Use for PR metadata or a review-ready change summary; publishing belongs to $pr-manage.
+description: Draft an evidence-based PR title and Markdown description from implementation, tests and optional ticket context. Use for PR metadata or review-ready summaries; publishing belongs to $pr-manage.
 ---
 
 # Draft a PR description
 
-Produce copy-ready metadata that lets a reviewer understand the problem,
-changed behaviour and verification without reconstructing the diff. This skill
-is read-only: do not push or create or edit a PR.
+Produce copy-ready metadata explaining the problem, changed behaviour and
+verification without requiring the reviewer to reconstruct the diff. This
+skill is read-only: do not push, create or edit a PR.
 
-Follow applicable repository instructions, including `AGENTS.md` or `CLAUDE.md`.
-Invoke named source skills where supported; otherwise read their `SKILL.md`.
-Work directly for ordinary drafts. Before useful delegation, read
-[the ownership and delegation guide](references/ownership-and-delegation.md).
-A delegated reader may gather code and test evidence only; the coordinator
-owns the draft and handoff.
+Follow applicable repository instructions, including `AGENTS.md` or
+`CLAUDE.md`. Invoke named source skills where supported; otherwise read their
+`SKILL.md`. Handle ordinary drafts directly. Before delegating, read [the
+ownership and delegation guide](references/ownership-and-delegation.md).
+Readers gather only code and test evidence; the coordinator owns the draft and
+handoff.
 
 ## Gather evidence
 
@@ -54,8 +54,8 @@ in this order, with non-empty content; use “Not applicable” only when approp
 ## Scope and follow-up
 ```
 
-Scale detail to the behaviour and review risk, not a sentence limit per section.
-For a substantial change, a list of capabilities is insufficient. Explain:
+Scale detail to behaviour and review risk, without section sentence limits.
+Substantial changes need more than a capability list. Explain:
 
 - **What / Why:** The concrete trigger, previous outcome or limitation, and
   resulting behaviour, grounded in ticket and repository evidence.
@@ -108,10 +108,10 @@ a diagram does not replace it or prove verification occurred.
 
 ## Final check and handoff
 
-Check template structure, exact references, evidence-backed claims and material
-verification gaps. Could a reviewer trace the changed path and its important
-failure outcome from the description? If not, add the missing explanation.
-For diagram-suitable changes, confirm the diagram is present and accurate.
+Check the template, exact references, evidence-backed claims and material
+verification gaps. Add any explanation needed to trace the changed path and
+important failure outcome. Confirm diagram-suitable changes have an accurate
+diagram.
 
 Return the proposed repository, branch, known base, title and description.
 Keep drafting or access limitations in the handoff and preserve $pr-manage's

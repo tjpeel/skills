@@ -14,7 +14,7 @@ Start at architecture boundaries and search for code that chooses, translates, c
 - state-transition and concurrency guards;
 - schema-version, migration, retry, lease, and delivery-state logic.
 
-Search for these patterns at the boundary first, then follow callers and tests. For example, a method which selects a company name by a registration type received from another service may establish a business-facing integration policy, even if the method is short.
+Search by boundary, then follow callers and tests. For example, a method which selects a company name by a registration type received from another service may establish a business-facing integration policy, even if the method is short.
 
 ## Assess whether a seam merits a dossier
 

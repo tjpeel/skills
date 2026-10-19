@@ -1,51 +1,43 @@
 ---
 name: engineering-to-tickets
-description: Break an approved saved engineering specification into dependency-ordered local Markdown tickets. Use for multi-session implementation work; do not use to settle design decisions or implement the tickets.
+description: Break an approved saved engineering specification into dependency-ordered local Markdown tickets for multi-session implementation. Do not settle design decisions or implement tickets.
 ---
 
 # Engineering to tickets
 
-Turn an approved saved specification into a small set of agent-ready local
-tickets. Each ticket is a narrow, complete vertical slice that a fresh
-implementation session can finish and verify independently. If the input is a
-plan, conversation, draft, unapproved specification, or a specification without
-a local path, return it to `$engineering-specification` rather than creating
-tickets.
+Turn an approved saved specification into a small set of local tickets, each
+a narrow vertical slice a fresh session can finish and verify independently.
+Return plans, conversations, drafts, unapproved specifications or inputs
+without a local specification path to `$engineering-specification`.
 
-Local tickets are uncommitted process inputs for the selected work. They record
-intended changes and verification; do not maintain them as ongoing system
-documentation. Code documents implemented functionality. Do not add
-documentation tasks by default. Include one only when the approved specification
-requires it and it fills a material knowledge gap, provides a useful signpost
-or satisfies an explicit user or repository requirement. Do not ask an
-implementer to create a parallel explanation of feature behaviour.
+Local tickets are uncommitted process inputs for intended changes and
+verification, not ongoing system documentation. Code documents implemented
+functionality. Include documentation work only when the approved specification
+requires it to fill a material knowledge gap, provide a useful signpost or
+satisfy an explicit user or repository requirement. Do not request a parallel
+explanation of feature behaviour.
 
-Treat the approved specification as a source of requirements, not content to
-reproduce. Include only what this slice's implementer needs to build and
-verify it. Leave conversation history, access troubleshooting and task
-logistics out; carry a blocker or evidence limit only when it affects this
-ticket's readiness or verification.
+Use the approved specification as requirements, not text to reproduce. Carry
+only what the slice needs for implementation, readiness and verification;
+omit conversation history, troubleshooting and task logistics.
 
-Keep the eventual PR small and easy to review. For a small fix, default to one
-ticket and one coherent change. Decompose only for real session-size,
-compatibility or delivery boundaries; separate files, layers and checks do not
-by themselves require tickets or implementation phases.
+For a small fix, default to one ticket and one coherent, reviewable change.
+Split only at real session-size, compatibility or delivery boundaries, not
+merely by files, layers or checks.
 
-Reuse an explicitly selected supplementary checkout when suitable. If an
-authorised investigation needs a new clone, keep it in a locally ignored
-directory beneath the active workspace, record its path and checked revision,
-and preserve it for later inspection. Do not default repository clones to a
-system temporary directory or reset, overwrite or remove existing checkouts
-as routine investigation cleanup.
+Reuse a suitable explicitly selected supplementary checkout. Keep any
+new clone needed for authorised investigation in a locally ignored directory
+beneath the active workspace, record its path and checked revision, and
+preserve it for inspection. Do not default clones to system temporary
+directories or reset, overwrite or remove existing checkouts as cleanup.
 
 ## Platform compatibility
 
-This workflow is platform-agnostic. Use it in Codex, Claude Code, or another
-agent environment with equivalent repository and command access. Follow all
-applicable repository instructions: this normally includes `AGENTS.md` in
-Codex and `CLAUDE.md` in Claude Code. When this skill names another source
-skill with `$`, invoke it where supported; otherwise read that source skill's
-`SKILL.md` and apply its workflow directly.
+Use this workflow in Codex, Claude Code, or another environment with
+equivalent repository and command access. Follow applicable repository
+instructions, including `AGENTS.md` in Codex and `CLAUDE.md` in Claude Code.
+Invoke `$` source-skill references where supported; otherwise read the
+referenced `SKILL.md` and apply it directly.
 
 ## Local ticket contract
 
@@ -177,11 +169,11 @@ checks; reuse existing coverage or justified alternative verification when
 sufficient. A ticket's test cases must follow its contracts and credible
 failures, not speculative permutations or an invented coverage target.
 
-First check whether any prefactoring is necessary. Prefer the existing
-component and test seams; do not plan cleanup or new abstractions for a local
-fix unless the required behaviour cannot be delivered clearly without them.
-Fold essential preparation into the slice. Use a separate prerequisite only
-when it is independently verifiable and resolves a named implementation risk.
+Prefer existing components and test seams. Plan cleanup or abstractions only
+when necessary to deliver the behaviour clearly. Fold essential preparation
+into the slice; separate a prerequisite only when independently verifiable
+and needed to resolve a named implementation risk.
+
 Prefer tracer-bullet vertical slices: each ticket delivers
 a narrow, end-to-end behaviour across every layer that matters, is demoable or
 otherwise verifiable on its own, and fits in one fresh implementation session.
@@ -259,13 +251,10 @@ dependencies and integration boundaries permit it.
 
 ## Create tickets
 
-Validate the selected work reference and check its `tickets/` target and
-`plan.json` for collisions before writing either. If the ticket directory is
-absent or empty and the plan is absent, write both after the local-exclusion
-check. Apply the same containment, tracking and no-overwrite checks to the plan.
-A missing `.sdlc/work/` or work folder may be created as part of this write.
-Do not show a preview as a substitute for writing, and do
-not load other files merely because the work folder already exists.
+Before creating tickets or `plan.json`, apply the local ticket contract’s
+reference, containment, tracking, exclusion and collision checks to both.
+Create missing work directories as needed. Write the artifacts rather than
+a chat preview; an existing work folder does not authorise reading other files.
 
 Write one file per ticket with the required metadata and a compact body:
 
@@ -292,8 +281,8 @@ checks. Link to shared rules; include only slice-specific constraints.>
 ```
 
 Add decisions, implementation increments or deferred-behaviour sections only
-when the slice needs them. Keep acceptance criteria explicit, but link to
-shared definitions instead of repeating the specification's explanation.
+when needed. Keep acceptance criteria explicit and link shared definitions
+instead of repeating the specification.
 
 For a blocked ticket, list every blocker as a relative Markdown link, such as
 `[01 — Add source](01-add-source.md)`, under `**Blocked by:**`. The

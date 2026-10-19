@@ -1,15 +1,14 @@
 ---
 name: engineering-specification
-description: Turn an approved decision record or current conversation into a reviewable, evidence-informed implementation specification. Use after design discovery or when the decisions are already settled; do not use to interview for decisions or create implementation tickets.
+description: Turn approved decisions or settled conversation into a reviewable, evidence-informed implementation specification. Use when design is settled; not decision interviews or implementation-ticket creation.
 ---
 
 # Engineering specification
 
-Turn settled design intent into a specification that an engineer can implement
-and later decompose into tickets. Use this for work that spans more than one
-fresh implementation session. Synthesize the available conversation, decision
-record, and repository evidence. Do not restart design discovery or interview
-the user for information already established.
+Turn settled intent into a specification that engineers can implement and
+decompose into tickets when work spans multiple fresh sessions. Synthesize
+the conversation, decision record and repository evidence without restarting
+discovery or asking for established information.
 
 The local specification is an uncommitted process input. It records intended
 changes and acceptance criteria for this work, not ongoing documentation of
@@ -18,34 +17,29 @@ not generate additional context files, ADRs or functionality guides by default.
 Link to existing supporting records for rationale or constraints that code
 cannot convey, rather than copying their content into another explanation.
 
-Filter conversation context by the specification's purpose. Include a detail
-only if it changes the intended behaviour, scope, contract, constraint or
-verification. Session history, access troubleshooting, personal availability
-and task logistics stay in the conversation. When a missing fact matters,
-record the unresolved requirement or verification limit and its effect,
-without the session narrative.
+Include conversation details only when they change behaviour, scope, contracts,
+constraints or verification. Leave session history, access troubleshooting,
+availability and logistics in chat. Record material unresolved requirements
+or verification limits and their effects without the session narrative.
 
-Prefer the simplest solution and smallest coherent diff that meets the agreed
-outcome and preserves required behaviour. Plan for a PR whose problem, change
-and verification a reviewer can understand easily. Extra mechanisms, test
-layers and delivery stages need a concrete reason; completeness is not a
-reason to expand the change.
+Choose the simplest solution and smallest coherent diff that meets the agreed
+outcome and preserves required behaviour. Keep the eventual PR’s problem,
+change and verification clear; extra mechanisms, test layers and delivery
+stages need a concrete reason.
 
-Reuse an explicitly selected supplementary checkout when suitable. If an
-authorised investigation needs a new clone, keep it in a locally ignored
-directory beneath the active workspace, record its path and checked revision,
-and preserve it for later inspection. Do not default repository clones to a
-system temporary directory or reset, overwrite or remove existing checkouts
-as routine investigation cleanup.
+Reuse a suitable explicitly selected supplementary checkout. Keep any
+new clone needed for authorised investigation in a locally ignored directory
+beneath the active workspace, record its path and checked revision, and
+preserve it for inspection. Do not default clones to system temporary
+directories or reset, overwrite or remove existing checkouts as cleanup.
 
 ## Platform compatibility
 
-This workflow is platform-agnostic. Use it in Codex, Claude Code, or another
-agent environment with equivalent repository and command access. Follow all
-applicable repository instructions: this normally includes `AGENTS.md` in
-Codex and `CLAUDE.md` in Claude Code. When this skill names another source
-skill with `$`, invoke it where supported; otherwise read that source skill's
-`SKILL.md` and apply its workflow directly.
+Use this workflow in Codex, Claude Code, or another environment with
+equivalent repository and command access. Follow applicable repository
+instructions, including `AGENTS.md` in Codex and `CLAUDE.md` in Claude Code.
+Invoke `$` source-skill references where supported; otherwise read the
+referenced `SKILL.md` and apply it directly.
 
 ## Delegation profiles
 
@@ -92,11 +86,9 @@ constraints, and durable module or contract boundaries. Surface stale or
 conflicting source claims; their presence or status does not establish current
 intent.
 
-The specification is a snapshot of implementation intent. Existing context
-files may preserve domain meaning unavailable from code, while ADRs preserve
-durable architectural rationale. Link to applicable repository context and
-ADR documents, but do not copy them or add implementation file paths to the
-specification.
+Link applicable context for domain meaning and ADRs for durable rationale.
+Keep this snapshot of implementation intent free of copied context, ADR
+content and implementation file paths.
 
 Call out conflicting sources or an unmade decision. Ask only the targeted
 question needed to resolve that gap. Do not use questions to substitute for
@@ -205,10 +197,9 @@ structure, merging or omitting sections that add no useful information:
 ## Open questions and evidence gaps
 ```
 
-Add separate interface, data, lifecycle or rollout sections only when they
-contain material constraints. Do not fill empty headings, repeat the outcome
-under several names, or copy repository procedures into the specification;
-link to applicable guidance and record only task-specific implications.
+Add interface, data, lifecycle or rollout sections only for material
+constraints. Omit empty headings and repeated outcomes. Link repository
+procedures and record only their task-specific implications.
 
 Keep current behaviour factual and distinct from agreed future intent. State
 required behaviour and stable contracts, rather than implementation file paths,
@@ -290,10 +281,10 @@ to approved scope for a decision rather than silently dropping requirements.
 
 ## Produce and review the local specification
 
-Write the focused draft locally, including applicable test seams, constraints
-and material unresolved questions. After writing, read the saved specification
-in full with its selected linked sources as an implementation input for a
-fresh session. Review it for both missing information and simplification:
+Write the draft locally with applicable test seams, constraints and material
+questions. Read the saved file in full with its selected linked sources as
+a fresh session’s implementation input. Review for missing information and
+simplification:
 
 - Check that the starting behaviour, intended delta, contracts, acceptance
   criteria and verification are clear enough to implement without unstated
@@ -315,8 +306,8 @@ as missing behaviour; suggestions need the same evidence before becoming
 requirements. Keep the file as `draft` while a question affecting scope,
 behaviour, a contract or acceptance remains unresolved.
 
-After this review cycle, tell the user where the file was saved and ask for
-approval without reproducing the document in chat.
+After review, report the saved path and ask for approval without reproducing
+the document in chat.
 
 After explicit approval, change the saved file's status to `approved`. Hand its
 local path to

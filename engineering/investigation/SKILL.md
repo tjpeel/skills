@@ -1,6 +1,6 @@
 ---
 name: engineering-investigation
-description: Investigate an observed engineering failure, regression or runtime discrepancy using selected code, configuration and measurements. Use to establish what happened and why before choosing a repair; not for surveying refactors or settling product decisions.
+description: Investigate observed failures, regressions or runtime discrepancies using selected code, configuration and measurements. Establish what happened and why before choosing repairs; not refactoring surveys or product decisions.
 ---
 
 # Engineering investigation
@@ -13,11 +13,11 @@ a difference between environments is a starting point, not a cause.
 ## Platform compatibility
 
 Use this workflow in Codex, Claude Code or another environment with equivalent
-repository, command and evidence access. Follow applicable `AGENTS.md` or
-`CLAUDE.md` guidance. Invoke source skills named with `$` where supported;
-otherwise read their `SKILL.md` and apply the relevant workflow directly.
-Use available read-only service tools or connectors without requiring another
-catalogue's setup, tracker or naming scheme.
+repository, command and evidence access. Follow applicable repository
+instructions, including `AGENTS.md` or `CLAUDE.md`. Invoke source skills named
+with `$` where supported; otherwise read their `SKILL.md` and apply the
+workflow directly. Use available read-only service tools or connectors without
+requiring another catalogue's setup, tracker or naming scheme.
 
 ## Establish the observed boundary
 
@@ -42,8 +42,8 @@ an apparently local error is handled elsewhere in that path.
 
 ## Distinguish causes with checks
 
-Keep a short set of plausible explanations, with evidence supporting or
-contradicting each and the next check that would distinguish them. Prefer
+Track plausible explanations, supporting and contradicting evidence, and the
+next check that would distinguish them. Prefer
 existing logs, harnesses and observable boundaries over adding instrumentation
 or inventing a new test suite. Apply `$engineering-verification` to executed
 checks and `$engineering-testing` when assessing whether a regression test

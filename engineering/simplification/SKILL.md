@@ -1,6 +1,6 @@
 ---
 name: engineering-simplification
-description: Simplify a selected area of existing code by removing unnecessary code, indirection and state while preserving observable behaviour. Use for scoped simplification, dead-code removal or reducing complexity; not for a broad architecture survey, feature retirement or review-only work.
+description: Remove unnecessary code, indirection and state from a selected area while preserving observable behaviour. Use for scoped simplification or dead-code removal; not broad surveys, feature retirement or review-only work.
 ---
 
 # Engineering simplification
@@ -11,18 +11,19 @@ duplicated decisions, compatibility paths or mutable relationships that no
 longer earn their cost. A supported finding that no worthwhile change exists
 is a valid result.
 
-Judge the result by the concepts, indirections and state a reader must track.
-Fewer lines or files can support that judgement, but do not establish it.
+Judge the result by the concepts, indirections and state a reader must track,
+not line or file count alone.
 Moving complexity into callers, hiding it behind clever syntax or replacing
 clear repetition with a generic framework is not a simplification.
 
 ## Platform compatibility
 
 Use this workflow in Codex, Claude Code or another environment with equivalent
-repository and command access. Follow applicable `AGENTS.md` or `CLAUDE.md`
-guidance. Invoke source skills named with `$` where supported; otherwise read
-their `SKILL.md` and apply the relevant guidance directly. No tracker,
-catalogue setup or model-specific orchestration is required.
+repository and command access. Follow applicable repository instructions,
+including `AGENTS.md` or `CLAUDE.md`. Invoke source skills named with `$`
+where supported; otherwise read their `SKILL.md` and apply the workflow
+directly. No tracker, catalogue setup or model-specific orchestration is
+required.
 
 ## Establish the scope and contract
 

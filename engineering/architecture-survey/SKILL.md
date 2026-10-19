@@ -1,6 +1,6 @@
 ---
 name: engineering-architecture-survey
-description: Find and rank evidence-backed refactoring opportunities in an existing codebase before work is selected. Use for architectural friction, coupling or difficult verification; do not use for reviewing a diff, recovering historical ADRs or implementing a refactor.
+description: Find and rank evidence-backed refactoring opportunities before selecting work. Use for architectural friction, coupling or difficult verification; not diff review, historical ADRs or refactor implementation.
 ---
 
 # Engineering architecture survey
@@ -16,12 +16,11 @@ proposal, not an accepted design or permission to implement it.
 
 ## Platform compatibility
 
-This workflow is platform-agnostic. Use it in Codex, Claude Code, or another
-agent environment with equivalent repository and command access. Follow
-applicable repository instructions: this normally includes `AGENTS.md` in
-Codex and `CLAUDE.md` in Claude Code. When a source skill is named with `$`,
-invoke it where supported; otherwise read its `SKILL.md` and apply that
-workflow directly. The survey itself needs no tracker or catalogue setup.
+Use this workflow in Codex, Claude Code or another environment with equivalent
+repository and command access. Follow applicable repository instructions,
+including `AGENTS.md` or `CLAUDE.md`. Invoke source skills named with `$`
+where supported; otherwise read their `SKILL.md` and apply the workflow
+directly. The survey needs no tracker or catalogue setup.
 
 ## Bound the survey
 
@@ -129,8 +128,8 @@ For each credible candidate, give:
   supported, `Worth exploring` when a named uncertainty remains material, or
   `Speculative` when the proposed benefit is unverified.
 
-Rank by benefit relative to cost and risk, using the evidence rather than an
-invented numerical score. Do not pad the shortlist with speculative candidates.
+Rank by evidenced benefit relative to cost and risk; do not invent numerical
+scores or pad the shortlist with speculative candidates.
 Distinguish observed current structure from proposed structure. Use a small
 before/after diagram when it explains the change more clearly than prose;
 HTML is optional, and repository vocabulary takes precedence over a prescribed

@@ -1,10 +1,8 @@
 # Behavioural evaluation cases
 
-Use these cases when changing verification or testing instructions and a
-realistic agent task would add useful evidence. Select the cases relevant to
-the change. They assess actions and results, not whether a reply repeats a
-skill's wording. Packaging tests remain useful but do not establish that an
-agent followed the workflow.
+Select relevant cases when changing verification or testing instructions and
+a realistic agent task would add useful evidence. Assess actions and results,
+not repeated skill wording. Packaging tests do not establish agent behaviour.
 
 ## Run a small evaluation
 

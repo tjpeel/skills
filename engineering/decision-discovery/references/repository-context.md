@@ -9,7 +9,7 @@ edits to implementation.
 
 ## Find the right context
 
-Respect the repository's existing terminology and document locations first.
+Respect existing repository terminology and document locations.
 
 The domain glossary may be a `GLOSSARY.md`, the language section of a
 `CONTEXT.md`, or another established record. A context document may also

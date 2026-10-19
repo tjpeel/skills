@@ -18,13 +18,13 @@ gh pr checks "$pr" --repo "$repo" \
   --json name,state,bucket,link,workflow
 ```
 
-The variables represent the resolved user-selected PR and repository. Check
-the installed CLI's fields if they differ. A failing exit from `gh pr checks`
-can describe failed checks rather than a failed retrieval; read its output.
-Use required-check configuration as well as the rollup to detect absent jobs.
+Use the resolved, user-selected PR and repository as variables; check
+installed CLI fields if different. A failed `gh pr checks` exit can report
+failing checks rather than retrieval failure: inspect output. Use
+required-check configuration alongside the rollup to detect absent jobs.
 
-For the pinned head, inspect check runs and commit statuses. Use exact run,
-job and attempt identities when reading logs, including all pages:
+Inspect check runs and commit statuses for the pinned head. Read logs with
+exact run, job and attempt identities, including every page:
 
 ```text
 GET repos/{owner}/{repo}/commits/{sha}/check-runs

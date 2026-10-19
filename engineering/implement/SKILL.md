@@ -1,54 +1,47 @@
 ---
 name: engineering-implement
-description: Implement one ready local engineering ticket or a clearly scoped approved specification, preserving its decisions, observable acceptance criteria, and test seams. Use after ticket decomposition; do not use to make design decisions or write tickets.
+description: Implement one ready local ticket or bounded approved specification, preserving decisions, observable acceptance criteria and test seams. Use after ticket decomposition; not design discovery or ticket writing.
 ---
 
 # Engineering implementation
 
-Implement one ready unit of approved work without widening its scope. The
-normal input is a local ticket created by `$engineering-to-tickets`; a small,
-clearly bounded approved specification is also sufficient when no ticket set
-is needed. This is the build step after decision discovery, specification, and
-ticket decomposition.
+Implement one ready unit of approved work without widening scope: normally a
+local ticket from `$engineering-to-tickets`, or a small approved specification
+slice when no ticket set is needed. This follows decision discovery,
+specification and, where needed, ticket decomposition.
 
 ## Documentation boundary
 
-Code is the documentation of implemented functionality. Do not generate
-additional docs by default during implementation. Specifications and local
-tickets are uncommitted process inputs, not ongoing documentation. Do not
-refresh them to describe implemented behaviour or include them in commits.
-They do not imply a need for new ADRs, context files, feature guides or
-implementation summaries.
+Code documents implemented functionality. Specifications and local tickets
+are uncommitted process inputs; do not refresh them as system documentation
+or commit them. Do not generate docs, ADRs, context files, feature guides or
+implementation summaries by default.
 
-Prefer clear names, structure and tests. Use a focused comment for non-obvious
-rationale or a constraint close to the code it affects. Create or update a
-supporting document only for an explicit request, an applicable repository
-requirement or a material knowledge gap that code, tests and configuration
-cannot convey. Identify that need before writing. Keep the document to decision
-rationale, external constraints or domain context, with links to the relevant
-implementation and tests. Do not maintain a second explanation of algorithms,
-control flow or feature behaviour that can drift from the code.
+Prefer clear names, structure and tests, with focused comments for non-obvious
+rationale or constraints near the affected code. Identify a need before
+creating or updating supporting docs: an explicit request, repository
+requirement or material knowledge gap that code, tests and configuration
+cannot convey. Keep docs to decision rationale, external constraints or
+domain context, linking relevant code and tests; avoid parallel explanations
+of algorithms, control flow or feature behaviour.
 
-Check relevant existing docs when a change affects their claims. Remove stale
-or duplicated explanations, or replace them with signposts, rather than adding
-another account. Documentation must not conceal unclear code or contradict
-executable behaviour.
+Check existing docs whose claims the change affects. Remove stale or duplicate
+explanations or replace them with signposts. Docs must not conceal unclear
+code or contradict executable behaviour.
 
-Reuse an explicitly selected supplementary checkout when suitable. If an
-authorised investigation needs a new clone, keep it in a locally ignored
-directory beneath the active workspace, record its path and checked revision,
-and preserve it for later inspection. Do not default repository clones to a
-system temporary directory or reset, overwrite or remove existing checkouts
-as routine investigation cleanup.
+Reuse a suitable explicitly selected supplementary checkout. Keep any
+new clone needed for authorised investigation in a locally ignored directory
+beneath the active workspace, record its path and checked revision, and
+preserve it for inspection. Do not default clones to system temporary
+directories or reset, overwrite or remove existing checkouts as cleanup.
 
 ## Platform compatibility
 
-This workflow is platform-agnostic. Use it in Codex, Claude Code, or another
-agent environment with equivalent repository and command access. Follow all
-applicable repository instructions: this normally includes `AGENTS.md` in
-Codex and `CLAUDE.md` in Claude Code. When this skill names another source
-skill with `$`, invoke it where supported; otherwise read that source skill's
-`SKILL.md` and apply its workflow directly.
+Use this workflow in Codex, Claude Code, or another environment with
+equivalent repository and command access. Follow applicable repository
+instructions, including `AGENTS.md` in Codex and `CLAUDE.md` in Claude Code.
+Invoke `$` source-skill references where supported; otherwise read the
+referenced `SKILL.md` and apply it directly.
 
 ## Prepare selected process inputs
 
@@ -238,23 +231,20 @@ folder or changing its reference. Validate it with
 Treat references and branch names as literal data in filesystem and shell
 operations, not executable text.
 
-For example, work reference `read-cache` and outcome “Add read
-path” uses `read-cache-add-read-path`. Derive the description from the ticket's
-outcome title rather than its sequence number or source-specification name.
-Keep it short, lowercase, and limited to letters, numbers, and hyphens. If the
-resulting branch already exists, do not repurpose it or silently choose a
-different name; ask the user whether to continue that branch or choose a new
-description.
+For example, `read-cache` and “Add read path” yield `read-cache-add-read-path`.
+Use the outcome title, not its sequence number or specification name. Keep
+the description short, lowercase, and limited to letters, numbers and hyphens.
+If the branch exists, ask whether to continue it or choose a new description;
+do not repurpose it or silently choose another name.
 
-For new work, record the agreed starting commit as the fixed point for the
-later independent review; resumed work retains its original fixed point. The
-coordinator owns branch creation and selection; a delegated writer works only
-after that boundary exists.
+The coordinator owns branch creation and selection. For new work, record the
+agreed starting commit as the review fixed point before coding; resumed work
+retains its original fixed point. Delegated writers start only after the branch
+boundary exists.
 
-One invocation owns one ticket or one independently deliverable specification
-slice. Do not implement blocked or sibling tickets, add speculative
-generalisations, or fold unrelated cleanup into the change. Make a separate,
-small follow-up recommendation when you find work outside that boundary.
+One invocation owns one ticket or independently deliverable specification
+slice. Exclude blocked or sibling tickets, speculative generalisations and
+unrelated cleanup; recommend out-of-scope work separately.
 
 ## Delegation profiles
 
@@ -316,9 +306,9 @@ credible checks and acceptable intermediate behaviour using settled policy.
 Do not invent policy to make an increment possible.
 
 Before editing, state an ordered plan in the conversation, not a new document.
-For each increment, name its outcome or prerequisite, regression check,
-material failure/recovery cases and work deferred. Refine ticket checkpoints
-against the code before authorising the writer.
+Name each increment’s outcome or prerequisite, regression check, material
+failure/recovery cases and deferred work. Refine ticket checkpoints against
+the code before authorising a writer.
 
 Split independently committable steps; keep coupled code, tests and justified
 documentation together when separation would break wiring, contracts, the test
@@ -440,12 +430,11 @@ later behaviour. Do not defer commits until the whole ticket is implemented.
 
 ## Verify, review, and hand off
 
-Apply `$engineering-verification` to each increment's completion evidence and
-the final handoff. Identify the actual revision or working-tree content
-checked, expected and observed outcomes, and any failed, blocked or omitted
-required checks. For shared code or contracts, check the concrete safety
-assumptions within the ticket's impact. Reuse the checks and evidence already
-gathered; this does not require another test suite, report file or delegate.
+Apply `$engineering-verification` to increment and final completion evidence.
+Identify the checked revision or working-tree content, expected and observed
+outcomes, and failed, blocked or omitted required checks. Verify concrete
+safety assumptions for affected shared code or contracts. Reuse gathered
+evidence; no additional suite, report file or delegate is required.
 
 Before declaring the work complete, inspect the final diff against the input.
 Check every acceptance criterion and applicable change constraint against an
@@ -507,9 +496,7 @@ user also requested publishing and monitoring, continue through `$pr-manage`
 and `$pr-monitor` within that authority; local verification alone does not
 complete the requested delivery loop.
 
-Return this handoff in the conversation; do not create a summary file by
-default.
+Return the handoff in the conversation, without a summary file by default.
 
-Commit the logical, fully verified increments created during implementation. Do
-not push, create a pull request, or update an external tracker unless the user
-explicitly asks.
+Do not push, create a pull request or update an external tracker without
+an explicit user request.

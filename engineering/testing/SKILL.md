@@ -1,6 +1,6 @@
 ---
 name: engineering-testing
-description: Decide whether a change needs new tests and assess test quality against observable behaviour and existing coverage. Use when selecting, writing, or reviewing tests; avoid redundant coverage and tests that restate implementation.
+description: Select, write or review tests against observable behaviour and existing coverage. Decide whether new tests are needed; avoid redundant coverage and assertions that restate implementation.
 ---
 
 # Engineering testing
@@ -11,10 +11,10 @@ ticket, or higher coverage percentage alone does not justify a new test.
 
 ## Platform compatibility
 
-This guidance is platform-agnostic. Use it in Codex, Claude Code, or another
-agent environment with equivalent repository and command access. Follow
-applicable repository instructions, including `AGENTS.md` or `CLAUDE.md`, and
-explicit user requirements for tests, verification and coverage thresholds.
+Use this workflow in Codex, Claude Code or another environment with equivalent
+repository and command access. Follow applicable repository instructions,
+including `AGENTS.md` or `CLAUDE.md`. Follow explicit user requirements for
+tests, verification and coverage thresholds.
 
 ## Decide whether a test is needed
 
@@ -71,20 +71,18 @@ relationship comes from the required contract. Independent evidence does not
 always require a fixed literal; the assertion must still detect a plausible
 violation rather than repeat the implementation's computation.
 
-Keep this decision brief and in the conversation or invoking workflow's
-handoff. No separate plan, coverage inventory or report file is required. If
+Keep this decision brief, in the conversation or invoking workflow's handoff;
+no separate plan, coverage inventory or report is required. If
 no new test is needed, state why and what verification supports that decision.
 Apply the guidance directly; it does not need an additional delegate. Give any
 existing mapper, writer or reviewer the same coverage gap and test boundary.
 
 ## Choose a boundary that catches the failure
 
-Use an interface already selected by the task or repository. Otherwise prefer
-the lowest-cost existing public boundary that faithfully exercises the
-behaviour. A unit test can suit isolated domain logic; integration coverage is
-needed when real wiring, persistence, transport or component interactions are
-part of the failure. End-to-end tests need a distinct reason that cheaper
-coverage cannot satisfy. Do not test every layer by default.
+Use the task or repository's selected interface; otherwise choose an existing
+public boundary. Retain real wiring, persistence, transport or component
+interactions when they are part of the failure; cheaper isolated checks cannot
+establish them. Do not test every layer by default.
 
 For a bug fix, reproduce the actual triggering inputs and interactions, observe
 the test fail on the original bug and pass with the fix. An unrelated setup,

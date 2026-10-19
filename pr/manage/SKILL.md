@@ -1,18 +1,17 @@
 ---
 name: pr-manage
-description: Safely inspect, push, and manage GitHub pull requests using local Git and the GitHub CLI. Use when asked to push a branch, create a draft pull request, or edit a pull request's title or description.
+description: Inspect and publish GitHub PRs through local Git and the GitHub CLI. Use to push branches, create draft PRs or edit PR titles and descriptions.
 ---
 
 # GitHub PR management
 
 ## Platform compatibility
 
-This workflow is platform-agnostic. Use it in Codex, Claude Code, or another
-agent environment with local Git and GitHub CLI access. Follow all applicable
-repository instructions: this normally includes `AGENTS.md` in Codex and
-`CLAUDE.md` in Claude Code. Use each platform's normal approval mechanism for
-external writes; the explicit user-authorisation requirements below still
-apply.
+Use this workflow in Codex, Claude Code or another environment with local Git
+and GitHub CLI access. Follow applicable `AGENTS.md`, `CLAUDE.md` and
+repository instructions, using platform precedence for conflicts. Platform
+approval mechanisms do not replace the explicit user authorisation required
+below.
 
 ## Delegation profiles
 
@@ -35,34 +34,22 @@ user has authorised monitoring or repair after publication, hand off to
 `$pr-monitor`; use that skill's observer and higher-reasoning writer phases
 within its permitted scope.
 
-Use this personal skill for GitHub work across repositories. Read applicable
-`AGENTS.md` and `CLAUDE.md` files before acting; they may define branch, PR, or
-test requirements. Follow the precedence rules of the current platform when
-the files conflict.
-
 ## Repository test gate
 
-Treat applicable repository guidance as the source of truth for testing
-requirements: `AGENTS.md` in Codex, `CLAUDE.md` in Claude Code, and any
-repository documentation recognised by the current platform. Run every
-required validation before committing, pushing, creating a PR, or editing PR
-metadata.
+Run every validation required by applicable repository guidance before
+committing, pushing, creating a PR or editing PR metadata.
 
-If a required test cannot run because of a missing dependency, occupied port,
-credentials, unavailable environment, or any other blocker, stop the
-implementation and PR workflow. Report the blocker and request direction; do
-not commit, push, create or edit a PR, or describe the omitted test as an
-acceptable caveat. Never include language such as "tests were not run" or an
-explanation for an unmet required test in a PR description.
+If any required test cannot run, stop the implementation and PR workflow,
+report the blocker and request direction. Do not commit, push, create or edit
+a PR. Do not present the omitted test as an acceptable caveat or explain an
+unmet required test in the PR description, including “tests were not run”.
 
 ## Preflight
 
-When `scripts/pr-preflight.sh` is present, run it from the repository root as
-`scripts/pr-preflight.sh [pr-number]`. It reports the repository, branch,
-upstream, uncommitted changes, unpublished commits, and—when `gh` is
-authenticated—the existing PR metadata. If the repository does not provide the
-script, skip this optional preflight; its absence is not an unmet test gate.
-If a present preflight script fails, treat that as a blocker.
+When present, run `scripts/pr-preflight.sh [pr-number]` from the repository
+root. It reports repository, branch, upstream, uncommitted changes,
+unpublished commits and, when `gh` is authenticated, existing PR metadata. Its
+failure blocks the workflow; its absence does not violate the test gate.
 
 Verify that `gh auth status` is authenticated for the target GitHub host before
 creating or editing a PR. Do not expose credentials or tokens.
@@ -136,9 +123,8 @@ field needs correction to carry the reference consistently, prepare that
 correction and obtain authority before changing that field; do not silently
 expand the metadata edit.
 
-When a generated PR description contains bullets, start the text of every
-bullet (including nested and task-list bullets) with a capital letter. Rewrite
-any item that would otherwise begin with lower-case text.
+Start every generated description bullet, including nested and task-list
+bullets, with a capital letter.
 
 ## Remote-write safeguards
 
@@ -178,11 +164,9 @@ restacking and publication; a repaired local branch does not update a remote
 child by itself. Keep this branch state in the current handoff rather than
 editing local tickets to track heads.
 
-Use the confirmed ticket key or selected work reference and the branch and PR
-metadata rules above, plus the repository's required PR-description structure.
-Write the body to a temporary Markdown file to preserve formatting, then
-create a draft unless the user explicitly requests a
-ready-for-review PR:
+Apply the reference, branch, metadata and repository-template rules above.
+Write the body to a temporary Markdown file, then create a draft unless the
+user explicitly requests a ready-for-review PR:
 
 ```bash
 gh pr create --base <base> --head <branch> --title <title> --body-file <body-file> --draft
@@ -196,10 +180,9 @@ its current checks once does not complete that requested follow-through.
 
 ## PR Markdown formatting
 
-Do not hard-wrap prose in a PR title or Markdown body. Keep each paragraph as
-one physical line and let GitHub and the reader's client wrap it to the
-available width. Use line breaks only for Markdown structure: headings, list
-items, code blocks, blank lines, and intentional hard breaks.
+Keep each PR title and body paragraph on one physical line. Use line breaks
+only for Markdown structure: headings, list items, code blocks, blank lines
+and intentional hard breaks.
 
 ## Edit a PR
 

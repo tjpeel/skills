@@ -7,22 +7,19 @@ description: "Reproduce a GitHub pull request's intended changes in the current 
 
 ## Platform compatibility
 
-This workflow is platform-agnostic. Use it in Codex, Claude Code, or another
-agent environment with repository, GitHub, and command access. Follow all
-applicable repository instructions: this normally includes `AGENTS.md` in
-Codex and `CLAUDE.md` in Claude Code. When a source skill is named with `$`,
-invoke it where supported; otherwise read that source skill's `SKILL.md` and
-apply its workflow directly.
+Use this workflow in Codex, Claude Code or another environment with
+repository, GitHub and command access. Follow applicable repository
+instructions, including `AGENTS.md` or `CLAUDE.md`. Invoke `$` source skills
+where supported; otherwise read and apply their `SKILL.md`.
 
 ## Delegation profiles
 
 Read [the ownership and delegation guide](references/ownership-and-delegation.md)
 before selecting profiles or declaring delegation unavailable.
 
-Replicate the *intent and observable behavior* of a source GitHub pull request
-in the repository where this skill is invoked. The source and destination may
-have different structures, conventions, APIs, and histories. The source PR is
-evidence for what to achieve; it is never a mechanical transplant.
+Reproduce the source PR’s *intent and observable behavior* in the invoking
+repository. Adapt to destination structures, conventions, APIs and history;
+use the source as evidence, never a mechanical transplant.
 
 The source repository is read-only. Edit only the invoking destination project.
 Do not create commits, push branches, or open/update a pull request unless the
@@ -59,9 +56,9 @@ or internal-interaction tests just because the source contains them.
 
 ## Team shape
 
-Use this sequential team when delegation is available and the change is more
-than a trivial one. Keep one implementation owner so destination edits do not
-overlap. Pass the captured revision IDs and the mapping report to every role.
+For nontrivial changes, use this sequential team when delegation is available.
+Keep one destination writer, and give every role the captured revisions and
+mapping report.
 
 - **Source-to-destination analyst — `read_low`:** Build the
   behavior inventory and mapping report, identify destination integration
@@ -77,10 +74,9 @@ overlap. Pass the captured revision IDs and the mapping report to every role.
   that the source's test intent and every mapping row have credible destination
   validation, and assess test output and known unrun checks.
 
-For a small, obvious change, perform those responsibilities directly in the
-same order rather than spawning agents. If a reviewer finds an issue, return
-it to the same implementer, then repeat the affected validation and review.
-Do not use review agents to make destination edits.
+Handle small, obvious changes directly in the same order. Return findings to
+the same implementer, then repeat affected validation and review. Reviewers
+must not edit destination files.
 
 ## Completion standard
 

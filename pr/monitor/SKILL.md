@@ -1,23 +1,23 @@
 ---
 name: pr-monitor
-description: Monitor an ordinary pull request's checks for its current published revision and complete explicitly requested repair and publishing steps. Use for PR follow-through; not for merging or processing a Dependabot queue.
+description: Monitor an ordinary PR's checks at its current published revision, completing explicitly requested repairs and publishing. Use for PR follow-through; not merging or Dependabot queues.
 ---
 
 # Monitor PR checks
 
-Establish the current published PR state and follow the requested checks to a
-terminal result. When the user requested repairs and publishing, continue that
-bounded loop against each new revision. Local tests, a successful push and a
-scanner exit are distinct from the final PR check conclusions.
+Follow the current published PR’s requested checks to a terminal result. When
+repairs and publishing are requested, repeat that bounded loop for each new
+revision. Local tests, a successful push and scanner exit remain distinct from
+final PR check conclusions.
 
 ## Platform compatibility
 
-Use this workflow in Codex, Claude Code or another environment with equivalent
-GitHub and repository access. Follow applicable `AGENTS.md` or `CLAUDE.md`
-guidance and its command or approval restrictions. Prefer scoped GitHub CLI
-calls when available; otherwise use equivalent GitHub tools. Invoke source
-skills named with `$` where supported, or read their `SKILL.md` directly.
-No external tracker, ticket naming scheme or runner setup is required.
+Use this workflow in Codex, Claude Code or an environment with equivalent
+GitHub and repository access. Follow applicable `AGENTS.md` or `CLAUDE.md`,
+including command and approval restrictions. Prefer scoped GitHub CLI calls;
+otherwise use equivalent tools. Invoke `$` source skills where supported, or
+read their `SKILL.md`. No external tracker, naming scheme or runner setup is
+required.
 
 ## Pin the requested delivery
 
@@ -115,11 +115,11 @@ the sole local writer. It implements the supported fix, runs required checks
 and returns its diff and results without staging, committing or publishing.
 An independent `read_medium` audit can check a material repair when useful.
 
-The coordinator owns scope decisions, commits, external writes and the final
-delivery assessment. After publishing, reuse the low-reasoning observer with
-the new revision; do not keep the repair writer polling. Follow the shared
-guide's model reporting and fallback rules instead of assuming the selected
-chat effort was lowered by the skill.
+The coordinator owns scope decisions, commits, external writes and final
+delivery assessment. After publishing, return the new revision to the
+low-reasoning observer; do not leave the writer polling. Follow the shared
+guide’s model reporting and fallback rules; this skill does not lower the
+chat’s selected effort.
 
 Return the PR URL, current published SHA, requested-check conclusions and
 supporting run links. Distinguish local verification, published repairs and
