@@ -31,7 +31,7 @@ while IFS= read -r -d '' manifest; do
 done < <(find "$REPOSITORY_DIRECTORY" -mindepth 3 -type f -name SKILL.md -print0 | LC_ALL=C sort -z)
 [[ ${#skills[@]} -gt 0 ]]
 
-for provider in codex claude; do
+for provider in codex claude opencode; do
   target="$TEST_DIRECTORY/$provider skills"
   expect_failure "$INSTALLER" --provider "$provider" --prefix "$PREFIX" --check "$target"
   [[ ! -e "$target" ]]
@@ -58,15 +58,27 @@ for provider in codex claude; do
     fi
     while IFS= read -r -d '' resource; do
       case "$(basename -- "$resource")" in SKILL.md|agents) continue ;; esac
-      diff -r -- "$resource" "$destination/$(basename -- "$resource")"
+      if [[ "$(basename -- "$resource")" == references && -f "$resource/ownership-and-delegation.md" ]]; then
+        for reference in "$resource"/*; do
+          case "$(basename -- "$reference")" in ownership-and-delegation.md|cli) continue ;; esac
+          diff -r -- "$reference" "$destination/references/$(basename -- "$reference")"
+        done
+        [[ -f "$destination/references/cli/$provider.md" ]]
+        for other in codex claude opencode; do
+          [[ "$other" == "$provider" || ! -e "$destination/references/cli/$other.md" ]]
+        done
+        grep -Fq "(cli/$provider.md)" "$destination/references/ownership-and-delegation.md"
+      else
+        diff -r -- "$resource" "$destination/$(basename -- "$resource")"
+      fi
     done < <(find "$skill_directory" -mindepth 1 -maxdepth 1 -print0)
   done
 
   # Copies remain usable after moving away from the checkout.
   mkdir -p "$TEST_DIRECTORY/detached-$provider"
   cp -R -- "$target/test-engineering-investigation" "$TEST_DIRECTORY/detached-$provider/skill"
-  cmp -- "$REPOSITORY_DIRECTORY/shared/ownership-and-delegation.md" \
-    "$TEST_DIRECTORY/detached-$provider/skill/references/ownership-and-delegation.md"
+  grep -Fq "(cli/$provider.md)" "$TEST_DIRECTORY/detached-$provider/skill/references/ownership-and-delegation.md"
+  [[ -f "$TEST_DIRECTORY/detached-$provider/skill/references/cli/$provider.md" ]]
 
   # A second install must preserve edits rather than silently refresh them.
   printf '\nLocal edit.\n' >> "$target/test-pr-manage/SKILL.md"
@@ -154,7 +166,7 @@ printf '%s\n' 'Shared reference.' > "$fixture/shared/guide.md"
 ln -s ../../../shared/guide.md "$fixture/a/alpha/references/guide.md"
 ln -s ../../../shared/guide.md "$fixture/a/alpha/assets/guide.md"
 printf '%s\n' 'Hidden resource.' > "$fixture/a/alpha/.guide"
-for provider in codex claude; do
+for provider in codex claude opencode; do
   target="$TEST_DIRECTORY/fixture-$provider"
   "$fixture/scripts/install-skills" --provider "$provider" --prefix sample "$target" >/dev/null
   grep -Fq 'Use $sample-a-alpha, $sample-b-beta, $alpha-extra, $alpha_suffix, $external and $imagegen.' "$target/sample-a-alpha/SKILL.md"
@@ -243,4 +255,11 @@ printf '%s\n' '---' 'name: collision-two' 'description: Fixture.' '---' > "$fixt
 expect_failure "$fixture/scripts/install-skills" --provider claude --prefix sample "$invalid_target"
 [[ ! -e "$invalid_target" ]]
 
-echo 'Skill install and uninstall checks passed for Codex and Claude.'
+# Native XDG discovery defaults stay isolated from real user configuration.
+XDG_CONFIG_HOME="$TEST_DIRECTORY/xdg" "$INSTALLER" --provider opencode --prefix test >/dev/null
+[[ -f "$TEST_DIRECTORY/xdg/opencode/skills/test-pr-manage/SKILL.md" ]]
+XDG_CONFIG_HOME="$TEST_DIRECTORY/xdg" "$UNINSTALLER" --provider opencode --prefix test >/dev/null
+[[ ! -e "$TEST_DIRECTORY/xdg/opencode/skills/test-pr-manage" ]]
+[[ "$(parsed_target --provider opencode --prefix sample)" == "${XDG_CONFIG_HOME:-$HOME/.config}/opencode/skills" ]]
+
+echo 'Skill install and uninstall checks passed for Codex, Claude and OpenCode.'
