@@ -24,9 +24,12 @@ Run from this repository and select the provider:
 
 # Claude Code
 ./scripts/install-skills --provider claude --prefix tjpeel
+
+# OpenCode / Synthetic
+./scripts/install-skills --provider opencode --prefix tjpeel
 ```
 
-Both providers use the same prefix and packaging rules. The installer adds
+All providers use the same prefix and packaging rules. The installer adds
 missing packages and leaves existing paths untouched. Remove packages with
 `./scripts/uninstall-skills --provider codex --prefix tjpeel`, substituting
 `claude` for Claude Code.

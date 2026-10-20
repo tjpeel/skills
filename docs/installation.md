@@ -168,3 +168,28 @@ remain separate from delegate profile choices.
 
 For installer tests and catalogue changes, see
 [maintenance](maintenance.md#validate-a-change).
+
+## OpenCode with Synthetic
+
+Install native OpenCode skills with:
+
+```sh
+./scripts/install-skills --provider opencode --prefix tjpeel
+./scripts/install-skills --provider opencode --prefix tjpeel --check
+./scripts/uninstall-skills --provider opencode --prefix tjpeel
+```
+
+The default is `${XDG_CONFIG_HOME:-$HOME/.config}/opencode/skills`; pass an
+absolute `.opencode/skills` project directory to install locally. OpenCode
+loads `SKILL.md` by its installed name. `$source-name` references identify
+skills; use the native skill tool rather than assuming slash-command syntax.
+Ownership, conflicts and uninstall/reinstall updates work as for other providers.
+
+Installed delegating skills contain the shared ownership rules plus only the
+selected CLI's model and discovery guide. Source packages retain all three CLI
+guides in `shared/cli`; installation resolves source links and copies only the
+applicable guide. Codex alone receives `agents/openai.yaml` UI metadata.
+
+Official discovery documentation: <https://opencode.ai/docs/skills/> and
+<https://opencode.ai/docs/agents/>. Installation does not configure Synthetic
+credentials, contact a provider, or prove model access.

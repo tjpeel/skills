@@ -2,13 +2,14 @@
 
 usage() {
   cat <<EOF
-Usage: $ACTION-skills --provider codex|claude --prefix PREFIX [--check | --$ACTION] [TARGET_DIRECTORY]
+Usage: $ACTION-skills --provider codex|claude|opencode --prefix PREFIX [--check | --$ACTION] [TARGET_DIRECTORY]
 
 --check reports installed, missing and conflicting packages without changes.
 Install adds only missing packages; uninstall removes only owned packages.
 PREFIX must start with a lowercase letter or digit and contain only lowercase
 letters, digits and hyphens. Names combine PREFIX with the nested package path.
-The target defaults to ~/.codex/skills or ~/.claude/skills for the provider.
+The target defaults to ~/.codex/skills, ~/.claude/skills or the XDG config
+directory opencode/skills for the provider.
 A custom target must be absolute or begin with ~/.
 EOF
   if [[ "$ACTION" == uninstall ]]; then
@@ -87,8 +88,8 @@ parse_arguments() {
   done
 
   case "$PROVIDER" in
-    codex|claude) ;;
-    *) argument_error "--provider is required and must be codex or claude." ;;
+    codex|claude|opencode) ;;
+    *) argument_error "--provider is required and must be codex, claude or opencode." ;;
   esac
   if [[ "$LEGACY" == unprefixed ]]; then
     [[ "$PROVIDER" == claude && "$prefix_given" == false ]] || argument_error "--legacy-unprefixed requires --provider claude and no --prefix."
@@ -96,7 +97,13 @@ parse_arguments() {
     [[ -n "$PREFIX" ]] || argument_error "--prefix is required."
     [[ "$PREFIX" =~ ^[a-z0-9][a-z0-9-]*$ ]] || argument_error "PREFIX must start with a lowercase letter or digit and use only lowercase letters, digits and hyphens."
   fi
-  [[ "$target_given" == true ]] || TARGET_DIRECTORY="$HOME/.$PROVIDER/skills"
+  if [[ "$target_given" == false ]]; then
+    if [[ "$PROVIDER" == opencode ]]; then
+      TARGET_DIRECTORY="${XDG_CONFIG_HOME:-$HOME/.config}/opencode/skills"
+    else
+      TARGET_DIRECTORY="$HOME/.$PROVIDER/skills"
+    fi
+  fi
   case "$TARGET_DIRECTORY" in
     '~') TARGET_DIRECTORY="$HOME" ;;
     '~/'*) TARGET_DIRECTORY="$HOME/${TARGET_DIRECTORY:2}" ;;
@@ -213,6 +220,14 @@ rewrite_references() {
     }' "$1"
 }
 
+render_cli_guide() {
+  awk -v provider="$PROVIDER" '
+    /^<!-- cli:/ { selected = $0 == "<!-- cli:" provider " -->"; block = 1; next }
+    /^<!-- \/cli -->/ { block = 0; next }
+    !block || selected { print }
+  ' "$1"
+}
+
 render_manifest() {
   local index="$1"
   rewrite_references "${skills[$index]}/SKILL.md" | sed "1,/^---$/s/^name: .*/name: ${installed_names[$index]}/"
@@ -267,6 +282,12 @@ install_skill() {
       *) cp -RL -- "$entry" "$destination/" ;;
     esac
   done < <(find "${skills[$index]}" -mindepth 1 -maxdepth 1 -print0)
+  if [[ -f "$destination/references/ownership-and-delegation.md" ]]; then
+    render_cli_guide "$REPOSITORY_DIRECTORY/shared/ownership-and-delegation.md" > "$destination/references/ownership-and-delegation.md"
+    rm -rf -- "$destination/references/cli"
+    mkdir -p -- "$destination/references/cli"
+    cp -- "$REPOSITORY_DIRECTORY/shared/cli/$PROVIDER.md" "$destination/references/cli/$PROVIDER.md"
+  fi
   ownership_marker "$index" > "$destination/.personal-skills-source"
 }
 
