@@ -73,3 +73,20 @@ The Sonar repair workflow draws on SonarSource's
 and [quality-gate action](https://github.com/SonarSource/sonarqube-quality-gate-action),
 with signature verification guided by
 [Git's documentation](https://git-scm.com/docs/git-verify-commit).
+
+## Measure source context material
+
+`scripts/context-inventory` is an optional offline development command requiring
+Python 3.9 or later. It prints deterministic JSON with relative paths, byte
+lengths, SHA-256 hashes and a catalogue fingerprint. Redirect it to a file outside
+the repository to retain a comparison baseline. `--root PATH` selects a disposable
+source catalogue for checks. It does not install, edit or invoke definitions.
+
+The report measures available source files, including internal linked resources.
+It does not establish which instructions were loaded, token counts, context
+occupancy or behavioural equivalence. Compare the fingerprint alongside native
+usage, completion, repairs and independently adjudicated findings when tuning.
+External resource links fail without emitting a partial inventory.
+
+Run `tests/test-context-inventory` with the ordinary repository checks. Python is
+required only for this optional report and its tests, not native installation.

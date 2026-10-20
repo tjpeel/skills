@@ -1,0 +1,93 @@
+#!/usr/bin/env python3
+"""Offline inventory contracts; no installed definitions or provider work."""
+import hashlib
+import json
+import os
+from pathlib import Path
+import subprocess
+import shutil
+import tempfile
+import unittest
+
+ROOT = Path(__file__).resolve().parent.parent
+SCRIPT = ROOT / "scripts/context-inventory"
+KIND = "skills"
+
+class InventoryTests(unittest.TestCase):
+    def setUp(self):
+        self.tools = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tools.cleanup)
+        for name in ("bash", "dirname", "python3"):
+            (Path(self.tools.name) / name).symlink_to(shutil.which(name))
+        self.env = dict(os.environ, PATH=self.tools.name)
+
+    def run_report(self, root, ok=True):
+        result = subprocess.run([str(SCRIPT), "--root", str(root)], capture_output=True, text=True, env=self.env)
+        self.assertEqual(result.returncode == 0, ok, result.stderr)
+        return result
+
+    def populate(self, root):
+        if KIND == "skills":
+            entry = root / "example/SKILL.md"
+        else:
+            entry = root / "read-low/codex/profile.toml"
+        entry.parent.mkdir(parents=True)
+        entry.write_bytes("instruction \u00e9\n".encode())
+        return entry
+
+    def test_deterministic_bytes_changes_and_no_content_export(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            entry = self.populate(root)
+            before = self.run_report(root).stdout
+            self.assertEqual(before, self.run_report(root).stdout)
+            report = json.loads(before)
+            self.assertEqual(report["file_count"], 1)
+            self.assertEqual(report["bytes"], 15)
+            self.assertEqual(report["files"][0]["sha256"], hashlib.sha256(entry.read_bytes()).hexdigest())
+            self.assertNotIn("instruction ", before)
+            self.assertNotIn(str(root), before)
+            (root / "README.md").write_text("unrelated documentation")
+            self.assertEqual(before, self.run_report(root).stdout)
+            entry.write_text("changed")
+            self.assertNotEqual(report["fingerprint"], json.loads(self.run_report(root).stdout)["fingerprint"])
+
+    def test_internal_reference_is_measured_and_external_link_rejected(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder) / "catalogue"
+            root.mkdir()
+            entry = self.populate(root)
+            if KIND == "skills":
+                target = root / "shared/guide.md"
+                link = entry.parent / "references/guide.md"
+            else:
+                target = root / "shared/profile.toml"
+                link = entry.parent / "alias.toml"
+            target.parent.mkdir(parents=True)
+            target.write_text("shared")
+            link.parent.mkdir(parents=True, exist_ok=True)
+            link.symlink_to(target)
+            report = json.loads(self.run_report(root).stdout)
+            self.assertEqual(report["file_count"], 2)
+            self.assertEqual(report["bytes"], 21)
+            link.unlink()
+            external = Path(folder) / "outside"
+            external.write_text("private content")
+            link.symlink_to(external)
+            failed = self.run_report(root, ok=False)
+            self.assertEqual(failed.stdout, "")
+            self.assertNotIn("private content", failed.stderr)
+
+    def test_empty_and_missing_dependency_fail_without_partial_report(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            self.assertEqual(self.run_report(root, ok=False).stdout, "")
+            binary = root / "bin"
+            binary.mkdir()
+            result = subprocess.run(["/bin/bash", str(SCRIPT)], env=dict(os.environ, PATH=str(binary)), capture_output=True, text=True)
+            self.assertEqual(result.returncode, 2)
+            self.assertIn("requires Python", result.stderr)
+            self.assertEqual(result.stdout, "")
+
+if __name__ == "__main__":
+    unittest.main()

@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+# Optional offline development report; does not install or invoke agents.
+set -euo pipefail
+if ! command -v python3 >/dev/null 2>&1; then
+  echo 'context-inventory requires Python 3.9 or later; nothing was changed.' >&2
+  exit 2
+fi
+SCRIPT_DIRECTORY="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)"
+python3 - "$SCRIPT_DIRECTORY/.." "$@" <<'PYTHON'
+import argparse
+import hashlib
+import json
+from pathlib import Path
+import sys
+
+parser = argparse.ArgumentParser(description="Report available source file bytes and hashes; these are not loaded tokens.")
+parser.add_argument("--root", type=Path, default=Path(sys.argv[1]), help="explicit source catalogue (default: this repository)")
+args = parser.parse_args(sys.argv[2:])
+root = args.root
+KIND = "skills"
+try:
+    root = root.resolve(strict=True)
+    if KIND == "skills":
+        manifests = sorted(root.rglob("SKILL.md"))
+        paths = set()
+        for manifest in manifests:
+            if ".git" in manifest.relative_to(root).parts:
+                continue
+            paths.update(p for p in manifest.parent.rglob("*") if p.is_file() or p.is_symlink())
+    else:
+        paths = {p for p in root.glob("*/codex/*.toml") if p.is_file() or p.is_symlink()}
+        paths.update(p for p in root.glob("*/claude/*.md") if p.is_file() or p.is_symlink())
+        if (root / "model-policy.json").is_file():
+            paths.add(root / "model-policy.json")
+    if not paths:
+        raise ValueError("no source definitions found")
+    files = []
+    digest = hashlib.sha256()
+    total = 0
+    for path in sorted(paths):
+        # Only source-contained references; never follow an external resource.
+        path.resolve(strict=True).relative_to(root)
+        data = path.read_bytes()
+        relative = path.relative_to(root).as_posix()
+        fingerprint = hashlib.sha256(data).hexdigest()
+        if KIND == "skills":
+            category = "entry_instruction" if path.name == "SKILL.md" else "resource"
+        else:
+            category = "policy" if relative == "model-policy.json" else ("codex_definition" if path.suffix == ".toml" else "claude_definition")
+        files.append(dict(path=relative, category=category, bytes=len(data), sha256=fingerprint))
+        digest.update(relative.encode("utf-8") + b"\0" + bytes.fromhex(fingerprint))
+        total += len(data)
+    print(json.dumps(dict(version=1, catalogue=KIND, scope="available_source_files",
+                         files=files, file_count=len(files), bytes=total,
+                         fingerprint=digest.hexdigest()), indent=2, sort_keys=True))
+except (OSError, ValueError):
+    print("Cannot inventory catalogue: missing, unreadable or external source resource; no partial report was emitted.", file=sys.stderr)
+    sys.exit(2)
+PYTHON

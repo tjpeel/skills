@@ -81,3 +81,10 @@ Stage only the requested files and create a focused commit. Leave secrets,
 caches and unrelated work out of the commit. Push only when requested. See
 [installation and refresh](installation.md) before renaming or removing a
 package so the old installed name can be removed safely.
+
+### Source context inventory
+
+Run `tests/test-context-inventory` alongside the required installer and publication
+checks. The optional `scripts/context-inventory` report uses Python 3.9 or later;
+installation retains its existing dependencies. It measures available package
+bytes and hashes without changing instruction or installer behaviour.
