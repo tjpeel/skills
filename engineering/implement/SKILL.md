@@ -462,6 +462,18 @@ checks without claiming a fresh assessment. Retain a concise trace and review
 conclusions in the conversation or controller handoff, not a new repository file.
 This applies to adopted work even when no new source change is needed.
 
+For later feedback or check cycles in the same implementation session, retain a
+self-review boundary identifying the reviewed head, tree and requirement scope.
+With a verified unchanged boundary, assess new evidence without repeating source
+inspection. After a bounded correction, review all changes since that boundary
+and affected behaviour, then check the combined final diff for interaction or
+scope regressions. Perform the complete initial self-review when the receipt or
+impact is uncertain. Complete self-review before readiness checks; after passing
+checks, reassess only new edits or evidence. This is implementation evidence,
+never independent approval. Keep required current-revision checks and truthful
+self-review reporting. Do not launch another whole-change reviewer merely
+because CI returned feedback or an unchanged verification result arrived.
+
 After the focused and full checks are green, invoke
 `$engineering-code-review` against the recorded fixed point, using the controller
 self-review mode above when applicable. Supply the

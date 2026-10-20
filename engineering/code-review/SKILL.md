@@ -156,11 +156,38 @@ When comparing routing costs, record agent count, elapsed time, repeated
 investigations, findings and reported usage. Leave missing measures unknown;
 unlike reviews do not establish savings.
 
+## Repeated review with retained evidence
+
+Keep the original base and selected requirements as the review fixed point.
+When a controller supplies a verified prior inspection, exact reviewed and current
+revisions, a complete correction manifest and inherited coverage with provenance,
+review the correction and its affected behaviour instead of rereading unchanged
+bodies. Inspect callers, consumers, tests, configuration and documentation whose
+meaning may have changed; unchanged bytes alone do not establish independence.
+Include deleted, renamed and reverted paths even when absent from the final PR
+manifest. Reopen any inherited inspection affected by the correction.
+
+Give every earlier finding and recommendation an evidence-backed disposition.
+Confirm that the affected behaviour is covered before completing a cumulative
+review. Preserve original reports and identify inherited versus newly inspected
+coverage; do not claim a fresh full inspection of inherited bodies. If baseline
+identity, objects, scope or coverage cannot be verified, or impact cannot be
+bounded, revoke inheritance and complete a full review. Do not search past a
+newer unfinished review to bypass its gaps. Keep current-revision verification
+requirements and an independent owner.
+
+Use helpers for named unresolved questions and explicit path ownership. Reuse
+completed mapping and substantive inspection from the owner or a helper; inspect
+source again to settle a new uncertainty, not merely to reproduce another
+reviewer's work. Return concise source evidence and remaining uncertainty rather
+than bulk inventories or transcripts. Delegation isolates context but is not
+free work.
+
 ## Review the change
 
 Inspect every changed file, including tests, documentation and configuration.
 Read relevant test setup and assertions rather than relying on names or passing
-results. After repairs, review against the original fixed point, not only the
+results. After repairs, preserve the original fixed point; a verified cumulative review may inspect the correction and affected behaviour without rereading inherited coverage. Without such a baseline, review the full change, not only the
 last corrective commit.
 
 For new or changed fields, indexes, filters, endpoints, links, configuration,
