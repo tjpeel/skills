@@ -36,6 +36,14 @@ handoff.
 
 ## Write for the reviewer
 
+For an existing PR, preserve the title and unaffected whole-PR scope already
+established in the supplied metadata or retained session. Integrate review and
+CI corrections into that description; update superseded claims, but never
+replace it with a summary of the latest repair. A focused repair diff does not
+redefine the PR's scope. Reuse available evidence rather than reloading earlier
+transcripts or broadening inspection solely to redraft metadata.
+
+
 Use `<reference>: <concise outcome>` when a ticket key or selected work reference
 is known; otherwise use the outcome alone. Preserve the exact selected reference
 in title and body. Put `Ticket: <ticket-key>` or `Work reference: <reference>`
