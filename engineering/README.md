@@ -9,6 +9,7 @@
 | [`specification`](specification/SKILL.md) | Turns settled decisions into a reviewable implementation specification for later ticket decomposition. |
 | [`to-tickets`](to-tickets/SKILL.md) | Turns an approved specification into dependency-ordered local Markdown tickets. |
 | [`work-reconcile`](work-reconcile/SKILL.md) | Sanity-checks and updates an existing selected specification, ticket set and dependency plan without rewriting captured runs. |
+| [`sdlc`](sdlc/SKILL.md) | Starts and monitors an SDLC ticket run through draft PR, checks and review, and responds to its checkpoints and feedback. |
 | [`implement`](implement/SKILL.md) | Implements one ready ticket in bounded, verified increments, scrutinises adapted reference code, and runs full checks before review. |
 | [`code-review`](code-review/SKILL.md) | Reviews actual runtime behaviour and the complete local diff, then checks the current delivery slice against approved intent. |
 | [`testing`](testing/SKILL.md) | Selects tests for concrete coverage gaps and rejects tautological, implementation-coupled, change-detector and other weak or redundant tests. |

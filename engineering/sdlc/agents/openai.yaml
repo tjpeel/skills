@@ -1,0 +1,4 @@
+interface:
+  display_name: "Engineering SDLC"
+  short_description: "Drive and monitor an SDLC ticket"
+  default_prompt: "Use $engineering-sdlc to start or continue the selected SDLC ticket and follow its PR through review."
