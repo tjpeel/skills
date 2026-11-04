@@ -18,9 +18,19 @@ Preview the exact selection with:
 sdlc run --reference REFERENCE --ticket 01-ticket.md --dry-run
 ```
 
-Inspect repository, base, branch, inputs, checks and account selection. Add only needed exact project-relative `--input` requirements; linked Markdown requirements within the work reference are selected by preflight. Do not put secrets in provider inputs. Enable `--docker-tests` only when the ticket needs the separate privileged test daemon and its use is authorised. Use configured provider and model defaults unless the user specifies otherwise. The default implementer is Codex and reviewer Claude; `--provider claude` reverses them. Confirm authority for connected execution, signing and draft PR publication before starting; do not infer it from an inspection-only request.
+Inspect repository, base, branch, inputs, checks and account selection. Add only needed exact project-relative `--input` requirements; linked Markdown requirements within the work reference are selected by preflight. Do not put secrets in provider inputs. Enable `--docker-tests` only when the ticket needs the separate privileged test daemon and its use is authorised. For a new run, agree the provider and lead model settings with the user before launch: present the effective selections from the dry run and ask whether to use them or override them when the user has not already made that choice. Reuse an existing preference; do not ask again. See [Model selection](#model-selection). Confirm authority for connected execution, signing and draft PR publication before starting; do not infer it from an inspection-only request.
 
 Run the previewed command without `--dry-run` in a managed foreground process session that can be monitored. Record the full run ID, process session, project, ticket and roles privately. A dashboard does not keep the controller alive; do not claim detached supervision. Inputs, runtime and identities are frozen for the run.
+
+## Model selection
+
+SDLC's dry run shows the effective requested implementation and review models and efforts, including private configured defaults. Do not assume hard-coded model names or claim that a requested model is available to the account. Inspect `sdlc run --help` and the installed documentation for supported providers, model identifiers and current flags. For a new ticket, carry the user's selections into both preview and launch:
+
+- `--provider` chooses the implementer. Codex and Claude review each other; Synthetic uses Codex review. Check the relevant provider logins.
+- `--model` and `--effort` select the implementation lead; `--review-model` and `--review-effort` select the independent review lead. `--reasoning` sets both lead efforts, with role-specific effort flags taking precedence. `--speed` and `--review-speed` independently request normal or fast service; check provider/model compatibility and any cost implications before selecting fast.
+- Lead flags do not control the models and effort of delegated agents inside the runtime. Those use the installed agent profiles. Do not claim the leads' settings apply to delegates; if the user requires particular delegate settings, inspect the runtime's supported configuration and report any limitation before launch.
+
+Do not infer acceptance of defaults from silence. If the user has specified some settings, ask only about unresolved choices that matter to them; show remaining effective defaults and let them choose whether to use them. Run the final preview with the selected flags and verify the requested roles before launching. Report requested settings separately from model or speed actually reported by the native clients. SDLC freezes these choices on a saved run; resume and feedback retain them. Do not silently start a new run, switch provider, or promise model changes on resume. If a requested setting is unsupported or unavailable, report it and ask for an alternative rather than substituting one.
 
 ## Monitor and respond
 
