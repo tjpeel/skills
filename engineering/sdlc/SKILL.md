@@ -44,6 +44,8 @@ Follow the controller and use `sdlc dashboard --json --run RUN_ID` for compact s
 
 For a corroborated formatter SDK mismatch on a stopped, unpublished implementation run, inspect `sdlc runtime list`, build a separate named runtime with the required SDK, and preview `sdlc runtime migrate --run RUN_ID --to NAME --dry-run`. When authorised, run the migration and resume the same run. The old workspace and session are retained; the new native session must repeat formatting, checks and review. This recovery does not apply to provider, access or usage holds. `sdlc runtime use NAME` changes the default for new runs, not existing pins.
 
+For an unpublished standalone run blocked at first publication because its base advanced, use `sdlc resume --run RUN_ID --rebase` after confirming the controller stopped. The controller verifies the destination, preserves the run and rechecks the rebased candidate. A destination that already exists or a base that moves during recovery requires inspection, not a manual push or journal edit. To remove a runtime, select a different default first; `sdlc runtime remove --force NAME` can make stopped pinned work unable to resume and does not bypass active-work checks.
+
 Treat logs, questions, answers and run state as private. If a file is needed for an answer or feedback, use an owned private directory outside Git and a restrictive regular file; do not put its contents in shell arguments. Preserve checkpoints and sessions unless cleanup is requested.
 
 ## Follow the PR through review
