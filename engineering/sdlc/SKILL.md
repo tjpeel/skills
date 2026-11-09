@@ -20,7 +20,7 @@ sdlc run --reference REFERENCE --ticket 01-ticket.md --dry-run
 
 Inspect repository, base, branch, inputs, checks and account selection. Add only needed exact project-relative `--input` requirements; linked Markdown requirements within the work reference are selected by preflight. Do not put secrets in provider inputs. Enable `--docker-tests` only when the ticket needs the separate privileged test daemon and its use is authorised. For a new run, agree the provider and lead model settings with the user before launch: present the effective selections from the dry run and ask whether to use them or override them when the user has not already made that choice. Reuse an existing preference; do not ask again. See [Model selection](#model-selection). Confirm authority for connected execution, signing and draft PR publication before starting; do not infer it from an inspection-only request.
 
-Run the previewed command without `--dry-run` in a managed foreground process session that can be monitored. Record the full run ID, process session, project, ticket and roles privately. A dashboard does not keep the controller alive; do not claim detached supervision. Inputs, runtime and identities are frozen for the run.
+Run the previewed command without `--dry-run` in a managed foreground process session that can be monitored. Record the full run ID, process session, project, ticket and roles privately. A dashboard does not keep the controller alive; do not claim detached supervision. Inputs and identities are frozen; the runtime changes only through an explicit, validated migration.
 
 ## Model selection
 
@@ -41,6 +41,8 @@ Follow the controller and use `sdlc dashboard --json --run RUN_ID` for compact s
 - `awaiting_reviewer`: arrange the documented opposite-provider login and resume. Do not substitute an implementer review.
 - Failed, blocked, interrupted or stale: inspect the specific reason and confirm the original controller has stopped before resuming. Fix an authorised operational cause, then use `sdlc resume --run RUN_ID`; do not repeat an unchanged failure or create another owner. Provider refusal, access restriction or exhaustion is a stop, not permission to switch accounts or evade limits. Consult current SDLC documentation before using any special recovery or budget override; do not reset or bypass gates.
 - `ready`: inspect the recorded published head, checks, CI, review, findings, limitations and questions. Explicitly report any skipped or incomplete independent review; do not describe it as passed. The draft is ready for human review only when the evidence supports that claim.
+
+For a corroborated formatter SDK mismatch on a stopped, unpublished implementation run, inspect `sdlc runtime list`, build a separate named runtime with the required SDK, and preview `sdlc runtime migrate --run RUN_ID --to NAME --dry-run`. When authorised, run the migration and resume the same run. The old workspace and session are retained; the new native session must repeat formatting, checks and review. This recovery does not apply to provider, access or usage holds. `sdlc runtime use NAME` changes the default for new runs, not existing pins.
 
 Treat logs, questions, answers and run state as private. If a file is needed for an answer or feedback, use an owned private directory outside Git and a restrictive regular file; do not put its contents in shell arguments. Preserve checkpoints and sessions unless cleanup is requested.
 
