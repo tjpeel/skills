@@ -1,4 +1,4 @@
 interface:
   display_name: "Engineering SDLC"
-  short_description: "Drive and monitor an SDLC ticket"
-  default_prompt: "Use $engineering-sdlc to start or continue the selected SDLC ticket and follow its PR through review."
+  short_description: "Run all tickets or one ticket from a work reference"
+  default_prompt: "Use $engineering-sdlc to run all tickets under a work reference or one selected ticket."
