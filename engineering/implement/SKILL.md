@@ -139,6 +139,12 @@ recommendation and reconcile it with the approved ticket or specification
 before changing that requirement; do not silently omit it or implement future
 producers to make it useful.
 
+Before editing, inspect relevant existing mechanisms and conventions. Reuse
+them when their contracts fit; consider a small behaviour-preserving
+refinement when it directly supports the work and clarifies the changed area.
+Require a demonstrated need for new abstractions and leave unrelated cleanup
+outside scope. Honour any agreed commit ordering for enabling refactors.
+
 Check the handoff before editing: can the available sources establish the
 relevant domain rules, valid inputs and preconditions, intended outcomes and
 effects, boundary cases, and credible verification? Investigate missing facts
