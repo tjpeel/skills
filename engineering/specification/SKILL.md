@@ -86,6 +86,11 @@ constraints, and durable module or contract boundaries. Surface stale or
 conflicting source claims; their presence or status does not establish current
 intent.
 
+When the eventual implementer cannot access a selected source, capture its
+necessary settled facts, decisions and constraints in the specification.
+Keep accessible evidence links; do not copy entire tickets or duplicate
+durable repository documentation.
+
 Link applicable context for domain meaning and ADRs for durable rationale.
 Keep this snapshot of implementation intent free of copied context, ADR
 content and implementation file paths.

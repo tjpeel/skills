@@ -129,8 +129,9 @@ intent instead of adopting it. Return an unsettled product or design choice to
 `$engineering-decision-discovery` or `$engineering-specification` instead of
 inventing it.
 
-Before writing, audit coverage: every required behaviour, acceptance criterion
-and applicable rollout constraint must be owned by a ticket. Each proposed
+Before writing, audit coverage: every required behaviour, acceptance criterion,
+deliverable (including explicitly agreed documentation) and applicable rollout
+constraint must be owned by a ticket with an appropriate completion check. Each proposed
 change must support an approved outcome, a concrete risk or an applicable
 repository rule. Do not widen the specification's scope during decomposition.
 If evidence shows that it prescribes unnecessary work, return a proposed

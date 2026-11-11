@@ -77,6 +77,11 @@ no new test is needed, state why and what verification supports that decision.
 Apply the guidance directly; it does not need an additional delegate. Give any
 existing mapper, writer or reviewer the same coverage gap and test boundary.
 
+For changed behaviour, consider relevant negative paths, feature-flag states
+and time boundaries. Where applicable, control time and asynchronous
+completion, isolate test data and clean up resources owned by the test. Choose
+cases for concrete risks rather than applying a fixed test matrix.
+
 ## Choose a boundary that catches the failure
 
 Use the task or repository's selected interface; otherwise choose an existing
