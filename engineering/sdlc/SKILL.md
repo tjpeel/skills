@@ -26,6 +26,14 @@ Review the selected repository, base, branch, tickets and dependencies, inputs, 
 
 Use provider or model overrides only when requested, and confirm the preview reflects them. Resolve routine selection issues from the repository's existing configuration and documented CLI behavior.
 
+Before starting a run, tell the user the effective provider and model for both
+the implement and review roles shown by the preview, and obtain their explicit
+confirmation of both. A general request to run the work is not model
+confirmation. If either role's effective model cannot be established, stop and
+resolve it before asking for confirmation. If the user requests a change,
+preview again and confirm both effective models before launching. Do not launch
+while confirmation is pending.
+
 ## Launch and follow the run
 
 Run the exact previewed selection without --dry-run in a foreground session that can be monitored. Record its run ID and use the dashboard for progress:
